@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,5 +13,13 @@ namespace Courier.Engine
     public class CharacterBody : Node
     {
         public Vector2 Velocity { get; set; }
+
+        /// <summary>
+        /// This function updates the CharacterBody's position based on it's velocity.
+        /// </summary>
+        protected void ApplyVelocity()
+        {
+            Position += Velocity;
+        }
     }
 }

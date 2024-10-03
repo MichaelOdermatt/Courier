@@ -31,6 +31,7 @@ namespace Courier.Content
         public void LoadTextures()
         {
             Textures.Add("ball", contentManager.Load<Texture2D>($"{spritesDirectory}ball"));
+            Textures.Add("LineTexture", contentManager.Load<Texture2D>($"{spritesDirectory}LineTexture"));
         }
     }
 }
