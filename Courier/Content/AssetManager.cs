@@ -14,6 +14,9 @@ namespace Courier.Content
 
         private ContentManager contentManager;
 
+        /// <summary>
+        /// Dictionary to store all Texture2D assets.
+        /// </summary>
         public Dictionary<string, Texture2D> Textures { get; set; }
 
         public AssetManager(IServiceProvider serviceProvider) 
@@ -22,6 +25,9 @@ namespace Courier.Content
             Textures = new Dictionary<string, Texture2D>();
         }
 
+        /// <summary>
+        /// Populates the Textures Dictionary with all the Texture2D assets.
+        /// </summary>
         public void LoadTextures()
         {
             Textures.Add("ball", contentManager.Load<Texture2D>($"{spritesDirectory}ball"));

@@ -1,4 +1,5 @@
 ﻿using Courier.Content;
+using Courier.Engine;
 using Courier.Game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +15,7 @@ namespace Courier
         private SpriteBatch spriteBatch;
         private AssetManager assetManager;
 
-        private Level level;
+        private Level1 level;
 
         public Game1()
         {
@@ -26,7 +27,7 @@ namespace Courier
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            level = new Level();
+            level = new Level1();
             base.Initialize();
         }
 
@@ -49,6 +50,8 @@ namespace Courier
             }
 
             // TODO: Add your update logic here
+            level.Update(gameTime);
+
             base.Update(gameTime);
         }
 

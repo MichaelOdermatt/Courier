@@ -41,5 +41,14 @@ namespace Courier.Engine
         {
             Children.ForEach(n => n.Draw(spriteBatch, assetManager, parentPosition + Position));
         }
+
+        /// <summary>
+        /// To be called in the overriding function. Calls Update on all child Nodes.
+        /// </summary>
+        /// <param name="gameTime">The GameTime object to be used in update calculations.</param>
+        public virtual void Update(GameTime gameTime)
+        {
+            Children.ForEach(n => n.Update(gameTime));
+        }
     }
 }

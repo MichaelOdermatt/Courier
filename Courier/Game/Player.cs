@@ -1,6 +1,5 @@
 ﻿using Courier.Engine;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +16,11 @@ namespace Courier.Game
         {
             sprite = new Sprite("ball");
             Children.Add(sprite);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
     }
 }
