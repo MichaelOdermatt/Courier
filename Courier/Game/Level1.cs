@@ -1,4 +1,5 @@
 ﻿using Courier.Engine;
+using Courier.Engine.Collisions;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -25,16 +26,15 @@ namespace Courier.Game
 
         public Level1()
         {
-            var player = new Player();
             var ground = new Ground(groundPoints);
 
-            Root = new Node(
+            root = new Node(
                 new List<Node>
                 {
-                    player,
                     ground
                 }
             );
+            player = new Player(new CollisionSphere(25));
         }
     }
 }

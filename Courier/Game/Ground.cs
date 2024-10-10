@@ -1,5 +1,6 @@
 ﻿using Courier.Content;
 using Courier.Engine;
+using Courier.Engine.Collisions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,19 +14,24 @@ namespace Courier.Game
     public class Ground : Node
     {
         private Vector2[] points;
+
         private string textureKey = "LineTexture";
         private float layerDepth = 0.0f;
         private float lineThickness = 5.0f;
         private LineSegment[] lineSegments;
 
+        private StaticBody staticBody;
+
         public Ground(Vector2[] points)
         {
             this.points = points;
             lineSegments = CreateLineSegments(points);
+            staticBody = new StaticBody(new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down));
+            Children.Add(staticBody);
         }
 
         /// <summary>
-        /// Draws the line for the ground and calls the Draw function on any child Nodes.
+        /// Draws the line for the Ground and calls the Draw function on any child Nodes.
         /// </summary>
         public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Vector2 parentPosition)
         {
@@ -36,7 +42,7 @@ namespace Courier.Game
 
             for (int i = 0; i < lineSegments.Length; i++)
             {
-                var segmentVector = lineSegments[i].SegmentVector;
+                var segmentVector = lineSegments[i].LocalVector;
                 var segmentScale = new Vector2(lineSegments[i].SegmentLength, lineThickness);
                 var segmentRotation = MathF.Atan(segmentVector.Y / segmentVector.X);
 
@@ -72,23 +78,10 @@ namespace Courier.Game
                 var segmentScale = new Vector2(segmentLength, lineThickness);
                 var segmentRotation = MathF.Atan(segmentVector.Y / segmentVector.X);
 
-                lineSegments[i] = new()
-                {
-                    StartPos = points[i],
-                    EndPos = points[i + 1],
-                };
+                lineSegments[i] = new(points[i], points[i + 1]);
             }
 
             return lineSegments;
-        }
-
-        // TODO use struct or not worth it?
-        private class LineSegment
-        {
-            public Vector2 StartPos { get; set; }
-            public Vector2 EndPos { get; set; }
-            public Vector2 SegmentVector { get => EndPos - StartPos; }
-            public float SegmentLength { get => SegmentVector.Length(); }
         }
     }
 }

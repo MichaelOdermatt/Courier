@@ -1,4 +1,5 @@
 ﻿using Courier.Engine;
+using Courier.Engine.Collisions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -9,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Courier.Game
 {
-    public class Player : CharacterBody
+    public class Player : PlayerController
     {
         private Sprite sprite;
         private float ballSpeed = 100f;
 
-        public Player()
+        public Player(ICollisionShape collisionShape) : base(collisionShape)
         {
             sprite = new Sprite("ball");
             Children.Add(sprite);
