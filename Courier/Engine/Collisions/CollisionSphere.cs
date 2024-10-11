@@ -47,7 +47,7 @@ namespace Courier.Engine.Collisions
                 var slope = (rightPoint.Value.Y - leftPoint.Value.Y) / (rightPoint.Value.X - leftPoint.Value.X);
                 var yAtXPos = slope * (position.X - leftPoint.Value.X) + leftPoint.Value.Y;
 
-                if (yAtXPos >= position.X)
+                if (yAtXPos <= position.X)
                 {
                     return true;
                 }

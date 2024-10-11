@@ -33,6 +33,7 @@ namespace Courier.Engine
         /// <summary>
         /// Draws the Sprite and calls the Draw function on any child Nodes.
         /// </summary>
+        // TODO get rid of the parent position argument and istead save the parent position as a property or variable of this class. Maybe pass and instance of the parent as an argument to the constructor? 
         public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Vector2 parentPosition)
         {
             // Draw all child Nodes

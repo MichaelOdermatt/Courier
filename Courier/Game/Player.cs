@@ -52,5 +52,10 @@ namespace Courier.Game
 
             ApplyVelocity();
         }
+
+        public override void OnCollision(ICollisionNode collisionNode)
+        {
+            // TODO implementation
+        }
     }
 }

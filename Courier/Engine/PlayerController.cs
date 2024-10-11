@@ -34,5 +34,13 @@ namespace Courier.Engine
         {
             Position += Velocity;
         }
+
+        /// <summary>
+        /// Function to call when notifying the PlayerController of a collision with another ICollisionNode
+        /// </summary>
+        /// <param name="collisionNode">The object which has collided with the player.</param>
+        public virtual void OnCollision(ICollisionNode collisionNode)
+        {
+        }
     }
 }

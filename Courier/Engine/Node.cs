@@ -50,5 +50,28 @@ namespace Courier.Engine
         {
             Children.ForEach(n => n.Update(gameTime));
         }
+
+        /// <summary>
+        /// Returns a list of Nodes that includes itself and all its Children.
+        /// </summary>
+        public List<Node> GetSelfAndAllChildren()
+        {
+            var nodes = new List<Node>();
+            var stack = new Stack<Node>();
+            stack.Push(this);
+
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                nodes.Add(current);
+
+                foreach (var child in current.Children)
+                {
+                    stack.Push(child);
+                }
+            }
+
+            return nodes;
+        }
     }
 }

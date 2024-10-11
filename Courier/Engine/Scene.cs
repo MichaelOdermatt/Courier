@@ -21,7 +21,7 @@ namespace Courier.Engine
         /// <summary>
         /// The player Node for the scene. Does not exist in the game tree (as a descendant of the root Node).
         /// </summary>
-        protected Player player;
+        protected PlayerController player;
 
         /// <summary>
         /// Calls Draw recursively on the root node until all it's children are rendered.
@@ -41,12 +41,30 @@ namespace Courier.Engine
         /// <param name="gameTime">The GameTime object to be used in update calculations.</param>
         public void Update(GameTime gameTime)
         {
-            // A list of all Nodes in the scene tree that need to have collision checks done on them.
-            var collisionNodes = new List<ICollisionNode>();
-            // TODO retreive all collision node by iterating through the entire scene tree?
-
             root.Update(gameTime);
             player.Update(gameTime);
+
+            var allNodes = root.GetSelfAndAllChildren();
+            var collissionNodes = allNodes.OfType<ICollisionNode>();
+
+            CheckPlayerCollisions(player, collissionNodes);
+        }
+
+        /// <summary>
+        /// Checks if the given PlayerController collides with anything in the given list of ICollisionNodes. If there is
+        /// a collision then notify the PlayerController of the collision.
+        /// </summary>
+        /// <param name="playerController">The PlayerController to check for collisions against.</param>
+        /// <param name="collisionNodes">The list of ICollisionNodes that could be colliding with the PlayerController.</param>
+        public void CheckPlayerCollisions(PlayerController playerController, IEnumerable<ICollisionNode> collisionNodes)
+        {
+            foreach (ICollisionNode collisionNode in collisionNodes) 
+            {
+                if (player.CollisionShape.Intersects(collisionNode.CollisionShape))
+                {
+                    player.OnCollision(collisionNode);
+                }
+            }
         }
     }
 }
