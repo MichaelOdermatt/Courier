@@ -15,9 +15,9 @@ namespace Courier.Game
         private Sprite sprite;
         private float ballSpeed = 100f;
 
-        public Player(ICollisionShape collisionShape) : base(collisionShape)
+        public Player(Node parent, ICollisionShape collisionShape) : base(parent, collisionShape)
         {
-            sprite = new Sprite("ball");
+            sprite = new Sprite(this, "ball");
             Children.Add(sprite);
         }
 

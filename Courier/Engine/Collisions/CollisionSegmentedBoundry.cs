@@ -12,6 +12,8 @@ namespace Courier.Engine.Collisions
     /// </summary>
     public class CollisionSegmentedBoundry : ICollisionShape
     {
+        public Node Parent { get; set; }
+
         /// <summary>
         /// The points that make up the segmented line.
         /// </summary>

@@ -11,7 +11,6 @@ namespace Courier.Game
 {
     public class Level1 : Scene
     {
-
         /// <summary>
         /// The points to use for the level's Ground object.
         /// </summary>
@@ -26,15 +25,12 @@ namespace Courier.Game
 
         public Level1()
         {
-            var ground = new Ground(groundPoints);
+            root = new Node(null);
+            var ground = new Ground(root, groundPoints);
 
-            root = new Node(
-                new List<Node>
-                {
-                    ground
-                }
-            );
-            player = new Player(new CollisionSphere(25));
+            root.Children.Add(ground);
+
+            player = new Player(null, new CollisionSphere(25));
         }
     }
 }

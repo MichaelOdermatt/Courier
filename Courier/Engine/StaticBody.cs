@@ -11,9 +11,10 @@ namespace Courier.Engine
     {
         public ICollisionShape CollisionShape { get; set; }
 
-        public StaticBody(ICollisionShape collisionShape)
+        public StaticBody(Node parent, ICollisionShape collisionShape): base(parent)
         {
             CollisionShape = collisionShape;
+            CollisionShape.Parent = this;
         }
 
     }

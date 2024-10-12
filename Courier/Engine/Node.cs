@@ -15,21 +15,29 @@ namespace Courier.Engine
     public class Node
     {
         /// <summary>
+        /// The parent Node.
+        /// </summary>
+        protected readonly Node parent;
+
+        /// <summary>
         /// List of child Nodes.
         /// </summary>
-        protected readonly List<Node> Children = new List<Node>();
+        public List<Node> Children { get; private set; } = new List<Node>();
 
         /// <summary>
         /// Position of the game object relative to it's parent Node.
         /// </summary>
-        public Vector2 Position { get; set; } = Vector2.Zero;
+        public Vector2 LocalPosition { get; set; } = Vector2.Zero;
 
-        public Node(List<Node> children)
+        /// <summary>
+        /// Position of the game object relative to the root Node.
+        /// </summary>
+        public Vector2 GlobalPosition { get => parent != null ? parent.LocalPosition + LocalPosition : LocalPosition; }
+
+        public Node(Node parent)
         {
-            Children = children;
+            this.parent = parent;
         }
-
-        public Node() { }
 
         /// <summary>
         /// To be called in the overriding function. Draws all child Nodes.
@@ -37,9 +45,9 @@ namespace Courier.Engine
         /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>
         /// <param name="assetManager">The AssetManager instance initialized in Game1.</param>
         /// <param name="parentPosition">The position of the parent Node. Used to draw Nodes relative to their parent.</param>
-        public virtual void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Vector2 parentPosition)
+        public virtual void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
         {
-            Children.ForEach(n => n.Draw(spriteBatch, assetManager, parentPosition + Position));
+            Children.ForEach(n => n.Draw(spriteBatch, assetManager));
         }
 
         /// <summary>

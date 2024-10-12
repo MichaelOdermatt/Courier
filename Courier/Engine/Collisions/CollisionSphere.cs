@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Courier.Engine.Collisions
 {
     public class CollisionSphere : ICollisionShape
     {
-        private Vector2 position;
+        public Node Parent { get; set; }
         private float radius;
 
         public CollisionSphere(float radius)
@@ -23,6 +24,7 @@ namespace Courier.Engine.Collisions
             if (collisionShape is CollisionSegmentedBoundry collisionSB && collisionSB.Direction == SegmentedBoundryDirection.Down)
             {
                 // TODO could optimize this by storing the points differently?
+                var position = Parent.GlobalPosition;
 
                 Vector2? leftPoint = null;
                 Vector2? rightPoint = null;

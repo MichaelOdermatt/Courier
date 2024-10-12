@@ -31,8 +31,8 @@ namespace Courier.Engine
         public void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
         {
             // Since root is the top level node, pass Vector2.Zero as its parent position.
-            root.Draw(spriteBatch, assetManager, Vector2.Zero);
-            player.Draw(spriteBatch, assetManager, Vector2.Zero);
+            root.Draw(spriteBatch, assetManager);
+            player.Draw(spriteBatch, assetManager);
         }
 
         /// <summary>

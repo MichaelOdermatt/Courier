@@ -22,21 +22,21 @@ namespace Courier.Game
 
         private StaticBody staticBody;
 
-        public Ground(Vector2[] points)
+        public Ground(Node parent, Vector2[] points): base(parent)
         {
             this.points = points;
             lineSegments = CreateLineSegments(points);
-            staticBody = new StaticBody(new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down));
+            staticBody = new StaticBody(this, new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down));
             Children.Add(staticBody);
         }
 
         /// <summary>
         /// Draws the line for the Ground and calls the Draw function on any child Nodes.
         /// </summary>
-        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Vector2 parentPosition)
+        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
         {
             // Draw all child Nodes
-            base.Draw(spriteBatch, assetManager, parentPosition + Position);
+            base.Draw(spriteBatch, assetManager);
 
             var texture = assetManager.Textures[textureKey];
 
@@ -48,7 +48,7 @@ namespace Courier.Game
 
                 spriteBatch.Draw(
                     texture, 
-                    parentPosition + Position + lineSegments[i].StartPos,
+                    GlobalPosition + lineSegments[i].StartPos,
                     null, 
                     Color.White, 
                     segmentRotation, 

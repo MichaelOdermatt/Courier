@@ -22,9 +22,10 @@ namespace Courier.Engine
 
         public ICollisionShape CollisionShape { get; set; }
 
-        public PlayerController(ICollisionShape collisionShape)
+        public PlayerController(Node parent, ICollisionShape collisionShape): base(parent)
         {
             CollisionShape = collisionShape;
+            CollisionShape.Parent = this;
         }
 
         /// <summary>
@@ -32,7 +33,7 @@ namespace Courier.Engine
         /// </summary>
         protected void ApplyVelocity()
         {
-            Position += Velocity;
+            LocalPosition += Velocity;
         }
 
         /// <summary>
