@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +9,12 @@ namespace Courier.Engine.Collisions
 {
     public class CollisionSphere : ICollisionShape
     {
-        public Node Parent { get; set; }
         private float radius;
+        public Node Parent { get; set; }
+        private Vector2 Position { get => Parent.GlobalPosition; }
+
+        // TODO if I'm going to use the vector2 comparer maybe I should store it elsewhere
+        private readonly Comparer<Vector2> Vector2Comparer = Comparer<Vector2>.Create((a, b) => a.X > b.X ? 1 : a.X < b.X ? -1 : 1);
 
         public CollisionSphere(float radius)
         {
@@ -23,21 +26,22 @@ namespace Courier.Engine.Collisions
         {
             if (collisionShape is CollisionSegmentedBoundry collisionSB && collisionSB.Direction == SegmentedBoundryDirection.Down)
             {
-                // TODO could optimize this by storing the points differently?
-                var position = Parent.GlobalPosition;
+                // Find the line segment below the player.
+
+                var index = Array.BinarySearch(collisionSB.Points, Position, Vector2Comparer);
 
                 Vector2? leftPoint = null;
                 Vector2? rightPoint = null;
-                for (int i = 0; i < collisionSB.Points.Length - 1; i++)
+
+                // TODO is there a better way to get the point index from the binary search result?
+
+                if (index < -1 && index > (collisionSB.Points.Length * -1) - 1)
                 {
-                    var currentPoint = collisionSB.Points[i];
-                    var nextPoint = collisionSB.Points[i + 1];
-                    if (currentPoint.X <= position.X && nextPoint.X >= position.X)
-                    {
-                        leftPoint = currentPoint;
-                        rightPoint = nextPoint;
-                        break;
-                    }
+                    var rightIndex = (index * -1) - 1;
+                    var leftIndex = rightIndex - 1;
+
+                    leftPoint = collisionSB.Points[leftIndex];
+                    rightPoint = collisionSB.Points[rightIndex];
                 }
 
                 if (leftPoint == null || rightPoint == null)
@@ -45,16 +49,22 @@ namespace Courier.Engine.Collisions
                     return false;
                 }
 
-                // TODO put this in it's own math function?
-                var slope = (rightPoint.Value.Y - leftPoint.Value.Y) / (rightPoint.Value.X - leftPoint.Value.X);
-                var yAtXPos = slope * (position.X - leftPoint.Value.X) + leftPoint.Value.Y;
+                Vector2 lineSegmentVector = rightPoint.Value - leftPoint.Value;
+                Vector2 startPosToSphereCenter = Position - leftPoint.Value;
 
-                if (yAtXPos <= position.X)
-                {
-                    return true;
-                }
+                // Check if the sphere and line intersect
 
-                return false;
+                // Find the closest point to the sphere center along the lineSegmentVector.
+                float closestPointAsFloat = Vector2.Dot(startPosToSphereCenter, lineSegmentVector) / lineSegmentVector.LengthSquared();
+
+                closestPointAsFloat = Math.Clamp(closestPointAsFloat, 0 , 1);
+
+                Vector2 closestPoint = leftPoint.Value + closestPointAsFloat * lineSegmentVector;
+
+                float distanceTo = (closestPoint - Position).LengthSquared();
+
+                // True if the distance between the closest point on the line to the sphere is less than the radius, or if the sphere's origin is below the closest point.
+                return closestPoint.Y <= Position.Y || distanceTo <= radius * radius;
             }
 
             throw new NotImplementedException();
