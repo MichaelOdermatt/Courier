@@ -12,7 +12,9 @@ namespace Courier.Engine.Collisions
     /// </summary>
     public interface ICollisionShape
     {
-        // TODO maybe this shouldn't be called parent, since the ICollision shape is actually not a child of the node that instantiates it.
+        /// <summary>
+        /// The Node that the ICollisionShape belongs to. Since ICollisionShape classes do not actually need to inherit from Node, they are not actually children of their Parent Node.
+        /// </summary>
         Node Parent { get; set; }
 
         /// <summary>

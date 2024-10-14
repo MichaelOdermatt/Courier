@@ -27,7 +27,7 @@ namespace Courier.Engine.Collisions
         public CollisionSegmentedBoundry(Vector2[] points, SegmentedBoundryDirection direction)
         {
             Points = points;
-            // Array of points needs to be sorted so we can use Binary sort on it later.
+            // Array of points needs to be sorted so we can use binary search on it later.
             Points = Points.OrderBy(v => v.X).ToArray();
 
             Direction = direction;

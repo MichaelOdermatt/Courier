@@ -25,9 +25,6 @@ namespace Courier.Game
         {
             base.Update(gameTime);
 
-            // debug
-            sprite.Color = Color.White;
-
             // The time since Update was called last.
             float updatedBallSpeed = ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -59,9 +56,6 @@ namespace Courier.Game
         public override void OnCollision(ICollisionNode collisionNode)
         {
             // TODO implementation
-
-            // debug
-            sprite.Color = Color.Black;
         }
     }
 }

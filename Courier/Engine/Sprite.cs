@@ -24,9 +24,6 @@ namespace Courier.Engine
         /// </summary>
         private readonly float layerDepth = 0.0f;
 
-        // debug property
-        public Color Color { get; set; } = Color.White;
-
         public Sprite(Node parent, string textureKey, float layerDepth = 0.0f): base(parent)
         {
             this.textureKey = textureKey;
@@ -36,7 +33,6 @@ namespace Courier.Engine
         /// <summary>
         /// Draws the Sprite and calls the Draw function on any child Nodes.
         /// </summary>
-        // TODO get rid of the parent position argument and istead save the parent position as a property or variable of this class. Maybe pass and instance of the parent as an argument to the constructor? 
         public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
         {
             // Draw all child Nodes
@@ -45,8 +41,7 @@ namespace Courier.Engine
             var texture = assetManager.Textures[textureKey];
             var origin = new Vector2(texture.Width / 2, texture.Height / 2);
 
-            // TODO change Color back to Color.White once debug changes are reverted.
-            spriteBatch.Draw(texture, GlobalPosition, null, Color, 0.0f, origin, Vector2.One, SpriteEffects.None, layerDepth);
+            spriteBatch.Draw(texture, GlobalPosition, null, Color.White, 0.0f, origin, Vector2.One, SpriteEffects.None, layerDepth);
         }
     }
 }

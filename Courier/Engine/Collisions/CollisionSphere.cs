@@ -12,8 +12,9 @@ namespace Courier.Engine.Collisions
         private float radius;
         public Node Parent { get; set; }
         private Vector2 Position { get => Parent.GlobalPosition; }
-
-        // TODO if I'm going to use the vector2 comparer maybe I should store it elsewhere
+        /// <summary>
+        /// A Comparer object for Vector2 that is used with binary search to detect which Vector2 points the player is closest to.
+        /// </summary>
         private readonly Comparer<Vector2> Vector2Comparer = Comparer<Vector2>.Create((a, b) => a.X > b.X ? 1 : a.X < b.X ? -1 : 1);
 
         public CollisionSphere(float radius)
@@ -30,27 +31,20 @@ namespace Courier.Engine.Collisions
 
                 var index = Array.BinarySearch(collisionSB.Points, Position, Vector2Comparer);
 
-                Vector2? leftPoint = null;
-                Vector2? rightPoint = null;
+                var rightIndex = (index * -1) - 1;
+                var leftIndex = rightIndex - 1;
 
-                // TODO is there a better way to get the point index from the binary search result?
-
-                if (index < -1 && index > (collisionSB.Points.Length * -1) - 1)
-                {
-                    var rightIndex = (index * -1) - 1;
-                    var leftIndex = rightIndex - 1;
-
-                    leftPoint = collisionSB.Points[leftIndex];
-                    rightPoint = collisionSB.Points[rightIndex];
-                }
-
-                if (leftPoint == null || rightPoint == null)
+                // If the left and right index are out of the range of they array, the player is not above any line segment.
+                if (rightIndex > collisionSB.Points.Length - 1 || leftIndex < 0)
                 {
                     return false;
                 }
 
-                Vector2 lineSegmentVector = rightPoint.Value - leftPoint.Value;
-                Vector2 startPosToSphereCenter = Position - leftPoint.Value;
+                Vector2 leftPoint = collisionSB.Points[leftIndex];
+                Vector2 rightPoint = collisionSB.Points[rightIndex];
+
+                Vector2 lineSegmentVector = rightPoint - leftPoint;
+                Vector2 startPosToSphereCenter = Position - leftPoint;
 
                 // Check if the sphere and line intersect
 
@@ -59,7 +53,7 @@ namespace Courier.Engine.Collisions
 
                 closestPointAsFloat = Math.Clamp(closestPointAsFloat, 0 , 1);
 
-                Vector2 closestPoint = leftPoint.Value + closestPointAsFloat * lineSegmentVector;
+                Vector2 closestPoint = leftPoint + closestPointAsFloat * lineSegmentVector;
 
                 float distanceTo = (closestPoint - Position).LengthSquared();
 

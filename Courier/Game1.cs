@@ -28,6 +28,7 @@ namespace Courier
         {
             // TODO: Add your initialization logic here
             level = new Level1();
+
             base.Initialize();
         }
 
