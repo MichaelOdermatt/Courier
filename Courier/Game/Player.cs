@@ -12,13 +12,16 @@ namespace Courier.Game
 {
     public class Player : PlayerController
     {
-        private Sprite sprite;
+        private readonly Sprite sprite;
         private float ballSpeed = 100f;
 
-        public Player(Node parent, ICollisionShape collisionShape) : base(parent, collisionShape)
+        private readonly Camera2D camera;
+
+        public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
         {
             sprite = new Sprite(this, "ball");
             Children.Add(sprite);
+            this.camera = camera;
         }
 
         public override void Update(GameTime gameTime)
@@ -51,6 +54,9 @@ namespace Courier.Game
             }
 
             ApplyVelocity();
+
+            // Update the camera position to always follow the Player.
+            camera.SetPosition(GlobalPosition);
         }
 
         public override void OnCollision(ICollisionNode collisionNode)

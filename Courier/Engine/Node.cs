@@ -40,6 +40,14 @@ namespace Courier.Engine
         }
 
         /// <summary>
+        /// To be called in the overriding function. Calls Initialize on all child Nodes.
+        /// </summary>
+        public virtual void Initialize()
+        {
+            Children.ForEach(n => n.Initialize());
+        }
+
+        /// <summary>
         /// To be called in the overriding function. Draws all child Nodes.
         /// </summary>
         /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>

@@ -23,14 +23,14 @@ namespace Courier.Game
             new Vector2(800, 300),
         };
 
-        public Level1()
+        public Level1(Camera2D camera) : base(camera)
         {
             root = new Node(null);
             var ground = new Ground(root, groundPoints);
 
             root.Children.Add(ground);
 
-            player = new Player(null, new CollisionSphere(25));
+            player = new Player(null, new CollisionSphere(25), camera);
         }
     }
 }

@@ -24,6 +24,25 @@ namespace Courier.Engine
         protected PlayerController player;
 
         /// <summary>
+        /// The camera used in the Scene.
+        /// </summary>
+        protected Camera2D camera;
+
+        public Scene(Camera2D camera)
+        {
+            this.camera = camera;
+        }
+
+        /// <summary>
+        /// Calls Initialize recursively on the root node until all it's children are Initialized;
+        /// </summary>
+        public void Initialize()
+        {
+            root.Initialize();
+            player.Initialize();
+        }
+
+        /// <summary>
         /// Calls Draw recursively on the root node until all it's children are rendered.
         /// </summary>
         /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>

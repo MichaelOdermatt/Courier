@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine
+namespace Courier.Engine.Collisions
 {
     public enum SegmentedBoundryDirection
     {

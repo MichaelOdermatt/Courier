@@ -25,9 +25,15 @@ namespace Courier.Game
         public Ground(Node parent, Vector2[] points): base(parent)
         {
             this.points = points;
-            lineSegments = CreateLineSegments(points);
             staticBody = new StaticBody(this, new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down));
             Children.Add(staticBody);
+        }
+
+        public override void Initialize()
+        {
+            lineSegments = CreateLineSegments(points);
+
+            base.Initialize();
         }
 
         /// <summary>

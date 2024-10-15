@@ -11,23 +11,36 @@ namespace Courier
 
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        private const int DefaultRealScreenWidth = 1920;
+        private const int DefaultRealScreenHeight = 1080;
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private AssetManager assetManager;
+        private ResolutionIndependentRenderer renderer;
+        private Camera2D camera;
 
         private Level1 level;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            assetManager = new AssetManager(Services);
             IsMouseVisible = true;
+
+            renderer = new ResolutionIndependentRenderer(this);
+
+            assetManager = new AssetManager(Services);
+
+            // Camera is created outside the Scene since SpriteBatch.Begin and ResolutionINdependentRenderer need a reference to it.
+            camera = new Camera2D(renderer);
+            level = new Level1(camera);
         }
 
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            level = new Level1();
+            level.Initialize();
+            InitRenderer();
 
             base.Initialize();
         }
@@ -58,15 +71,41 @@ namespace Courier
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            // TODO only draw what is in view of the camera.
 
-            spriteBatch.Begin();
+            // Note: For UI in the future, use a seperate sprite batch that isn't given the camera's transformation matrix.
+            renderer.BeginDraw();
+            spriteBatch.Begin(
+                SpriteSortMode.Deferred, 
+                BlendState.AlphaBlend, 
+                SamplerState.LinearWrap, 
+                DepthStencilState.None, 
+                RasterizerState.CullNone, 
+                null, 
+                camera.GetViewTransformationMatrix()
+            );
 
             level.Draw(spriteBatch, assetManager);
 
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void InitRenderer()
+        {
+            graphics.PreferredBackBufferWidth = DefaultRealScreenWidth;
+            graphics.PreferredBackBufferHeight = DefaultRealScreenHeight;
+            graphics.ApplyChanges();
+
+            // The virtual resolution we always want our game to display at.
+            renderer.VirtualWidth = 1025;
+            renderer.VirtualHeight = 512;
+            renderer.ScreenWidth = DefaultRealScreenWidth;
+            renderer.ScreenHeight = DefaultRealScreenHeight;
+            renderer.Initialize();
+
+            camera.RecalculateTransformationMatrices();
         }
     }
 }
