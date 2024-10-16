@@ -1,5 +1,4 @@
-﻿using Courier.Content;
-using Courier.Engine;
+﻿using Courier.Engine;
 using Courier.Game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

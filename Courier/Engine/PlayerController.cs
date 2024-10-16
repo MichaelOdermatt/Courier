@@ -1,5 +1,4 @@
-﻿using Courier.Content;
-using Courier.Engine.Collisions;
+﻿using Courier.Engine.Collisions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;

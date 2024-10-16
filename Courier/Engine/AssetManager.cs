@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Content
+namespace Courier.Engine
 {
     public class AssetManager
     {
@@ -19,7 +19,7 @@ namespace Courier.Content
         /// </summary>
         public Dictionary<string, Texture2D> Textures { get; set; }
 
-        public AssetManager(IServiceProvider serviceProvider) 
+        public AssetManager(IServiceProvider serviceProvider)
         {
             contentManager = new ContentManager(serviceProvider, "Content");
             Textures = new Dictionary<string, Texture2D>();

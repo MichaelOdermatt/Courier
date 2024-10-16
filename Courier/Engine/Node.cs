@@ -1,5 +1,4 @@
-﻿using Courier.Content;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,6 @@ namespace Courier.Engine
         /// </summary>
         /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>
         /// <param name="assetManager">The AssetManager instance initialized in Game1.</param>
-        /// <param name="parentPosition">The position of the parent Node. Used to draw Nodes relative to their parent.</param>
         public virtual void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
         {
             Children.ForEach(n => n.Draw(spriteBatch, assetManager));
