@@ -38,10 +38,10 @@ namespace Courier.Game
         /// <summary>
         /// Draws the line for the Ground and calls the Draw function on any child Nodes.
         /// </summary>
-        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
+        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Camera2D camera)
         {
             // Draw all child Nodes
-            base.Draw(spriteBatch, assetManager);
+            base.Draw(spriteBatch, assetManager, camera);
 
             var texture = assetManager.Textures[textureKey];
 

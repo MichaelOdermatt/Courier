@@ -114,5 +114,19 @@ namespace Courier.Engine
         {
             _isViewTransformationDirty = true;
         }
+
+        /// <summary>
+        /// Returns True if the given point is in the Camera's view. Otherwise False.
+        /// </summary>
+        public bool IsPointInCameraView(Vector2 point)
+        {
+            int screenHeight = ResolutionIndependentRenderer.VirtualHeight;
+            int screenWidth = ResolutionIndependentRenderer.VirtualWidth;
+
+            bool isPositionInCameraViewX = point.X > Position.X - screenWidth * 0.5f && point.X < Position.X + screenWidth * 0.5f;
+            bool isPositionInCameraViewY = point.Y > Position.Y - screenHeight * 0.5f && point.Y < Position.Y + screenHeight * 0.5f;
+
+            return isPositionInCameraViewX && isPositionInCameraViewY;
+        }
     }
 }

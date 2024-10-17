@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,10 +33,16 @@ namespace Courier.Engine
         /// <summary>
         /// Draws the Sprite and calls the Draw function on any child Nodes.
         /// </summary>
-        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
+        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Camera2D camera)
         {
             // Draw all child Nodes
-            base.Draw(spriteBatch, assetManager);
+            base.Draw(spriteBatch, assetManager, camera);
+
+            // If the sprite is not in the camera's view, don't draw it.
+            if (!camera.IsPointInCameraView(GlobalPosition))
+            {
+                return;
+            }
 
             var texture = assetManager.Textures[textureKey];
             var origin = new Vector2(texture.Width / 2, texture.Height / 2);

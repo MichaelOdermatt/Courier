@@ -51,9 +51,10 @@ namespace Courier.Engine
         /// </summary>
         /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>
         /// <param name="assetManager">The AssetManager instance initialized in Game1.</param>
-        public virtual void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
+        /// <param name="camera">The Camera2D instance used in the Scene. Used to determine if the sprite is in view of the camera.</param>
+        public virtual void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Camera2D camera)
         {
-            Children.ForEach(n => n.Draw(spriteBatch, assetManager));
+            Children.ForEach(n => n.Draw(spriteBatch, assetManager, camera));
         }
 
         /// <summary>
