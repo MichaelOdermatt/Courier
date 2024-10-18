@@ -13,9 +13,15 @@ namespace Courier.Game
     public class Player : PlayerController
     {
         private readonly Sprite sprite;
-        private float ballSpeed = 100f;
-
         private readonly Camera2D camera;
+
+        private float rotateSpeed = 1.5f;
+        // TODO apply rotation limits.
+        private int maxRotation = 90;
+        private int minRotation = -90;
+
+        private float gravity = 5f;
+        private Vector2 gravityDirection = Vector2.UnitY;
 
         public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
         {
@@ -28,35 +34,44 @@ namespace Courier.Game
         {
             base.Update(gameTime);
 
-            // The time since Update was called last.
-            float updatedBallSpeed = ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            var kstate = Keyboard.GetState();
-
-            if (kstate.IsKeyDown(Keys.Up))
-            {
-                Velocity = Vector2.UnitY * updatedBallSpeed * -1;
-            }
-
-            if (kstate.IsKeyDown(Keys.Down))
-            {
-                Velocity = Vector2.UnitY * updatedBallSpeed;
-            }
-
-            if (kstate.IsKeyDown(Keys.Left))
-            {
-                Velocity = Vector2.UnitX * updatedBallSpeed * -1;
-            }
-
-            if (kstate.IsKeyDown(Keys.Right))
-            {
-                Velocity = Vector2.UnitX * updatedBallSpeed;
-            }
-
+            UpdateVelocity(gameTime);
             ApplyVelocity();
 
             // Update the camera position to always follow the Player.
             camera.SetPosition(GlobalPosition);
+        }
+
+        private void UpdateVelocity(GameTime gameTime)
+        {
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Rotate the velocity vector based on the Players input.
+            var steeringDirection = GetPlayerSteeringDirection();
+            var rotationMatrix = Matrix.CreateRotationZ(steeringDirection * rotateSpeed * deltaTime);
+            Velocity = Vector2.Transform(Velocity, rotationMatrix);
+
+            // Apply gravity.
+            Velocity += gravityDirection * gravity * deltaTime;
+        }
+
+        /// <summary>
+        /// Reads the Players input and returns their steering direction. 1 if they are steering up, -1 if they are steer down, and 0 if there is no player input.
+        /// </summary>
+        private int GetPlayerSteeringDirection()
+        {
+            var keyState = Keyboard.GetState();
+
+            if (keyState.IsKeyDown(Keys.S))
+            {
+                return -1;
+            }
+
+            if (keyState.IsKeyDown(Keys.W))
+            {
+                return 1;
+            }
+
+            return 0;
         }
 
         public override void OnCollision(ICollisionNode collisionNode)

@@ -21,6 +21,13 @@ namespace Courier.Game
             new Vector2(300, 400),
             new Vector2(400, 450),
             new Vector2(800, 300),
+            new Vector2(1000, 500),
+            new Vector2(1200, 450),
+            new Vector2(1300, 400),
+            new Vector2(1600, 400),
+            new Vector2(1800, 350),
+            new Vector2(1900, 450),
+            new Vector2(2200, 500),
         };
 
         public Level1(Camera2D camera) : base(camera)
