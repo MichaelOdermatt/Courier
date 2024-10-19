@@ -20,8 +20,12 @@ namespace Courier.Game
         private int maxRotation = 90;
         private int minRotation = -90;
 
-        private float gravity = 5f;
         private Vector2 gravityDirection = Vector2.UnitY;
+
+        private float gravityPower = 5f;
+        private float liftPower = 0.1f;
+        private float inducedDragPower = 0.04f;
+        private float dragPower = 0.04f;
 
         public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
         {
@@ -41,17 +45,98 @@ namespace Courier.Game
             camera.SetPosition(GlobalPosition);
         }
 
+        public override void OnCollision(ICollisionNode collisionNode)
+        {
+            // TODO implementation
+        }
+
         private void UpdateVelocity(GameTime gameTime)
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Rotate the velocity vector based on the Players input.
             var steeringDirection = GetPlayerSteeringDirection();
-            var rotationMatrix = Matrix.CreateRotationZ(steeringDirection * rotateSpeed * deltaTime);
-            Velocity = Vector2.Transform(Velocity, rotationMatrix);
+            var steeringAmount = steeringDirection * rotateSpeed * deltaTime;
+
+            Velocity = Velocity.Rotate(steeringAmount);
+
+            var normalizedVelocity = Velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(Velocity);
+            var angleOfAttack = CalcAngleOfAttack();
+
+            var gravity = gravityDirection * gravityPower;
+            var lift = CalcLift(angleOfAttack, normalizedVelocity);
+            var drag = CalcDrag(angleOfAttack, normalizedVelocity);
 
             // Apply gravity.
-            Velocity += gravityDirection * gravity * deltaTime;
+            Velocity += gravity * deltaTime;
+
+            // Apply lift.
+            Velocity += lift * deltaTime;
+
+            // Apply Drag.
+            Velocity += lift * deltaTime;
+
+            // TODO add thrust.
+
+            // Update the sprites rotation to match the angle of attack.
+            sprite.Rotation = angleOfAttack;
+        }
+
+        /// <summary>
+        /// Calculate and return the Players angle of attack.
+        /// </summary>
+        private float CalcAngleOfAttack()
+        {
+            return MathF.Atan2(Velocity.Y, Velocity.X);
+        }
+
+        /// <summary>
+        /// Calculate and return the lift force and direction as a Vector2.
+        /// </summary>
+        /// <param name="angleOfAttack">The Players angle of attack.</param>
+        /// <param name="normalizedVelocity">The Players normalized velocity.</param>
+        private Vector2 CalcLift(float angleOfAttack, Vector2 normalizedVelocity)
+        {
+            var liftCoefficient = CalcLiftCoefficient(angleOfAttack);
+
+            // Calculate lift.
+            var liftDirection = new Vector2(normalizedVelocity.Y, normalizedVelocity.X);
+            var liftVelocity = Velocity.Project(Vector2.UnitX);
+            var liftForce = liftDirection * (liftVelocity.Length() * liftPower * liftCoefficient);
+
+            // Calculate induced drag.
+            var dragDirection = -normalizedVelocity;
+            var inducedDragForce = dragDirection * (liftVelocity.Length() * inducedDragPower * MathF.Pow(liftCoefficient, 2));
+
+            return inducedDragForce + liftForce;
+        }
+
+        /// <summary>
+        /// Calculate and return the drag force and direction as a Vector2.
+        /// </summary>
+        /// <param name="angleOfAttack">The Players angle of attack.</param>
+        /// <param name="normalizedVelocity">The Players normalized velocity.</param>
+        private Vector2 CalcDrag(float angleOfAttack, Vector2 normalizedVelocity)
+        {
+            var dragCoefficient = CalcLiftCoefficient(angleOfAttack);
+            var dragDirection = -normalizedVelocity;
+            return dragDirection * (Velocity.Length() * dragCoefficient * dragPower);
+        }
+
+        /// <summary>
+        /// Calculate and return the lift coefficient at the given angle of attack.
+        /// </summary>
+        private float CalcLiftCoefficient(float angleOfAttack)
+        {
+            return MathF.Sin(2 * angleOfAttack);
+        }
+
+        /// <summary>
+        /// Calculate and return the drag coefficient at the given angle of attack.
+        /// </summary>
+        private float CalcDragCoefficient(float angleOfAttack)
+        {
+            return 0.02f + 1.0f * MathF.Pow(angleOfAttack, 2);
         }
 
         /// <summary>
@@ -72,11 +157,6 @@ namespace Courier.Game
             }
 
             return 0;
-        }
-
-        public override void OnCollision(ICollisionNode collisionNode)
-        {
-            // TODO implementation
         }
     }
 }

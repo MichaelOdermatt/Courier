@@ -24,6 +24,8 @@ namespace Courier.Engine
         /// </summary>
         private readonly float layerDepth = 0.0f;
 
+        public float Rotation { get; set; } = 0.0f;
+
         public Sprite(Node parent, string textureKey, float layerDepth = 0.0f): base(parent)
         {
             this.textureKey = textureKey;
@@ -47,7 +49,7 @@ namespace Courier.Engine
             var texture = assetManager.Textures[textureKey];
             var origin = new Vector2(texture.Width / 2, texture.Height / 2);
 
-            spriteBatch.Draw(texture, GlobalPosition, null, Color.White, 0.0f, origin, Vector2.One, SpriteEffects.None, layerDepth);
+            spriteBatch.Draw(texture, GlobalPosition, null, Color.White, Rotation, origin, Vector2.One, SpriteEffects.None, layerDepth);
         }
     }
 }
