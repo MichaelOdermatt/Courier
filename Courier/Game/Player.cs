@@ -22,14 +22,15 @@ namespace Courier.Game
 
         private Vector2 gravityDirection = Vector2.UnitY;
 
+        private float thrustPower = 100f;
         private float gravityPower = 5f;
         private float liftPower = 0.1f;
         private float inducedDragPower = 0.04f;
-        private float dragPower = 0.04f;
+        private float dragPower = 0.1f;
 
         public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
         {
-            sprite = new Sprite(this, "ball");
+            sprite = new Sprite(this, "Player");
             Children.Add(sprite);
             this.camera = camera;
         }
@@ -53,9 +54,12 @@ namespace Courier.Game
         private void UpdateVelocity(GameTime gameTime)
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            var keyState = Keyboard.GetState();
+
+            var isSpacePressed = keyState.IsKeyDown(Keys.Space);
 
             // Rotate the velocity vector based on the Players input.
-            var steeringDirection = GetPlayerSteeringDirection();
+            var steeringDirection = GetPlayerSteeringDirection(keyState);
             var steeringAmount = steeringDirection * rotateSpeed * deltaTime;
 
             Velocity = Velocity.Rotate(steeringAmount);
@@ -67,6 +71,13 @@ namespace Courier.Game
             var lift = CalcLift(angleOfAttack, normalizedVelocity);
             var drag = CalcDrag(angleOfAttack, normalizedVelocity);
 
+            // Apply thrust if space is pressed.
+            if (isSpacePressed)
+            {
+                var thrust = normalizedVelocity * (thrustPower * deltaTime);
+                Velocity += thrust * deltaTime;
+            }
+
             // Apply gravity.
             Velocity += gravity * deltaTime;
 
@@ -75,8 +86,6 @@ namespace Courier.Game
 
             // Apply Drag.
             Velocity += lift * deltaTime;
-
-            // TODO add thrust.
 
             // Update the sprites rotation to match the angle of attack.
             sprite.Rotation = angleOfAttack;
@@ -142,10 +151,9 @@ namespace Courier.Game
         /// <summary>
         /// Reads the Players input and returns their steering direction. 1 if they are steering up, -1 if they are steer down, and 0 if there is no player input.
         /// </summary>
-        private int GetPlayerSteeringDirection()
+        /// <param name="keyState">The current keyboard state.</param>
+        private int GetPlayerSteeringDirection(KeyboardState keyState)
         {
-            var keyState = Keyboard.GetState();
-
             if (keyState.IsKeyDown(Keys.S))
             {
                 return -1;

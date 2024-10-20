@@ -77,7 +77,7 @@ namespace Courier
             spriteBatch.Begin(
                 SpriteSortMode.Deferred, 
                 BlendState.AlphaBlend, 
-                SamplerState.LinearWrap, 
+                SamplerState.PointClamp, 
                 DepthStencilState.None, 
                 RasterizerState.CullNone, 
                 null, 
