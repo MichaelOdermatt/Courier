@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine
+namespace Courier.Engine.Nodes
 {
     /// <summary>
     /// Base class for handling all non implementation specific player code.
@@ -21,7 +21,7 @@ namespace Courier.Engine
 
         public ICollisionShape CollisionShape { get; set; }
 
-        public PlayerController(Node parent, ICollisionShape collisionShape): base(parent)
+        public PlayerController(Node parent, ICollisionShape collisionShape) : base(parent)
         {
             CollisionShape = collisionShape;
             CollisionShape.Parent = this;

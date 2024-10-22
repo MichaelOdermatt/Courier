@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine
+namespace Courier.Engine.Nodes
 {
     /// <summary>
     /// Node used to store a game objects sprite and any sprite related information.
@@ -26,7 +26,7 @@ namespace Courier.Engine
 
         public float Rotation { get; set; } = 0.0f;
 
-        public Sprite(Node parent, string textureKey, float layerDepth = 0.0f): base(parent)
+        public Sprite(Node parent, string textureKey, float layerDepth = 0.0f) : base(parent)
         {
             this.textureKey = textureKey;
             this.layerDepth = layerDepth;

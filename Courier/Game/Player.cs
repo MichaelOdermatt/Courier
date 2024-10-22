@@ -1,9 +1,12 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
+using Courier.Engine.Extensions;
+using Courier.Engine.Nodes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,17 +19,15 @@ namespace Courier.Game
         private readonly Camera2D camera;
 
         private float rotateSpeed = 1.5f;
-        // TODO apply rotation limits.
-        private int maxRotation = 90;
-        private int minRotation = -90;
 
         private Vector2 gravityDirection = Vector2.UnitY;
 
+        private float terminalVelocity = 12f;
         private float thrustPower = 100f;
         private float gravityPower = 5f;
         private float liftPower = 0.1f;
-        private float inducedDragPower = 0.04f;
-        private float dragPower = 0.1f;
+        private float inducedDragPower = 0.1f;
+        private float dragPower = 0.3f;
 
         public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
         {
@@ -86,6 +87,12 @@ namespace Courier.Game
 
             // Apply Drag.
             Velocity += lift * deltaTime;
+
+            // Cap velocity to the terminal velocty value.
+            if (Velocity.Length() >= terminalVelocity)
+            {
+                Velocity = Vector2.Normalize(Velocity) * terminalVelocity;
+            }
 
             // Update the sprites rotation to match the angle of attack.
             sprite.Rotation = angleOfAttack;

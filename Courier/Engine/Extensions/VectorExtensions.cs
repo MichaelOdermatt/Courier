@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine
+namespace Courier.Engine.Extensions
 {
     public static class VectorExtensions
     {
@@ -21,7 +21,7 @@ namespace Courier.Engine
 
             float dotProduct = Vector2.Dot(a, b);
             float bMagnitudeSquared = Vector2.Dot(b, b);
-            return (dotProduct / bMagnitudeSquared) * b;
+            return dotProduct / bMagnitudeSquared * b;
         }
 
         /// <summary>

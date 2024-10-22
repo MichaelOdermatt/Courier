@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine
+namespace Courier.Engine.Nodes
 {
     /// <summary>
     /// Base class for all spatial game objects.
