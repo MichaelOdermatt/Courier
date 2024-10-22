@@ -27,7 +27,7 @@ namespace Courier.Game
         private float gravityPower = 5f;
         private float liftPower = 0.1f;
         private float inducedDragPower = 0.1f;
-        private float dragPower = 0.3f;
+        private float dragPower =  0.09f;
 
         public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
         {
@@ -67,10 +67,11 @@ namespace Courier.Game
 
             var normalizedVelocity = Velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(Velocity);
             var angleOfAttack = CalcAngleOfAttack();
+            var normalizedAngleOfAttack = NormalizeAngleOfAttack(angleOfAttack);
 
             var gravity = gravityDirection * gravityPower;
-            var lift = CalcLift(angleOfAttack, normalizedVelocity);
-            var drag = CalcDrag(angleOfAttack, normalizedVelocity);
+            var lift = CalcLift(normalizedAngleOfAttack, normalizedVelocity);
+            var drag = CalcDrag(normalizedAngleOfAttack, normalizedVelocity);
 
             // Apply thrust if space is pressed.
             if (isSpacePressed)
@@ -86,7 +87,7 @@ namespace Courier.Game
             Velocity += lift * deltaTime;
 
             // Apply Drag.
-            Velocity += lift * deltaTime;
+            Velocity += drag * deltaTime;
 
             // Cap velocity to the terminal velocty value.
             if (Velocity.Length() >= terminalVelocity)
@@ -94,6 +95,7 @@ namespace Courier.Game
                 Velocity = Vector2.Normalize(Velocity) * terminalVelocity;
             }
 
+            // TODO lerp the rotation, so it looks smoother? Or would that make it look strange
             // Update the sprites rotation to match the angle of attack.
             sprite.Rotation = angleOfAttack;
         }
@@ -104,6 +106,24 @@ namespace Courier.Game
         private float CalcAngleOfAttack()
         {
             return MathF.Atan2(Velocity.Y, Velocity.X);
+        }
+
+        /// <summary>
+        /// Returns the angle of attack normalized so that it's always a value between 1/2 PI and -1/2 PI. This is useful 
+        /// when calculating drag and lift, as it allows us to get the same value reguardless of whether the plane is traveling to the left or right.
+        /// </summary>
+        /// <param name="angle">The angle of attack value to normalize.</param>
+        private float NormalizeAngleOfAttack(float angle)
+        {
+            if (angle <= -MathF.PI * 0.5f)
+            {
+                angle += MathF.PI;
+            }
+            if (angle >= MathF.PI * 0.5f)
+            {
+                angle -= MathF.PI;
+            }
+            return angle;
         }
 
         /// <summary>
@@ -134,7 +154,7 @@ namespace Courier.Game
         /// <param name="normalizedVelocity">The Players normalized velocity.</param>
         private Vector2 CalcDrag(float angleOfAttack, Vector2 normalizedVelocity)
         {
-            var dragCoefficient = CalcLiftCoefficient(angleOfAttack);
+            var dragCoefficient = CalcDragCoefficient(angleOfAttack);
             var dragDirection = -normalizedVelocity;
             return dragDirection * (Velocity.Length() * dragCoefficient * dragPower);
         }
