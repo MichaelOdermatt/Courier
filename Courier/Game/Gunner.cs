@@ -16,6 +16,7 @@ namespace Courier.Game
         private readonly Sprite sprite;
 
         private readonly GameTimer shootTimer;
+        private readonly float timeBetweenBullets = 0.75f;
 
         private Action CreateBulletAction;
 
@@ -27,7 +28,8 @@ namespace Courier.Game
             sprite = new Sprite(this, "Gunner");
             Children.Add(sprite);
 
-            shootTimer = new GameTimer(5f, CreateBulletAction);
+            // Create the shoot timer.
+            shootTimer = new GameTimer(timeBetweenBullets, CreateBulletAction);
             shootTimer.Loop = true;
             shootTimer.Start();
         }
@@ -36,9 +38,8 @@ namespace Courier.Game
         {
             base.Update(gameTime);
 
-            var vectorToPlayer = GlobalPosition - playerNode.GlobalPosition;
-
             // Rotate the sprite to face the Player.
+            var vectorToPlayer = GlobalPosition - playerNode.GlobalPosition;
             var angleToPlayer = MathF.Atan2(vectorToPlayer.Y, vectorToPlayer.X);
             sprite.Rotation = angleToPlayer;
 
@@ -46,6 +47,9 @@ namespace Courier.Game
             shootTimer.Tick(gameTime);
         }
 
+        /// <summary>
+        /// Creates a Bullet and fires it in the direction of the player.
+        /// </summary>
         public void CreateBullet()
         {
             var vectorToPlayer = playerNode.GlobalPosition - GlobalPosition;

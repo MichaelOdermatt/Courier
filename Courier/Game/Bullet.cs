@@ -13,14 +13,17 @@ namespace Courier.Game
         private readonly Sprite sprite;
         private readonly Vector2 bulletDirection;
 
-        private readonly float speed = 500f;
+        private readonly float speed = 200f;
 
-        public Bullet(Node parent, Vector2 position, Vector2 direction) : base(parent)
+        /// <param name="parent">The Bullet object's parent Node.</param>
+        /// <param name="initialPosition">The initial position of the Bullet.</param>
+        /// <param name="direction">The direction the Bullet should fly.</param>
+        public Bullet(Node parent, Vector2 initialPosition, Vector2 direction) : base(parent)
         {
             sprite = new Sprite(this, "BulletSmall");
             Children.Add(sprite);
 
-            this.LocalPosition = position;
+            this.LocalPosition = initialPosition;
             this.bulletDirection = direction;
         }
 
