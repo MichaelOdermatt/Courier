@@ -5,7 +5,9 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Courier.Game
@@ -39,12 +41,34 @@ namespace Courier.Game
 
         public Level1(Camera2D camera) : base(camera)
         {
+            player = new Player(null, new CollisionSphere(25), camera);
+
             root = new Node(null);
             var ground = new Ground(root, groundPoints);
+            var gunners = CreateGunners(player);
 
             root.Children.Add(ground);
+            root.Children.AddRange(gunners);
+        }
 
-            player = new Player(null, new CollisionSphere(25), camera);
+        /// <summary>
+        /// Creates and returns all the gunners to be used in the level.
+        /// </summary>
+        public List<Gunner> CreateGunners(Node playerNode)
+        {
+            return new List<Gunner>
+            {
+                // Gunner 1
+                new Gunner(root, playerNode)
+                {
+                    LocalPosition = groundPoints[4],
+                },
+                // Gunner 2
+                new Gunner(root, playerNode)
+                {
+                    LocalPosition = groundPoints[8],
+                },
+            };
         }
     }
 }

@@ -52,6 +52,9 @@ namespace Courier.Game
             // TODO implementation
         }
 
+        /// <summary>
+        /// Updates the Players Velocity property.
+        /// </summary>
         private void UpdateVelocity(GameTime gameTime)
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;

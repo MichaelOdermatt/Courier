@@ -31,6 +31,10 @@ namespace Courier.Engine
         public void LoadTextures()
         {
             Textures.Add("Player", contentManager.Load<Texture2D>($"{spritesDirectory}Player"));
+            Textures.Add("Gunner", contentManager.Load<Texture2D>($"{spritesDirectory}Gunner"));
+
+            Textures.Add("BulletSmall", contentManager.Load<Texture2D>($"{spritesDirectory}BulletSmall"));
+
             Textures.Add("LineTexture", contentManager.Load<Texture2D>($"{spritesDirectory}LineTexture"));
         }
     }
