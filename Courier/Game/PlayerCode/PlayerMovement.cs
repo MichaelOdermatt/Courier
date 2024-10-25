@@ -1,23 +1,16 @@
-﻿using Courier.Engine;
-using Courier.Engine.Collisions;
-using Courier.Engine.Extensions;
-using Courier.Engine.Nodes;
+﻿using Courier.Engine.Extensions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Game
+namespace Courier.Game.PlayerCode
 {
-    public class Player : PlayerController
+    public class PlayerMovement
     {
-        private readonly Sprite sprite;
-        private readonly Camera2D camera;
-
         private float rotateSpeed = 1.5f;
 
         private Vector2 gravityDirection = Vector2.UnitY;
@@ -27,35 +20,15 @@ namespace Courier.Game
         private float gravityPower = 5f;
         private float liftPower = 0.1f;
         private float inducedDragPower = 0.1f;
-        private float dragPower =  0.09f;
-
-        public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
-        {
-            sprite = new Sprite(this, "Player");
-            Children.Add(sprite);
-            this.camera = camera;
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-
-            UpdateVelocity(gameTime);
-            ApplyVelocity();
-
-            // Update the camera position to always follow the Player.
-            camera.SetPosition(GlobalPosition);
-        }
-
-        public override void OnCollision(ICollisionNode collisionNode)
-        {
-            // TODO implementation
-        }
+        private float dragPower = 0.09f;
 
         /// <summary>
-        /// Updates the Players Velocity property.
+        /// Calculate and return the new velocity value for the Update.
         /// </summary>
-        private void UpdateVelocity(GameTime gameTime)
+        /// <param name="gameTime">The gameTime object.</param>
+        /// <param name="velocity">The players old velocity.</param>
+        /// <returns></returns>
+        public Vector2 CalcNewVelocity(GameTime gameTime, Vector2 velocity)
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             var keyState = Keyboard.GetState();
@@ -66,10 +39,10 @@ namespace Courier.Game
             var steeringDirection = GetPlayerSteeringDirection(keyState);
             var steeringAmount = steeringDirection * rotateSpeed * deltaTime;
 
-            Velocity = Velocity.Rotate(steeringAmount);
+            velocity = velocity.Rotate(steeringAmount);
 
-            var normalizedVelocity = Velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(Velocity);
-            var angleOfAttack = CalcAngleOfAttack();
+            var normalizedVelocity = velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(velocity);
+            var angleOfAttack = CalcAngleOfAttack(velocity);
             var normalizedAngleOfAttack = NormalizeAngleOfAttack(angleOfAttack);
 
             var gravity = gravityDirection * gravityPower;
@@ -80,35 +53,33 @@ namespace Courier.Game
             if (isSpacePressed)
             {
                 var thrust = normalizedVelocity * (thrustPower * deltaTime);
-                Velocity += thrust * deltaTime;
+                velocity += thrust * deltaTime;
             }
 
             // Apply gravity.
-            Velocity += gravity * deltaTime;
+            velocity += gravity * deltaTime;
 
             // Apply lift.
-            Velocity += lift * deltaTime;
+            velocity += lift * deltaTime;
 
             // Apply Drag.
-            Velocity += drag * deltaTime;
+            velocity += drag * deltaTime;
 
             // Cap velocity to the terminal velocty value.
-            if (Velocity.Length() >= terminalVelocity)
+            if (velocity.Length() >= terminalVelocity)
             {
-                Velocity = Vector2.Normalize(Velocity) * terminalVelocity;
+                velocity = Vector2.Normalize(velocity) * terminalVelocity;
             }
 
-            // TODO lerp the rotation, so it looks smoother? Or would that make it look strange
-            // Update the sprites rotation to match the angle of attack.
-            sprite.Rotation = angleOfAttack;
+            return velocity;
         }
 
         /// <summary>
         /// Calculate and return the Players angle of attack.
         /// </summary>
-        private float CalcAngleOfAttack()
+        public float CalcAngleOfAttack(Vector2 velocity)
         {
-            return MathF.Atan2(Velocity.Y, Velocity.X);
+            return MathF.Atan2(velocity.Y, velocity.X);
         }
 
         /// <summary>
@@ -133,14 +104,15 @@ namespace Courier.Game
         /// Calculate and return the lift force and direction as a Vector2.
         /// </summary>
         /// <param name="angleOfAttack">The Players angle of attack.</param>
-        /// <param name="normalizedVelocity">The Players normalized velocity.</param>
-        private Vector2 CalcLift(float angleOfAttack, Vector2 normalizedVelocity)
+        /// <param name="velocity">The Players velocity.</param>
+        private Vector2 CalcLift(float angleOfAttack, Vector2 velocity)
         {
+            var normalizedVelocity = velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(velocity);
             var liftCoefficient = CalcLiftCoefficient(angleOfAttack);
 
             // Calculate lift.
             var liftDirection = new Vector2(normalizedVelocity.Y, normalizedVelocity.X);
-            var liftVelocity = Velocity.Project(Vector2.UnitX);
+            var liftVelocity = velocity.Project(Vector2.UnitX);
             var liftForce = liftDirection * (liftVelocity.Length() * liftPower * liftCoefficient);
 
             // Calculate induced drag.
@@ -154,12 +126,13 @@ namespace Courier.Game
         /// Calculate and return the drag force and direction as a Vector2.
         /// </summary>
         /// <param name="angleOfAttack">The Players angle of attack.</param>
-        /// <param name="normalizedVelocity">The Players normalized velocity.</param>
-        private Vector2 CalcDrag(float angleOfAttack, Vector2 normalizedVelocity)
+        /// <param name="velocity">The Players velocity.</param>
+        private Vector2 CalcDrag(float angleOfAttack, Vector2 velocity)
         {
+            var normalizedVelocity = velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(velocity);
             var dragCoefficient = CalcDragCoefficient(angleOfAttack);
             var dragDirection = -normalizedVelocity;
-            return dragDirection * (Velocity.Length() * dragCoefficient * dragPower);
+            return dragDirection * (velocity.Length() * dragCoefficient * dragPower);
         }
 
         /// <summary>

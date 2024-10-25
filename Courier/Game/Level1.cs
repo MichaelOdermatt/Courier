@@ -1,6 +1,7 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
+using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,8 @@ namespace Courier.Game
 
         public Level1(Camera2D camera) : base(camera)
         {
-            player = new Player(null, new CollisionSphere(25), camera);
+            Player player = new Player(null, new CollisionSphere(25), camera);
+            this.player = player;
 
             root = new Node(null);
             var ground = new Ground(root, groundPoints);
@@ -54,17 +56,17 @@ namespace Courier.Game
         /// <summary>
         /// Creates and returns all the gunners to be used in the level.
         /// </summary>
-        public List<Gunner> CreateGunners(Node playerNode)
+        public List<Gunner> CreateGunners(Player player)
         {
             return new List<Gunner>
             {
                 // Gunner 1
-                new Gunner(root, playerNode)
+                new Gunner(root, player)
                 {
                     LocalPosition = groundPoints[4],
                 },
                 // Gunner 2
-                new Gunner(root, playerNode)
+                new Gunner(root, player)
                 {
                     LocalPosition = groundPoints[8],
                 },

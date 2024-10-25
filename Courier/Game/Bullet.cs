@@ -13,7 +13,7 @@ namespace Courier.Game
         private readonly Sprite sprite;
         private readonly Vector2 bulletDirection;
 
-        private readonly float speed = 200f;
+        private readonly float speed = 250f;
 
         /// <param name="parent">The Bullet object's parent Node.</param>
         /// <param name="initialPosition">The initial position of the Bullet.</param>

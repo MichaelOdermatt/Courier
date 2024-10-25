@@ -1,5 +1,6 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Nodes;
+using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,19 @@ namespace Courier.Game
 {
     public class Gunner : Node
     {
-        private readonly Node playerNode;
+        private readonly Player player;
         private readonly Sprite sprite;
 
         private readonly GameTimer shootTimer;
         private readonly float timeBetweenBullets = 0.75f;
+        private readonly float shootRange = 500f;
 
         private Action CreateBulletAction;
 
-        public Gunner(Node parent, Node playerNode) : base(parent)
+        public Gunner(Node parent, Player player) : base(parent)
         {
-            this.playerNode = playerNode;
-            CreateBulletAction = CreateBullet;
+            this.player = player;
+            CreateBulletAction = TryCreateBullet;
 
             sprite = new Sprite(this, "Gunner");
             Children.Add(sprite);
@@ -39,7 +41,7 @@ namespace Courier.Game
             base.Update(gameTime);
 
             // Rotate the sprite to face the Player.
-            var vectorToPlayer = GlobalPosition - playerNode.GlobalPosition;
+            var vectorToPlayer = GlobalPosition - player.EnemyTargetGlobalPosition;
             var angleToPlayer = MathF.Atan2(vectorToPlayer.Y, vectorToPlayer.X);
             sprite.Rotation = angleToPlayer;
 
@@ -48,11 +50,17 @@ namespace Courier.Game
         }
 
         /// <summary>
-        /// Creates a Bullet and fires it in the direction of the player.
+        /// Attempts to create a Bullet and fires it in the direction of the player.
         /// </summary>
-        public void CreateBullet()
+        public void TryCreateBullet()
         {
-            var vectorToPlayer = playerNode.GlobalPosition - GlobalPosition;
+            var vectorToPlayer = player.EnemyTargetGlobalPosition - GlobalPosition;
+            // Don't shoot if the player is out of range.
+            if (vectorToPlayer.Length() > shootRange)
+            {
+                return;
+            }
+
             vectorToPlayer.Normalize();
 
             var bullet = new Bullet(this, GlobalPosition, vectorToPlayer);
