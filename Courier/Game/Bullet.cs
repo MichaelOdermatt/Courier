@@ -11,24 +11,55 @@ namespace Courier.Game
     public class Bullet : Node
     {
         private readonly Sprite sprite;
-        private readonly Vector2 bulletDirection;
+        private Vector2 bulletDirection;
 
         private readonly float speed = 250f;
 
-        /// <param name="parent">The Bullet object's parent Node.</param>
-        /// <param name="initialPosition">The initial position of the Bullet.</param>
-        /// <param name="direction">The direction the Bullet should fly.</param>
-        public Bullet(Node parent, Vector2 initialPosition, Vector2 direction) : base(parent)
+        /// <summary>
+        /// Boolean representing if the Bullet is active. i.e. is visible, moving, and able to collide with the player.
+        /// </summary>
+        public bool IsActive { get; set; } = false;
+
+        public Bullet(Node parent) : base(parent)
         {
             sprite = new Sprite(this, "BulletSmall");
             Children.Add(sprite);
 
-            this.LocalPosition = initialPosition;
-            this.bulletDirection = direction;
+            // The bullet starts as inactive, so hide the sprite.
+            sprite.Visible = false;
+        }
+
+        /// <summary>
+        /// Sets the bullet and visible, moving, and able to collide with the player.
+        /// </summary>
+        /// <param name="initialPosition">The initial position of the Bullet.</param>
+        /// <param name="direction">The direction the Bullet should fly.</param>
+        public void Activate(Vector2 initialPosition, Vector2 direction)
+        {
+            LocalPosition = initialPosition;
+            bulletDirection = direction;
+            IsActive = true;
+            sprite.Visible = true;
+        }
+
+        /// <summary>
+        /// Hides the bullet and stops it from moving or colliding with the player.
+        /// </summary>
+        public void Deactivate()
+        {
+            IsActive = false;
+            sprite.Visible = false;
         }
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
+            if (!IsActive)
+            {
+                return;
+            }
+
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             var velocity = bulletDirection * (speed * deltaTime);
 

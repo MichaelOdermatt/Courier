@@ -26,6 +26,11 @@ namespace Courier.Engine.Nodes
 
         public float Rotation { get; set; } = 0.0f;
 
+        /// <summary>
+        /// Boolean representing if the Sprite will be rendered or not.
+        /// </summary>
+        public bool Visible { get; set; } = true;
+
         public Sprite(Node parent, string textureKey, float layerDepth = 0.0f) : base(parent)
         {
             this.textureKey = textureKey;
@@ -40,8 +45,8 @@ namespace Courier.Engine.Nodes
             // Draw all child Nodes
             base.Draw(spriteBatch, assetManager, camera);
 
-            // If the sprite is not in the camera's view, don't draw it.
-            if (!camera.IsPointInCameraView(GlobalPosition))
+            // If the sprite is not in the camera's view, or the Sprite's Visible property is false, don't draw it.
+            if (!camera.IsPointInCameraView(GlobalPosition) || !Visible)
             {
                 return;
             }

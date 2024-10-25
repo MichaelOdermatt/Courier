@@ -16,15 +16,17 @@ namespace Courier.Game
         private readonly Player player;
         private readonly Sprite sprite;
 
+        private readonly BulletPool bulletPool;
         private readonly GameTimer shootTimer;
         private readonly float timeBetweenBullets = 0.75f;
         private readonly float shootRange = 500f;
 
         private Action CreateBulletAction;
 
-        public Gunner(Node parent, Player player) : base(parent)
+        public Gunner(Node parent, Player player, BulletPool bulletPool) : base(parent)
         {
             this.player = player;
+            this.bulletPool = bulletPool;
             CreateBulletAction = TryCreateBullet;
 
             sprite = new Sprite(this, "Gunner");
@@ -62,9 +64,7 @@ namespace Courier.Game
             }
 
             vectorToPlayer.Normalize();
-
-            var bullet = new Bullet(this, GlobalPosition, vectorToPlayer);
-            Children.Add(bullet);
+            bulletPool.ActivateBullet(GlobalPosition, vectorToPlayer);
         }
     }
 }

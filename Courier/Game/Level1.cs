@@ -46,27 +46,30 @@ namespace Courier.Game
             this.player = player;
 
             root = new Node(null);
+
             var ground = new Ground(root, groundPoints);
-            var gunners = CreateGunners(player);
+            var bulletPool = new BulletPool(root, 15);
+            var gunners = CreateGunners(player, bulletPool);
 
             root.Children.Add(ground);
+            root.Children.Add(bulletPool);
             root.Children.AddRange(gunners);
         }
 
         /// <summary>
         /// Creates and returns all the gunners to be used in the level.
         /// </summary>
-        public List<Gunner> CreateGunners(Player player)
+        public List<Gunner> CreateGunners(Player player, BulletPool bulletPool)
         {
             return new List<Gunner>
             {
                 // Gunner 1
-                new Gunner(root, player)
+                new Gunner(root, player, bulletPool)
                 {
                     LocalPosition = groundPoints[4],
                 },
                 // Gunner 2
-                new Gunner(root, player)
+                new Gunner(root, player, bulletPool)
                 {
                     LocalPosition = groundPoints[8],
                 },
