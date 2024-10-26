@@ -20,6 +20,7 @@ namespace Courier.Game
         private readonly GameTimer shootTimer;
         private readonly float timeBetweenBullets = 0.75f;
         private readonly float shootRange = 500f;
+        private readonly float enemyTargetThresholdAngle = 1.57f;
 
         private Action CreateBulletAction;
 
@@ -42,11 +43,6 @@ namespace Courier.Game
         {
             base.Update(gameTime);
 
-            // Rotate the sprite to face the Player.
-            var vectorToPlayer = GlobalPosition - player.EnemyTargetGlobalPosition;
-            var angleToPlayer = MathF.Atan2(vectorToPlayer.Y, vectorToPlayer.X);
-            sprite.Rotation = angleToPlayer;
-
             // Tick the shootTimer.
             shootTimer.Tick(gameTime);
         }
@@ -56,15 +52,37 @@ namespace Courier.Game
         /// </summary>
         public void TryCreateBullet()
         {
-            var vectorToPlayer = player.EnemyTargetGlobalPosition - GlobalPosition;
+            var vectorToPlayer = player.GlobalPosition - GlobalPosition;
             // Don't shoot if the player is out of range.
             if (vectorToPlayer.Length() > shootRange)
             {
                 return;
             }
 
-            vectorToPlayer.Normalize();
-            bulletPool.ActivateBullet(GlobalPosition, vectorToPlayer);
+            var pointToShootAt = PointToShootAt();
+
+            // Rotate the sprite to face the Player. The sprite rotation will be updated in the next Draw call.
+            var angleToPoint = MathF.Atan2(-pointToShootAt.Y, -pointToShootAt.X);
+            sprite.Rotation = angleToPoint;
+
+            pointToShootAt.Normalize();
+            bulletPool.ActivateBullet(GlobalPosition, pointToShootAt);
+        }
+
+        /// <summary>
+        /// Returns the point that the Gunner should shoot at. It is either the Player itself or the Player's EnemyTarget
+        /// </summary>
+        private Vector2 PointToShootAt()
+        {
+            var vectorToPlayer = player.GlobalPosition - GlobalPosition;
+            var vectorToEnemyTarget = player.EnemyTargetGlobalPosition - GlobalPosition;
+
+            var dotProduct = Vector2.Dot(vectorToPlayer, vectorToEnemyTarget);
+            var angle = MathF.Acos(dotProduct / (vectorToPlayer.Length() * vectorToEnemyTarget.Length()));
+
+            // We calculate the angle between the Player and the Player's EnemyTarget relative to the Gunner. If the angle is sufficiently large
+            // it means the EnemyTarget and Player are on either side of the Gunner, so point at the Player.
+            return angle >= enemyTargetThresholdAngle ? vectorToPlayer : vectorToEnemyTarget;
         }
     }
 }
