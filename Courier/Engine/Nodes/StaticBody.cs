@@ -10,6 +10,7 @@ namespace Courier.Engine.Nodes
     public class StaticBody : Node, ICollisionNode
     {
         public ICollisionShape CollisionShape { get; set; }
+        public bool CollisionsEnabled { get; set; } = true;
 
         public StaticBody(Node parent, ICollisionShape collisionShape) : base(parent)
         {

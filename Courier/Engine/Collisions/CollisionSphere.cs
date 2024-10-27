@@ -12,7 +12,7 @@ namespace Courier.Engine.Collisions
     {
         private float radius;
         public Node Parent { get; set; }
-        private Vector2 Position { get => Parent.GlobalPosition; }
+        private Vector2 GlobalPosition { get => Parent.GlobalPosition; }
         /// <summary>
         /// A Comparer object for Vector2 that is used with binary search to detect which Vector2 points the player is closest to.
         /// </summary>
@@ -30,7 +30,7 @@ namespace Courier.Engine.Collisions
             {
                 // Find the line segment below the player.
 
-                var index = Array.BinarySearch(collisionSB.Points, Position, Vector2Comparer);
+                var index = Array.BinarySearch(collisionSB.Points, GlobalPosition, Vector2Comparer);
 
                 var rightIndex = (index * -1) - 1;
                 var leftIndex = rightIndex - 1;
@@ -45,7 +45,7 @@ namespace Courier.Engine.Collisions
                 Vector2 rightPoint = collisionSB.Points[rightIndex];
 
                 Vector2 lineSegmentVector = rightPoint - leftPoint;
-                Vector2 startPosToSphereCenter = Position - leftPoint;
+                Vector2 startPosToSphereCenter = GlobalPosition - leftPoint;
 
                 // Check if the sphere and line intersect
 
@@ -56,10 +56,15 @@ namespace Courier.Engine.Collisions
 
                 Vector2 closestPoint = leftPoint + closestPointAsFloat * lineSegmentVector;
 
-                float distanceTo = (closestPoint - Position).LengthSquared();
+                float distanceTo = (closestPoint - GlobalPosition).LengthSquared();
 
                 // True if the distance between the closest point on the line to the sphere is less than the radius, or if the sphere's origin is below the closest point.
-                return closestPoint.Y <= Position.Y || distanceTo <= radius * radius;
+                return closestPoint.Y <= GlobalPosition.Y || distanceTo <= radius * radius;
+
+            } else if (collisionShape is CollisionSphere collisionSphere)
+            {
+                var distanceTo = (collisionSphere.GlobalPosition - GlobalPosition).Length();
+                return distanceTo <= radius + collisionSphere.radius;
             }
 
             throw new NotImplementedException();

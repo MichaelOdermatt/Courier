@@ -64,9 +64,9 @@ namespace Courier.Engine
             player.Update(gameTime);
 
             var allNodes = root.GetSelfAndAllChildren();
-            var collissionNodes = allNodes.OfType<ICollisionNode>();
+            var enabledCollisionNodes = allNodes.OfType<ICollisionNode>().Where(c => c.CollisionsEnabled);
 
-            CheckPlayerCollisions(player, collissionNodes);
+            CheckPlayerCollisions(player, enabledCollisionNodes);
         }
 
         /// <summary>
