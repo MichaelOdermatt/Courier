@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Courier.Game
 {
-    public class Ground : Node
+    public class Ground : Node, ICollisionNode
     {
         private Vector2[] points;
 
@@ -20,13 +20,13 @@ namespace Courier.Game
         private float lineThickness = 5.0f;
         private LineSegment[] lineSegments;
 
-        private StaticBody staticBody;
+        public ICollisionShape CollisionShape { get; set; }
+        public bool CollisionsEnabled { get; set; } = true;
 
         public Ground(Node parent, Vector2[] points): base(parent)
         {
             this.points = points;
-            staticBody = new StaticBody(this, new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down));
-            Children.Add(staticBody);
+            CollisionShape = new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down);
         }
 
         public override void Initialize()

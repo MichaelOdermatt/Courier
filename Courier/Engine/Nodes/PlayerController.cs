@@ -19,13 +19,11 @@ namespace Courier.Engine.Nodes
         /// </summary>
         public Vector2 Velocity { get; set; }
 
-        public ICollisionShape CollisionShape { get; set; }
+        public ICollisionShape CollisionShape { get; protected set; }
         public bool CollisionsEnabled { get; set; } = true;
 
-        public PlayerController(Node parent, ICollisionShape collisionShape) : base(parent)
+        public PlayerController(Node parent) : base(parent)
         {
-            CollisionShape = collisionShape;
-            CollisionShape.Parent = this;
         }
 
         /// <summary>

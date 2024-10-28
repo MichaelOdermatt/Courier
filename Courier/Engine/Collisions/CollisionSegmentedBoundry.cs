@@ -13,8 +13,6 @@ namespace Courier.Engine.Collisions
     /// </summary>
     public class CollisionSegmentedBoundry : ICollisionShape
     {
-        public Node Parent { get; set; }
-
         /// <summary>
         /// The points that make up the segmented line.
         /// </summary>
@@ -24,6 +22,11 @@ namespace Courier.Engine.Collisions
         /// The direction in which the collision shape should bound off.
         /// </summary>
         public readonly SegmentedBoundryDirection Direction;
+
+        /// <summary>
+        /// A Comparer object for Vector2 that is used with binary search to detect which Vector2 points the player is closest to.
+        /// </summary>
+        public static Comparer<Vector2> Vector2Comparer { get; } = Comparer<Vector2>.Create((a, b) => a.X > b.X ? 1 : a.X < b.X ? -1 : 1);
 
         public CollisionSegmentedBoundry(Vector2[] points, SegmentedBoundryDirection direction)
         {

@@ -11,16 +11,16 @@ namespace Courier.Engine.Collisions
     public class CollisionSphere : ICollisionShape
     {
         private float radius;
-        public Node Parent { get; set; }
-        private Vector2 GlobalPosition { get => Parent.GlobalPosition; }
         /// <summary>
-        /// A Comparer object for Vector2 that is used with binary search to detect which Vector2 points the player is closest to.
+        /// The Node which the CollisionSphere is attached to.
         /// </summary>
-        private readonly Comparer<Vector2> Vector2Comparer = Comparer<Vector2>.Create((a, b) => a.X > b.X ? 1 : a.X < b.X ? -1 : 1);
+        private readonly Node instantiatingNode;
+        private Vector2 GlobalPosition { get => instantiatingNode.GlobalPosition; }
 
-        public CollisionSphere(float radius)
+        public CollisionSphere(Node instantiatingNode, float radius)
         {
             this.radius = radius;
+            this.instantiatingNode = instantiatingNode;
         }
 
         /// <inheritdoc/>
@@ -28,46 +28,61 @@ namespace Courier.Engine.Collisions
         {
             if (collisionShape is CollisionSegmentedBoundry collisionSB && collisionSB.Direction == SegmentedBoundryDirection.Down)
             {
-                // Find the line segment below the player.
-
-                var index = Array.BinarySearch(collisionSB.Points, GlobalPosition, Vector2Comparer);
-
-                var rightIndex = (index * -1) - 1;
-                var leftIndex = rightIndex - 1;
-
-                // If the left and right index are out of the range of they array, the player is not above any line segment.
-                if (rightIndex > collisionSB.Points.Length - 1 || leftIndex < 0)
-                {
-                    return false;
-                }
-
-                Vector2 leftPoint = collisionSB.Points[leftIndex];
-                Vector2 rightPoint = collisionSB.Points[rightIndex];
-
-                Vector2 lineSegmentVector = rightPoint - leftPoint;
-                Vector2 startPosToSphereCenter = GlobalPosition - leftPoint;
-
-                // Check if the sphere and line intersect
-
-                // Find the closest point to the sphere center along the lineSegmentVector.
-                float closestPointAsFloat = Vector2.Dot(startPosToSphereCenter, lineSegmentVector) / lineSegmentVector.LengthSquared();
-
-                closestPointAsFloat = Math.Clamp(closestPointAsFloat, 0 , 1);
-
-                Vector2 closestPoint = leftPoint + closestPointAsFloat * lineSegmentVector;
-
-                float distanceTo = (closestPoint - GlobalPosition).LengthSquared();
-
-                // True if the distance between the closest point on the line to the sphere is less than the radius, or if the sphere's origin is below the closest point.
-                return closestPoint.Y <= GlobalPosition.Y || distanceTo <= radius * radius;
-
+                return IntersectsWithCollisionSegmentedBoundry(collisionSB);
             } else if (collisionShape is CollisionSphere collisionSphere)
             {
-                var distanceTo = (collisionSphere.GlobalPosition - GlobalPosition).Length();
-                return distanceTo <= radius + collisionSphere.radius;
+                return IntersectsWithCollisionSphere(collisionSphere);
             }
 
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns true if this CollisionSphere intersects with the given CollisionSegmentedBoundry. Otherwise false.
+        /// </summary>
+        private bool IntersectsWithCollisionSegmentedBoundry(CollisionSegmentedBoundry collisionSB)
+        {
+            // Find the line segment below the player.
+
+            var index = Array.BinarySearch(collisionSB.Points, GlobalPosition, CollisionSegmentedBoundry.Vector2Comparer);
+
+            var rightIndex = (index * -1) - 1;
+            var leftIndex = rightIndex - 1;
+
+            // If the left and right index are out of the range of they array, the player is not above any line segment.
+            if (rightIndex > collisionSB.Points.Length - 1 || leftIndex < 0)
+            {
+                return false;
+            }
+
+            Vector2 leftPoint = collisionSB.Points[leftIndex];
+            Vector2 rightPoint = collisionSB.Points[rightIndex];
+
+            Vector2 lineSegmentVector = rightPoint - leftPoint;
+            Vector2 startPosToSphereCenter = GlobalPosition - leftPoint;
+
+            // Check if the sphere and line intersect
+
+            // Find the closest point to the sphere center along the lineSegmentVector.
+            float closestPointAsFloat = Vector2.Dot(startPosToSphereCenter, lineSegmentVector) / lineSegmentVector.LengthSquared();
+
+            closestPointAsFloat = Math.Clamp(closestPointAsFloat, 0 , 1);
+
+            Vector2 closestPoint = leftPoint + closestPointAsFloat * lineSegmentVector;
+
+            float distanceTo = (closestPoint - GlobalPosition).LengthSquared();
+
+            // True if the distance between the closest point on the line to the sphere is less than the radius, or if the sphere's origin is below the closest point.
+            return closestPoint.Y <= GlobalPosition.Y || distanceTo <= radius * radius;
+        }
+
+        /// <summary>
+        /// Returns true if this CollisionSphere intersects with the given CollisionSphere. Otherwise false.
+        /// </summary>
+        private bool IntersectsWithCollisionSphere(CollisionSphere collisionSphere)
+        {
+            var distanceTo = (collisionSphere.GlobalPosition - GlobalPosition).Length();
+            return distanceTo <= radius + collisionSphere.radius;
         }
     }
 }

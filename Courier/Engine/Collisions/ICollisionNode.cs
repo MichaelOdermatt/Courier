@@ -11,11 +11,11 @@ namespace Courier.Engine.Collisions
     /// </summary>
     public interface ICollisionNode
     {
-        ICollisionShape CollisionShape { get; set; }
+        ICollisionShape CollisionShape { get; }
 
         /// <summary>
         /// Boolean value representing if collision checking should be performed on this CollisionNode.
         /// </summary>
-        bool CollisionsEnabled { get; set; }
+        bool CollisionsEnabled { get; }
     }
 }

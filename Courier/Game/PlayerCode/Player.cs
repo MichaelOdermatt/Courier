@@ -30,13 +30,15 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public Vector2 EnemyTargetGlobalPosition { get => enemyTarget.GlobalPosition; }
 
-        public Player(Node parent, ICollisionShape collisionShape, Camera2D camera) : base(parent, collisionShape)
+        public Player(Node parent, Camera2D camera) : base(parent)
         {
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
             enemyTarget = new Node(this);
             Children.Add(enemyTarget);
 
+            CollisionShape = new CollisionSphere(this, 25);
+            
             this.camera = camera;
         }
 

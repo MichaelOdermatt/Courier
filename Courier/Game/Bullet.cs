@@ -30,8 +30,7 @@ namespace Courier.Game
             sprite = new Sprite(this, "BulletSmall");
             Children.Add(sprite);
 
-            CollisionShape = new CollisionSphere(2f);
-            CollisionShape.Parent = this;
+            CollisionShape = new CollisionSphere(this, 2f);
 
             // The bullet starts as inactive, so hide the sprite.
             sprite.Visible = false;

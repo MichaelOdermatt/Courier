@@ -14,12 +14,7 @@ namespace Courier.Engine.Collisions
     public interface ICollisionShape
     {
         /// <summary>
-        /// The Node that the ICollisionShape belongs to. Since ICollisionShape classes do not actually need to inherit from Node, they are not actually children of their Parent Node.
-        /// </summary>
-        Node Parent { get; set; }
-
-        /// <summary>
-        /// Returns true if the given collisionShape intersects.
+        /// Returns true if the given collisionShape intersects with this one.
         /// </summary>
         /// <param name="collisionShape"></param>
         public bool Intersects(ICollisionShape collisionShape);

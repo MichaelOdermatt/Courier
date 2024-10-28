@@ -42,7 +42,7 @@ namespace Courier.Game
 
         public Level1(Camera2D camera) : base(camera)
         {
-            Player player = new Player(null, new CollisionSphere(25), camera);
+            Player player = new Player(null, camera);
             this.player = player;
 
             root = new Node(null);
