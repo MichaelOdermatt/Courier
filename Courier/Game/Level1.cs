@@ -2,6 +2,7 @@
 using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
 using Courier.Game.PlayerCode;
+using Courier.Game.UI;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -42,34 +43,56 @@ namespace Courier.Game
 
         public Level1(Camera2D camera) : base(camera)
         {
+            CreateGameplayNodes();
+            CreateUINodes();
+        }
+
+        /// <summary>
+        /// Creates all Nodes that are drawn in screen space and used for UI.
+        /// </summary>
+        private void CreateUINodes()
+        {
+            screenSpaceRoot = new Node(null);
+
+            var fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
+            fuelMeterElement.LocalPosition = new Vector2(100, 10);
+
+            screenSpaceRoot.Children.Add(fuelMeterElement);
+        }
+
+        /// <summary>
+        /// Creates all Nodes that are drawn in world space and used for gameplay.
+        /// </summary>
+        private void CreateGameplayNodes()
+        {
             Player player = new Player(null, camera);
             this.player = player;
 
-            root = new Node(null);
+            worldSpaceRoot = new Node(null);
 
-            var ground = new Ground(root, groundPoints);
-            var bulletPool = new BulletPool(root, 15);
+            var ground = new Ground(worldSpaceRoot, groundPoints);
+            var bulletPool = new BulletPool(worldSpaceRoot, 15);
             var gunners = CreateGunners(player, bulletPool);
 
-            root.Children.Add(ground);
-            root.Children.Add(bulletPool);
-            root.Children.AddRange(gunners);
+            worldSpaceRoot.Children.Add(ground);
+            worldSpaceRoot.Children.Add(bulletPool);
+            worldSpaceRoot.Children.AddRange(gunners);
         }
 
         /// <summary>
         /// Creates and returns all the gunners to be used in the level.
         /// </summary>
-        public List<Gunner> CreateGunners(Player player, BulletPool bulletPool)
+        private List<Gunner> CreateGunners(Player player, BulletPool bulletPool)
         {
             return new List<Gunner>
             {
                 // Gunner 1
-                new Gunner(root, player, bulletPool)
+                new Gunner(worldSpaceRoot, player, bulletPool)
                 {
                     LocalPosition = groundPoints[4],
                 },
                 // Gunner 2
-                new Gunner(root, player, bulletPool)
+                new Gunner(worldSpaceRoot, player, bulletPool)
                 {
                     LocalPosition = groundPoints[8],
                 },

@@ -31,6 +31,11 @@ namespace Courier.Engine.Nodes
         /// </summary>
         public bool Visible { get; set; } = true;
 
+        /// <summary>
+        /// If true, the sprite will not be drawn if it's position is outside the view of the camera.
+        /// </summary>
+        public bool CullIfNotInView { get; set; } = true;
+
         public Sprite(Node parent, string textureKey, float layerDepth = 0.0f) : base(parent)
         {
             this.textureKey = textureKey;
@@ -45,8 +50,8 @@ namespace Courier.Engine.Nodes
             // Draw all child Nodes
             base.Draw(spriteBatch, assetManager, camera);
 
-            // If the sprite is not in the camera's view, or the Sprite's Visible property is false, don't draw it.
-            if (!camera.IsPointInCameraView(GlobalPosition) || !Visible)
+            // If CullIfNotInView is enabled and the sprite is not in the camera's view, don't draw it. Or if the Sprite's Visible property is false, don't draw it.
+            if ((CullIfNotInView && !camera.IsPointInCameraView(GlobalPosition)) || !Visible)
             {
                 return;
             }

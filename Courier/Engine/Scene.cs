@@ -14,9 +14,14 @@ namespace Courier.Engine
     public class Scene
     {
         /// <summary>
-        /// The root Node for the scene.
+        /// The root Node for the scene's screen space nodes.
         /// </summary>
-        protected Node root;
+        protected Node screenSpaceRoot;
+
+        /// <summary>
+        /// The root Node for the scene's world space nodes.
+        /// </summary>
+        protected Node worldSpaceRoot;
 
         /// <summary>
         /// The player Node for the scene. Does not exist in the game tree (as a descendant of the root Node).
@@ -38,32 +43,37 @@ namespace Courier.Engine
         /// </summary>
         public void Initialize()
         {
-            root.Initialize();
+            screenSpaceRoot.Initialize();
+            worldSpaceRoot.Initialize();
             player.Initialize();
         }
 
         /// <summary>
         /// Calls Draw recursively on the root node until all it's children are rendered.
         /// </summary>
-        /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>
+        /// <param name="worldSpaceSpriteBatch">The SpriteBatch instance initialized in Game1, used for world space objects like the player, enemies... etc.</param>
+        /// <param name="screenSpaceSpriteBatch">The SpriteBatch instance initialized in Game1, used for screen space objects like the UI.</param>
         /// <param name="assetManager">The AssetManager instance initialized in Game1.</param>
-        public void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
+        public void Draw(SpriteBatch worldSpaceSpriteBatch, SpriteBatch screenSpaceSpriteBatch, AssetManager assetManager)
         {
             // Since root is the top level node, pass Vector2.Zero as its parent position.
-            root.Draw(spriteBatch, assetManager, camera);
-            player.Draw(spriteBatch, assetManager, camera);
+            screenSpaceRoot.Draw(screenSpaceSpriteBatch, assetManager, camera);
+            worldSpaceRoot.Draw(worldSpaceSpriteBatch, assetManager, camera);
+            player.Draw(worldSpaceSpriteBatch, assetManager, camera);
         }
 
         /// <summary>
-        /// Calls Update recursively on the root node until all it's children are rendered.
+        /// Calls Update recursively on the root node until all it's children are updated.
         /// </summary>
         /// <param name="gameTime">The GameTime object to be used in update calculations.</param>
         public void Update(GameTime gameTime)
         {
-            root.Update(gameTime);
+            screenSpaceRoot.Update(gameTime);
+            worldSpaceRoot.Update(gameTime);
             player.Update(gameTime);
 
-            var allNodes = root.GetSelfAndAllChildren();
+            // Only need to check collisions on world space Nodes.
+            var allNodes = worldSpaceRoot.GetSelfAndAllChildren();
             var enabledCollisionNodes = allNodes.OfType<ICollisionNode>().Where(c => c.CollisionsEnabled);
 
             CheckPlayerCollisions(player, enabledCollisionNodes);
