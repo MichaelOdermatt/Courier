@@ -16,6 +16,8 @@ namespace Courier.Game
 {
     public class Level1 : Scene
     {
+        private FuelMeterElement fuelMeterElement;
+
         /// <summary>
         /// The points to use for the level's Ground object.
         /// </summary>
@@ -43,8 +45,8 @@ namespace Courier.Game
 
         public Level1(Camera2D camera) : base(camera)
         {
-            CreateGameplayNodes();
             CreateUINodes();
+            CreateGameplayNodes();
         }
 
         /// <summary>
@@ -54,8 +56,8 @@ namespace Courier.Game
         {
             screenSpaceRoot = new Node(null);
 
-            var fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
-            fuelMeterElement.LocalPosition = new Vector2(100, 10);
+            fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
+            fuelMeterElement.LocalPosition = new Vector2(10, 10);
 
             screenSpaceRoot.Children.Add(fuelMeterElement);
         }
@@ -65,7 +67,7 @@ namespace Courier.Game
         /// </summary>
         private void CreateGameplayNodes()
         {
-            Player player = new Player(null, camera);
+            Player player = new Player(null, camera, fuelMeterElement);
             this.player = player;
 
             worldSpaceRoot = new Node(null);

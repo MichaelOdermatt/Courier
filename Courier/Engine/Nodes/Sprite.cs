@@ -24,7 +24,16 @@ namespace Courier.Engine.Nodes
         /// </summary>
         private readonly float layerDepth = 0.0f;
 
+        public Vector2 Offset { get; set; } = Vector2.Zero;
+
         public float Rotation { get; set; } = 0.0f;
+
+        public Vector2 Scale { get; set; } = Vector2.One;
+
+        /// <summary>
+        /// Nullable Vector2 for the Sprite's origin, if left as null the origin will be calculated during the draw call as the center of the sprite.
+        /// </summary>
+        public Vector2? Origin { get; set; } = null;
 
         /// <summary>
         /// Boolean representing if the Sprite will be rendered or not.
@@ -50,16 +59,18 @@ namespace Courier.Engine.Nodes
             // Draw all child Nodes
             base.Draw(spriteBatch, assetManager, camera);
 
+            var spritePos = GlobalPosition + Offset;
+
             // If CullIfNotInView is enabled and the sprite is not in the camera's view, don't draw it. Or if the Sprite's Visible property is false, don't draw it.
-            if ((CullIfNotInView && !camera.IsPointInCameraView(GlobalPosition)) || !Visible)
+            if ((CullIfNotInView && !camera.IsPointInCameraView(spritePos)) || !Visible)
             {
                 return;
             }
 
             var texture = assetManager.Textures[textureKey];
-            var origin = new Vector2(texture.Width / 2, texture.Height / 2);
+            var origin = Origin ?? new Vector2(texture.Width / 2, texture.Height / 2);
 
-            spriteBatch.Draw(texture, GlobalPosition, null, Color.White, Rotation, origin, Vector2.One, SpriteEffects.None, layerDepth);
+            spriteBatch.Draw(texture, spritePos, null, Color.White, Rotation, origin, Scale, SpriteEffects.None, layerDepth);
         }
     }
 }

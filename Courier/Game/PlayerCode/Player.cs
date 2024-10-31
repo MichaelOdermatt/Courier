@@ -2,6 +2,7 @@
 using Courier.Engine.Collisions;
 using Courier.Engine.Extensions;
 using Courier.Engine.Nodes;
+using Courier.Game.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -20,7 +21,9 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         private readonly Node enemyTarget;
         private readonly Camera2D camera;
+        private readonly FuelMeterElement fuelMeterElement;
         private readonly PlayerMovement playerMovement = new PlayerMovement();
+        private readonly PlayerHealth playerHealth = new PlayerHealth();
 
         private float maxEnemyTargetDistance = 500f;
         private float speedAtMaxEnemyTargetDistance = 12f;
@@ -30,16 +33,18 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public Vector2 EnemyTargetGlobalPosition { get => enemyTarget.GlobalPosition; }
 
-        public Player(Node parent, Camera2D camera) : base(parent)
+        public Player(Node parent, Camera2D camera, FuelMeterElement fuelMeterElement) : base(parent)
         {
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
+
             enemyTarget = new Node(this);
             Children.Add(enemyTarget);
 
             CollisionShape = new CollisionSphere(this, 25);
             
             this.camera = camera;
+            this.fuelMeterElement = fuelMeterElement;
         }
 
         public override void Update(GameTime gameTime)
@@ -47,6 +52,7 @@ namespace Courier.Game.PlayerCode
             base.Update(gameTime);
 
             Velocity = playerMovement.CalcNewVelocity(gameTime, Velocity);
+            fuelMeterElement.UpdateMeterFill(playerMovement.FuelAmountScaled);
             ApplyVelocity();
 
             // TODO lerp the rotation, so it looks smoother? Or would that make it look strange
@@ -62,7 +68,18 @@ namespace Courier.Game.PlayerCode
 
         public override void OnCollision(ICollisionNode collisionNode)
         {
-            // TODO implementation
+            if (collisionNode is Bullet bulletNode)
+            {
+                playerHealth.reduceHealth(1);
+            } else if (collisionNode is Ground groundNode)
+            {
+                playerHealth.reduceHealth(2);
+            }
+
+            if (playerHealth.IsDestroyed)
+            {
+                // TODO implementation
+            }
         }
 
         /// <summary>

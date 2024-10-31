@@ -22,6 +22,15 @@ namespace Courier.Game.PlayerCode
         private float inducedDragPower = 0.1f;
         private float dragPower = 0.09f;
 
+        private float maxFuelAmount = 100f;
+        private float fuelAmount = 100f;
+        private float fuelDepletionAmount = 0.5f;
+
+        /// <summary>
+        /// The fuel amount but scaled to a value between 0 and 1.
+        /// </summary>
+        public float FuelAmountScaled { get => fuelAmount / maxFuelAmount; }
+
         /// <summary>
         /// Calculate and return the new velocity value for the Update.
         /// </summary>
@@ -50,8 +59,9 @@ namespace Courier.Game.PlayerCode
             var drag = CalcDrag(normalizedAngleOfAttack, normalizedVelocity);
 
             // Apply thrust if space is pressed.
-            if (isSpacePressed)
+            if (isSpacePressed && fuelAmount > 0)
             {
+                fuelAmount -= fuelDepletionAmount;
                 var thrust = normalizedVelocity * (thrustPower * deltaTime);
                 velocity += thrust * deltaTime;
             }
