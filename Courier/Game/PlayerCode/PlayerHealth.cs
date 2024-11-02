@@ -14,9 +14,9 @@ namespace Courier.Game.PlayerCode
         public float Health { get; set; } = 2;
 
         /// <summary>
-        /// Boolean value representing if the player has been destroyed.
+        /// Boolean value representing if the player's health is zero or less.
         /// </summary>
-        public bool IsDestroyed { get =>  Health < 0; }
+        public bool HasZeroHealth { get =>  Health <= 0; }
 
         public void reduceHealth(float reductionAmount)
         {

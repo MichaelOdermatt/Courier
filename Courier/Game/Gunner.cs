@@ -18,9 +18,9 @@ namespace Courier.Game
 
         private readonly BulletPool bulletPool;
         private readonly GameTimer shootTimer;
-        private readonly float timeBetweenBullets = 0.75f;
-        private readonly float shootRange = 500f;
-        private readonly float enemyTargetThresholdAngle = 1.57f;
+        private const float TimeBetweenBullets = 0.75f;
+        private const float ShootRange = 500f;
+        private const float EnemyTargetThresholdAngle = 1.57f;
 
         private Action CreateBulletAction;
 
@@ -34,7 +34,7 @@ namespace Courier.Game
             Children.Add(sprite);
 
             // Create the shoot timer.
-            shootTimer = new GameTimer(timeBetweenBullets, CreateBulletAction);
+            shootTimer = new GameTimer(TimeBetweenBullets, CreateBulletAction);
             shootTimer.Loop = true;
             shootTimer.Start();
         }
@@ -54,7 +54,7 @@ namespace Courier.Game
         {
             var vectorToPlayer = player.GlobalPosition - GlobalPosition;
             // Don't shoot if the player is out of range.
-            if (vectorToPlayer.Length() > shootRange)
+            if (vectorToPlayer.Length() > ShootRange)
             {
                 return;
             }
@@ -82,7 +82,7 @@ namespace Courier.Game
 
             // We calculate the angle between the Player and the Player's EnemyTarget relative to the Gunner. If the angle is sufficiently large
             // it means the EnemyTarget and Player are on either side of the Gunner, so point at the Player.
-            return angle >= enemyTargetThresholdAngle ? vectorToPlayer : vectorToEnemyTarget;
+            return angle >= EnemyTargetThresholdAngle ? vectorToPlayer : vectorToEnemyTarget;
         }
     }
 }

@@ -25,8 +25,10 @@ namespace Courier.Game.PlayerCode
         private readonly PlayerMovement playerMovement = new PlayerMovement();
         private readonly PlayerHealth playerHealth = new PlayerHealth();
 
-        private float maxEnemyTargetDistance = 500f;
-        private float speedAtMaxEnemyTargetDistance = 12f;
+        private PlayerState playerState = PlayerState.Alive;
+
+        private const float MaxEnemyTargetDistance = 500f;
+        private const float SpeedAtMaxEnemyTargetDistance = 12f;
 
         /// <summary>
         /// The GlobalPosition of the EnemyTarget object.
@@ -51,6 +53,11 @@ namespace Courier.Game.PlayerCode
         {
             base.Update(gameTime);
 
+            if (playerState == PlayerState.Destroyed)
+            {
+                return; 
+            }
+
             Velocity = playerMovement.CalcNewVelocity(gameTime, Velocity);
             fuelMeterElement.UpdateMeterFill(playerMovement.FuelAmountScaled);
             ApplyVelocity();
@@ -71,14 +78,15 @@ namespace Courier.Game.PlayerCode
             if (collisionNode is Bullet bulletNode)
             {
                 playerHealth.reduceHealth(1);
+                bulletNode.Deactivate();
             } else if (collisionNode is Ground groundNode)
             {
                 playerHealth.reduceHealth(2);
             }
 
-            if (playerHealth.IsDestroyed)
+            if (playerHealth.HasZeroHealth)
             {
-                // TODO implementation
+                playerState = PlayerState.Destroyed;
             }
         }
 
@@ -87,9 +95,9 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         private void UpdateEnemyTargetPosition()
         {
-            var distanceFromPlayer = Velocity.Length() / speedAtMaxEnemyTargetDistance * maxEnemyTargetDistance;
+            var distanceFromPlayer = Velocity.Length() / SpeedAtMaxEnemyTargetDistance * MaxEnemyTargetDistance;
 
-            distanceFromPlayer = Math.Clamp(distanceFromPlayer, 0, maxEnemyTargetDistance);
+            distanceFromPlayer = Math.Clamp(distanceFromPlayer, 0, MaxEnemyTargetDistance);
             var playerXDirectionSign = MathF.Sign(Velocity.X);
             enemyTarget.LocalPosition = new Vector2(distanceFromPlayer * playerXDirectionSign, 0);
         }

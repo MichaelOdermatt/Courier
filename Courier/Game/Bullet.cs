@@ -16,7 +16,7 @@ namespace Courier.Game
 
         private Vector2 bulletDirection;
 
-        private readonly float speed = 250f;
+        private const float Speed = 250f;
 
         /// <summary>
         /// Boolean representing if the Bullet is active. i.e. is visible, moving, and able to collide with the player.
@@ -70,7 +70,7 @@ namespace Courier.Game
             }
 
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            var velocity = bulletDirection * (speed * deltaTime);
+            var velocity = bulletDirection * (Speed * deltaTime);
 
             // Apply the velocity to the Bullet.
             LocalPosition += velocity;
