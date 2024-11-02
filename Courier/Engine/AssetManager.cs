@@ -35,6 +35,7 @@ namespace Courier.Engine
             Textures.Add("FuelMeterOutline", contentManager.Load<Texture2D>($"{spritesDirectory}FuelMeterOutline"));
             Textures.Add("Gunner", contentManager.Load<Texture2D>($"{spritesDirectory}Gunner"));
             Textures.Add("BulletSmall", contentManager.Load<Texture2D>($"{spritesDirectory}BulletSmall"));
+            Textures.Add("BulletLarge", contentManager.Load<Texture2D>($"{spritesDirectory}BulletLarge"));
             Textures.Add("LineTexture", contentManager.Load<Texture2D>($"{spritesDirectory}LineTexture"));
         }
     }

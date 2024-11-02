@@ -7,9 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Game
+namespace Courier.Game.BulletCode
 {
-
     public class Bullet : Node, ICollisionNode
     {
         private readonly Sprite sprite;
@@ -25,12 +24,12 @@ namespace Courier.Game
         public ICollisionShape CollisionShape { get; set; }
         public bool CollisionsEnabled { get; set; } = false;
 
-        public Bullet(Node parent) : base(parent)
+        public Bullet(Node parent, string textureKey, float bulletRadius) : base(parent)
         {
-            sprite = new Sprite(this, "BulletSmall");
+            sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
 
-            CollisionShape = new CollisionSphere(this, 2f);
+            CollisionShape = new CollisionSphere(this, bulletRadius);
 
             // The bullet starts as inactive, so hide the sprite.
             sprite.Visible = false;

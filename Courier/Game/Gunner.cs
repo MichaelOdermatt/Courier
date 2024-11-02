@@ -1,5 +1,6 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Nodes;
+using Courier.Game.BulletCode;
 using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
 using System;
@@ -66,7 +67,7 @@ namespace Courier.Game
             sprite.Rotation = angleToPoint;
 
             pointToShootAt.Normalize();
-            bulletPool.ActivateBullet(GlobalPosition, pointToShootAt);
+            bulletPool.ActivateBullet(GlobalPosition, pointToShootAt, BulletType.Small);
         }
 
         /// <summary>
