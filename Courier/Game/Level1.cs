@@ -33,6 +33,7 @@ namespace Courier.Game
             new Vector2(1000, 500),
             new Vector2(1200, 450),
             new Vector2(1300, 400),
+            new Vector2(1400, 400),
             new Vector2(1600, 400),
             new Vector2(1800, 350),
             new Vector2(1900, 450),
@@ -77,13 +78,15 @@ namespace Courier.Game
             var ground = new Ground(worldSpaceRoot, groundPoints);
             var bulletPool = new BulletPool(worldSpaceRoot, 15);
             var enemies = CreateEnemies(player, bulletPool);
-
-            var tank = new Tank(worldSpaceRoot, player, bulletPool);
-            tank.LocalPosition = groundPoints[9];
+            var town = new Town(worldSpaceRoot)
+            {
+                LocalPosition = groundPoints[8],
+            };
 
             worldSpaceRoot.Children.Add(ground);
             worldSpaceRoot.Children.Add(bulletPool);
             worldSpaceRoot.Children.AddRange(enemies);
+            worldSpaceRoot.Children.Add(town);
         }
 
         /// <summary>
@@ -101,12 +104,12 @@ namespace Courier.Game
                 // Gunner 2
                 new Gunner(worldSpaceRoot, player, bulletPool)
                 {
-                    LocalPosition = groundPoints[8],
+                    LocalPosition = groundPoints[9],
                 },
                 // Tank 1
                 new Tank(worldSpaceRoot, player, bulletPool)
                 {
-                    LocalPosition = groundPoints[3],
+                    LocalPosition = groundPoints[5],
                 },
                 // Tank 2
                 new Tank(worldSpaceRoot, player, bulletPool)

@@ -1,6 +1,5 @@
 ﻿using Courier.Engine.Extensions;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,25 +10,25 @@ namespace Courier.Game.PlayerCode
 {
     public class PlayerMovement
     {
-        private float rotateSpeed = 1.5f;
+        private readonly PlayerInput playerInput;
+        private readonly PlayerFuel playerFuel;
+
+        private const float RotateSpeed = 1.5f;
 
         private Vector2 gravityDirection = Vector2.UnitY;
 
-        private float terminalVelocity = 12f;
-        private float thrustPower = 100f;
-        private float gravityPower = 5f;
-        private float liftPower = 0.1f;
-        private float inducedDragPower = 0.1f;
-        private float dragPower = 0.09f;
+        private const float TerminalVelocity = 12f;
+        private const float ThrustPower = 100f;
+        private const float GravityPower = 5f;
+        private const float LiftPower = 0.1f;
+        private const float InducedDragPower = 0.1f;
+        private const float DragPower = 0.09f;
 
-        private float maxFuelAmount = 100f;
-        private float fuelAmount = 100f;
-        private float fuelDepletionAmount = 0.5f;
-
-        /// <summary>
-        /// The fuel amount but scaled to a value between 0 and 1.
-        /// </summary>
-        public float FuelAmountScaled { get => fuelAmount / maxFuelAmount; }
+        public PlayerMovement(PlayerInput playerInput, PlayerFuel playerFuel)
+        {
+            this.playerInput = playerInput;
+            this.playerFuel = playerFuel;
+        }
 
         /// <summary>
         /// Calculate and return the new velocity value for the Update.
@@ -40,13 +39,12 @@ namespace Courier.Game.PlayerCode
         public Vector2 CalcNewVelocity(GameTime gameTime, Vector2 velocity)
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            var keyState = Keyboard.GetState();
 
-            var isSpacePressed = keyState.IsKeyDown(Keys.Space);
+            var isThrustPressed = playerInput.IsPlayerPressingAccelerate();
 
             // Rotate the velocity vector based on the Players input.
-            var steeringDirection = GetPlayerSteeringDirection(keyState);
-            var steeringAmount = steeringDirection * rotateSpeed * deltaTime;
+            var steeringDirection = playerInput.GetPlayerSteeringDirection();
+            var steeringAmount = steeringDirection * RotateSpeed * deltaTime;
 
             velocity = velocity.Rotate(steeringAmount);
 
@@ -54,15 +52,15 @@ namespace Courier.Game.PlayerCode
             var angleOfAttack = CalcAngleOfAttack(velocity);
             var normalizedAngleOfAttack = NormalizeAngleOfAttack(angleOfAttack);
 
-            var gravity = gravityDirection * gravityPower;
+            var gravity = gravityDirection * GravityPower;
             var lift = CalcLift(normalizedAngleOfAttack, normalizedVelocity);
             var drag = CalcDrag(normalizedAngleOfAttack, normalizedVelocity);
 
             // Apply thrust if space is pressed.
-            if (isSpacePressed && fuelAmount > 0)
+            if (isThrustPressed && !playerFuel.IsOutOfFuel())
             {
-                fuelAmount -= fuelDepletionAmount;
-                var thrust = normalizedVelocity * (thrustPower * deltaTime);
+                playerFuel.DepleteFuel(gameTime);
+                var thrust = normalizedVelocity * (ThrustPower * deltaTime);
                 velocity += thrust * deltaTime;
             }
 
@@ -76,9 +74,9 @@ namespace Courier.Game.PlayerCode
             velocity += drag * deltaTime;
 
             // Cap velocity to the terminal velocty value.
-            if (velocity.Length() >= terminalVelocity)
+            if (velocity.Length() >= TerminalVelocity)
             {
-                velocity = Vector2.Normalize(velocity) * terminalVelocity;
+                velocity = Vector2.Normalize(velocity) * TerminalVelocity;
             }
 
             return velocity;
@@ -123,11 +121,11 @@ namespace Courier.Game.PlayerCode
             // Calculate lift.
             var liftDirection = new Vector2(normalizedVelocity.Y, normalizedVelocity.X);
             var liftVelocity = velocity.Project(Vector2.UnitX);
-            var liftForce = liftDirection * (liftVelocity.Length() * liftPower * liftCoefficient);
+            var liftForce = liftDirection * (liftVelocity.Length() * LiftPower * liftCoefficient);
 
             // Calculate induced drag.
             var dragDirection = -normalizedVelocity;
-            var inducedDragForce = dragDirection * (liftVelocity.Length() * inducedDragPower * MathF.Pow(liftCoefficient, 2));
+            var inducedDragForce = dragDirection * (liftVelocity.Length() * InducedDragPower * MathF.Pow(liftCoefficient, 2));
 
             return inducedDragForce + liftForce;
         }
@@ -142,7 +140,7 @@ namespace Courier.Game.PlayerCode
             var normalizedVelocity = velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(velocity);
             var dragCoefficient = CalcDragCoefficient(angleOfAttack);
             var dragDirection = -normalizedVelocity;
-            return dragDirection * (velocity.Length() * dragCoefficient * dragPower);
+            return dragDirection * (velocity.Length() * dragCoefficient * DragPower);
         }
 
         /// <summary>
@@ -159,25 +157,6 @@ namespace Courier.Game.PlayerCode
         private float CalcDragCoefficient(float angleOfAttack)
         {
             return 0.02f + 1.0f * MathF.Pow(angleOfAttack, 2);
-        }
-
-        /// <summary>
-        /// Reads the Players input and returns their steering direction. 1 if they are steering up, -1 if they are steer down, and 0 if there is no player input.
-        /// </summary>
-        /// <param name="keyState">The current keyboard state.</param>
-        private int GetPlayerSteeringDirection(KeyboardState keyState)
-        {
-            if (keyState.IsKeyDown(Keys.S))
-            {
-                return -1;
-            }
-
-            if (keyState.IsKeyDown(Keys.W))
-            {
-                return 1;
-            }
-
-            return 0;
         }
     }
 }

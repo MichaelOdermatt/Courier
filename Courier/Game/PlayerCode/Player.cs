@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,9 @@ namespace Courier.Game.PlayerCode
         private readonly Node enemyTarget;
         private readonly Camera2D camera;
         private readonly FuelMeterElement fuelMeterElement;
-        private readonly PlayerMovement playerMovement = new PlayerMovement();
+        private readonly PlayerInput playerInput = new PlayerInput();
+        private readonly PlayerFuel playerFuel = new PlayerFuel();
+        private readonly PlayerMovement playerMovement;
         private readonly PlayerHealth playerHealth = new PlayerHealth();
 
         private PlayerState playerState = PlayerState.Alive;
@@ -38,6 +41,8 @@ namespace Courier.Game.PlayerCode
 
         public Player(Node parent, Camera2D camera, FuelMeterElement fuelMeterElement) : base(parent)
         {
+            playerMovement = new PlayerMovement(playerInput, playerFuel);
+
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
 
@@ -59,11 +64,13 @@ namespace Courier.Game.PlayerCode
                 return; 
             }
 
+            playerInput.UpdateKeyboardState();
+            playerInput.HasPlayerPressedDeliverPackageKey();
+
             Velocity = playerMovement.CalcNewVelocity(gameTime, Velocity);
-            fuelMeterElement.UpdateMeterFill(playerMovement.FuelAmountScaled);
+            fuelMeterElement.UpdateMeterFill(playerFuel.FuelAmountScaled);
             ApplyVelocity();
 
-            // TODO lerp the rotation, so it looks smoother? Or would that make it look strange
             // Update the sprites rotation to match the angle of attack.
             var angleOfAttack = playerMovement.CalcAngleOfAttack(Velocity);
             sprite.Rotation = angleOfAttack;

@@ -38,6 +38,7 @@ namespace Courier.Engine
             Textures.Add("BulletSmall", contentManager.Load<Texture2D>($"{spritesDirectory}BulletSmall"));
             Textures.Add("BulletLarge", contentManager.Load<Texture2D>($"{spritesDirectory}BulletLarge"));
             Textures.Add("LineTexture", contentManager.Load<Texture2D>($"{spritesDirectory}LineTexture"));
+            Textures.Add("Town", contentManager.Load<Texture2D>($"{spritesDirectory}Town"));
         }
     }
 }
