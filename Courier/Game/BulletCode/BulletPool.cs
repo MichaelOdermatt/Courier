@@ -20,17 +20,11 @@ namespace Courier.Game.BulletCode
     {
         private readonly GameTimer[] smallBulletTimers;
         private readonly GameTimer[] largeBulletTimers;
-        private readonly Bullet[] smallBullets;
-        private readonly Bullet[] largeBullets;
+        private readonly SmallBullet[] smallBullets;
+        private readonly LargeBullet[] largeBullets;
 
         public const float bulletActiveDuration = 3f;
         public int numOfBullets;
-
-        public const string smallBulletTextureKey = "BulletSmall";
-        public const float smallBulletRadius = 2f;
-
-        public const string largeBulletTextureKey = "BulletLarge";
-        public const float largeBulletRadius = 5f;
 
         public BulletPool(Node parent, int numOfBullets) : base(parent)
         {
@@ -38,19 +32,19 @@ namespace Courier.Game.BulletCode
             // Create the array of Bullets and timers. Their indexes line up, so the Bullet at index i will have its timer at index i.
             smallBulletTimers = new GameTimer[numOfBullets];
             largeBulletTimers = new GameTimer[numOfBullets];
-            smallBullets = new Bullet[numOfBullets];
-            largeBullets = new Bullet[numOfBullets];
+            smallBullets = new SmallBullet[numOfBullets];
+            largeBullets = new LargeBullet[numOfBullets];
 
             for (int i = 0; i < numOfBullets; i++)
             {
-                var newSmallBullet = new Bullet(this, smallBulletTextureKey, smallBulletRadius);
+                var newSmallBullet = new SmallBullet(this);
                 // Add the Bullets as children so their Draw and Update functions can be called.
                 Children.Add(newSmallBullet);
 
                 smallBullets[i] = newSmallBullet;
                 smallBulletTimers[i] = new GameTimer(bulletActiveDuration, () => newSmallBullet.Deactivate());
 
-                var newLargeBullet = new Bullet(this, largeBulletTextureKey, largeBulletRadius);
+                var newLargeBullet = new LargeBullet(this);
                 // Add the Bullets as children so their Draw and Update functions can be called.
                 Children.Add(newLargeBullet);
 
@@ -74,7 +68,7 @@ namespace Courier.Game.BulletCode
         }
 
         /// <summary>
-        /// Activates, or creates, a Bullet from the pool. The Bullet will be deactivated (or removed) after the set amount of time specified in the BulletPool.
+        /// Activates a Bullet from the pool. The Bullet will be deactivated after the set amount of time specified for the Bullet has elapsed.
         /// </summary>
         /// <param name="initialPosition">The initial position of the Bullet.</param>
         /// <param name="direction">The direction the Bullet should fly.</param>
@@ -87,7 +81,7 @@ namespace Courier.Game.BulletCode
                 throw new InvalidOperationException("Could not get Inactive Bullet from the BulletPool. Try increasing the number of Bullets in the pool.");
             }
 
-            var inactiveBullet = bulletType == BulletType.Small ? smallBullets[inactiveBulletIndex] : largeBullets[inactiveBulletIndex];
+            BulletBase inactiveBullet = bulletType == BulletType.Small ? smallBullets[inactiveBulletIndex] : largeBullets[inactiveBulletIndex];
             var inactiveBulletTimer = bulletType == BulletType.Small ? smallBulletTimers[inactiveBulletIndex] : largeBulletTimers[inactiveBulletIndex];
 
             inactiveBulletTimer.Start();
@@ -102,7 +96,7 @@ namespace Courier.Game.BulletCode
         {
             for (int i = 0; i < numOfBullets; i++)
             {
-                var bullet = bulletType == BulletType.Small ? smallBullets[i] : largeBullets[i];
+                BulletBase bullet = bulletType == BulletType.Small ? smallBullets[i] : largeBullets[i];
                 if (!bullet.IsActive)
                 {
                     return i;

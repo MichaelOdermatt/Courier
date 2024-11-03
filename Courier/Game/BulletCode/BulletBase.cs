@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Courier.Game.BulletCode
 {
-    public class Bullet : Node, ICollisionNode
+    public abstract class BulletBase : Node, ICollisionNode
     {
         private readonly Sprite sprite;
 
         private Vector2 bulletDirection;
 
-        private const float Speed = 250f;
+        private readonly float speed;
 
         /// <summary>
         /// Boolean representing if the Bullet is active. i.e. is visible, moving, and able to collide with the player.
@@ -24,8 +24,9 @@ namespace Courier.Game.BulletCode
         public ICollisionShape CollisionShape { get; set; }
         public bool CollisionsEnabled { get; set; } = false;
 
-        public Bullet(Node parent, string textureKey, float bulletRadius) : base(parent)
+        public BulletBase(Node parent, string textureKey, float bulletRadius, float bulletSpeed) : base(parent)
         {
+            speed = bulletSpeed;
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
 
@@ -69,7 +70,7 @@ namespace Courier.Game.BulletCode
             }
 
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            var velocity = bulletDirection * (Speed * deltaTime);
+            var velocity = bulletDirection * (speed * deltaTime);
 
             // Apply the velocity to the Bullet.
             LocalPosition += velocity;

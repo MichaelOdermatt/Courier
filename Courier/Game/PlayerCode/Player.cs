@@ -76,7 +76,7 @@ namespace Courier.Game.PlayerCode
 
         public override void OnCollision(ICollisionNode collisionNode)
         {
-            if (collisionNode is Bullet bulletNode)
+            if (collisionNode is BulletBase bulletNode)
             {
                 playerHealth.reduceHealth(1);
                 bulletNode.Deactivate();

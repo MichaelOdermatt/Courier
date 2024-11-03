@@ -2,6 +2,7 @@
 using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
+using Courier.Game.EnemyCode;
 using Courier.Game.PlayerCode;
 using Courier.Game.UI;
 using Microsoft.Xna.Framework;
@@ -75,19 +76,22 @@ namespace Courier.Game
 
             var ground = new Ground(worldSpaceRoot, groundPoints);
             var bulletPool = new BulletPool(worldSpaceRoot, 15);
-            var gunners = CreateGunners(player, bulletPool);
+            var enemies = CreateEnemies(player, bulletPool);
+
+            var tank = new Tank(worldSpaceRoot, player, bulletPool);
+            tank.LocalPosition = groundPoints[9];
 
             worldSpaceRoot.Children.Add(ground);
             worldSpaceRoot.Children.Add(bulletPool);
-            worldSpaceRoot.Children.AddRange(gunners);
+            worldSpaceRoot.Children.AddRange(enemies);
         }
 
         /// <summary>
-        /// Creates and returns all the gunners to be used in the level.
+        /// Creates and returns all the enemies to be used in the level.
         /// </summary>
-        private List<Gunner> CreateGunners(Player player, BulletPool bulletPool)
+        private List<EnemyBase> CreateEnemies(Player player, BulletPool bulletPool)
         {
-            return new List<Gunner>
+            return new List<EnemyBase>
             {
                 // Gunner 1
                 new Gunner(worldSpaceRoot, player, bulletPool)
@@ -98,6 +102,16 @@ namespace Courier.Game
                 new Gunner(worldSpaceRoot, player, bulletPool)
                 {
                     LocalPosition = groundPoints[8],
+                },
+                // Tank 1
+                new Tank(worldSpaceRoot, player, bulletPool)
+                {
+                    LocalPosition = groundPoints[3],
+                },
+                // Tank 2
+                new Tank(worldSpaceRoot, player, bulletPool)
+                {
+                    LocalPosition = groundPoints[10],
                 },
             };
         }

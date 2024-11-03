@@ -10,34 +10,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Courier.Game
+namespace Courier.Game.EnemyCode
 {
-    public class Gunner : Node
+    public class Gunner : EnemyBase
     {
-        private readonly Player player;
-        private readonly Sprite sprite;
-
-        private readonly BulletPool bulletPool;
-        private readonly GameTimer shootTimer;
-        private const float TimeBetweenBullets = 0.75f;
-        private const float ShootRange = 500f;
         private const float EnemyTargetThresholdAngle = 1.57f;
 
-        private Action CreateBulletAction;
-
-        public Gunner(Node parent, Player player, BulletPool bulletPool) : base(parent)
+        public Gunner(Node parent, Player player, BulletPool bulletPool) : base(parent, player, bulletPool, 0.75f, 500f, "Gunner")
         {
-            this.player = player;
-            this.bulletPool = bulletPool;
-            CreateBulletAction = TryCreateBullet;
-
-            sprite = new Sprite(this, "Gunner");
-            Children.Add(sprite);
-
-            // Create the shoot timer.
-            shootTimer = new GameTimer(TimeBetweenBullets, CreateBulletAction);
-            shootTimer.Loop = true;
-            shootTimer.Start();
         }
 
         public override void Update(GameTime gameTime)
@@ -51,11 +31,11 @@ namespace Courier.Game
         /// <summary>
         /// Attempts to create a Bullet and fires it in the direction of the player.
         /// </summary>
-        public void TryCreateBullet()
+        public override void TryCreateBullet()
         {
             var vectorToPlayer = player.GlobalPosition - GlobalPosition;
             // Don't shoot if the player is out of range.
-            if (vectorToPlayer.Length() > ShootRange)
+            if (vectorToPlayer.Length() > shootRange)
             {
                 return;
             }
