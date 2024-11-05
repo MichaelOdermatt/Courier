@@ -12,6 +12,8 @@ namespace Courier.Game
     {
         public readonly Sprite sprite;
 
+        private bool hasPackageBeenDelivered;
+
         public Town(Node parent) : base(parent)
         {
             sprite = new Sprite(this, "Town")
@@ -19,6 +21,11 @@ namespace Courier.Game
                 Offset = new Vector2(0, -11)
             };
             Children.Add(sprite);
+        }
+
+        public void DeliverPackage()
+        {
+            hasPackageBeenDelivered = true;
         }
     }
 }

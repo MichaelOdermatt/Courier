@@ -70,7 +70,9 @@ namespace Courier.Game
         /// </summary>
         private void CreateGameplayNodes()
         {
-            Player player = new Player(null, camera, fuelMeterElement);
+            var towns = CreateTowns();
+
+            Player player = new Player(null, camera, fuelMeterElement, towns);
             this.player = player;
 
             worldSpaceRoot = new Node(null);
@@ -78,15 +80,11 @@ namespace Courier.Game
             var ground = new Ground(worldSpaceRoot, groundPoints);
             var bulletPool = new BulletPool(worldSpaceRoot, 15);
             var enemies = CreateEnemies(player, bulletPool);
-            var town = new Town(worldSpaceRoot)
-            {
-                LocalPosition = groundPoints[8],
-            };
 
             worldSpaceRoot.Children.Add(ground);
             worldSpaceRoot.Children.Add(bulletPool);
             worldSpaceRoot.Children.AddRange(enemies);
-            worldSpaceRoot.Children.Add(town);
+            worldSpaceRoot.Children.AddRange(towns);
         }
 
         /// <summary>
@@ -115,6 +113,26 @@ namespace Courier.Game
                 new Tank(worldSpaceRoot, player, bulletPool)
                 {
                     LocalPosition = groundPoints[10],
+                },
+            };
+        }
+
+        /// <summary>
+        /// Creates and returns all the towns to be used in the level.
+        /// </summary>
+        private List<Town> CreateTowns()
+        {
+            return new List<Town>
+            {
+                // Town 1
+                new Town(worldSpaceRoot)
+                {
+                    LocalPosition = groundPoints[8],
+                },
+                // Town 2
+                new Town(worldSpaceRoot)
+                {
+                    LocalPosition = groundPoints[12],
                 },
             };
         }

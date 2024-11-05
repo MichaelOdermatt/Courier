@@ -117,8 +117,8 @@ namespace Courier
             graphics.ApplyChanges();
 
             // The virtual resolution we always want our game to display at.
-            renderer.VirtualWidth = 1025;
-            renderer.VirtualHeight = 512;
+            renderer.VirtualWidth = 960;
+            renderer.VirtualHeight = 480;
             renderer.ScreenWidth = DefaultRealScreenWidth;
             renderer.ScreenHeight = DefaultRealScreenHeight;
             renderer.Initialize();

@@ -28,6 +28,7 @@ namespace Courier.Game.PlayerCode
         private readonly PlayerFuel playerFuel = new PlayerFuel();
         private readonly PlayerMovement playerMovement;
         private readonly PlayerHealth playerHealth = new PlayerHealth();
+        private readonly PlayerPackageDelivery playerPackageDelivery;
 
         private PlayerState playerState = PlayerState.Alive;
 
@@ -39,9 +40,10 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public Vector2 EnemyTargetGlobalPosition { get => enemyTarget.GlobalPosition; }
 
-        public Player(Node parent, Camera2D camera, FuelMeterElement fuelMeterElement) : base(parent)
+        public Player(Node parent, Camera2D camera, FuelMeterElement fuelMeterElement, List<Town> towns) : base(parent)
         {
             playerMovement = new PlayerMovement(playerInput, playerFuel);
+            playerPackageDelivery = new PlayerPackageDelivery(towns, this);
 
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
@@ -49,7 +51,7 @@ namespace Courier.Game.PlayerCode
             enemyTarget = new Node(this);
             Children.Add(enemyTarget);
 
-            CollisionShape = new CollisionSphere(this, 25);
+            CollisionShape = new CollisionSphere(this, 6f);
             
             this.camera = camera;
             this.fuelMeterElement = fuelMeterElement;
@@ -65,7 +67,10 @@ namespace Courier.Game.PlayerCode
             }
 
             playerInput.UpdateKeyboardState();
-            playerInput.HasPlayerPressedDeliverPackageKey();
+            if (playerInput.HasPlayerPressedDeliverPackageKey())
+            {
+                playerPackageDelivery.AttemptDeliverPackage();
+            }
 
             Velocity = playerMovement.CalcNewVelocity(gameTime, Velocity);
             fuelMeterElement.UpdateMeterFill(playerFuel.FuelAmountScaled);
