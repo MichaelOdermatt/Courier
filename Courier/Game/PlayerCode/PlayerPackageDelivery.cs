@@ -19,7 +19,7 @@ namespace Courier.Game.PlayerCode
         /// <summary>
         /// The range that the Player must be in of a Town to successfully deliver a package.
         /// </summary>
-        private const float SuccessfulDeliveryTownRange = 200f;
+        private const float SuccessfulDeliveryTownRange = 150f;
 
         public PlayerPackageDelivery(List<Town> towns, Player player)
         {
