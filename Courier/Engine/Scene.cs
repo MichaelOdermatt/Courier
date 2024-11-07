@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Courier.Engine
 {
-    public class Scene
+    public abstract class Scene
     {
         /// <summary>
         /// The root Node for the scene's screen space nodes.
@@ -39,14 +39,9 @@ namespace Courier.Engine
         }
 
         /// <summary>
-        /// Calls Initialize recursively on the root node until all it's children are Initialized;
+        /// This method is intended to be used for creating instances of and intializing the Scenes's Nodes.
         /// </summary>
-        public void Initialize()
-        {
-            screenSpaceRoot.Initialize();
-            worldSpaceRoot.Initialize();
-            player.Initialize();
-        }
+        public abstract void Initialize();
 
         /// <summary>
         /// Calls Draw recursively on the root node until all it's children are rendered.
@@ -85,7 +80,7 @@ namespace Courier.Engine
         /// </summary>
         /// <param name="playerController">The PlayerController to check for collisions against.</param>
         /// <param name="collisionNodes">The list of ICollisionNodes that could be colliding with the PlayerController.</param>
-        public void CheckPlayerCollisions(PlayerController playerController, IEnumerable<ICollisionNode> collisionNodes)
+        private void CheckPlayerCollisions(PlayerController playerController, IEnumerable<ICollisionNode> collisionNodes)
         {
             foreach (ICollisionNode collisionNode in collisionNodes) 
             {

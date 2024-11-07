@@ -27,13 +27,7 @@ namespace Courier.Game
         {
             this.points = points;
             CollisionShape = new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down);
-        }
-
-        public override void Initialize()
-        {
             lineSegments = CreateLineSegments(points);
-
-            base.Initialize();
         }
 
         /// <summary>

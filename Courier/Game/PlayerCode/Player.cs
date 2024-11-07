@@ -24,6 +24,7 @@ namespace Courier.Game.PlayerCode
         private readonly Node enemyTarget;
         private readonly Camera2D camera;
         private readonly FuelMeterElement fuelMeterElement;
+        private readonly Action resetCurrentScene;
         private readonly PlayerInput playerInput = new PlayerInput();
         private readonly PlayerFuel playerFuel = new PlayerFuel();
         private readonly PlayerMovement playerMovement;
@@ -40,7 +41,13 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public Vector2 EnemyTargetGlobalPosition { get => enemyTarget.GlobalPosition; }
 
-        public Player(Node parent, Camera2D camera, FuelMeterElement fuelMeterElement, List<Town> towns) : base(parent)
+        public Player(
+            Node parent, 
+            Camera2D camera, 
+            FuelMeterElement fuelMeterElement, 
+            List<Town> towns, 
+            Action resetCurrentScene
+        ) : base(parent)
         {
             playerMovement = new PlayerMovement(playerInput, playerFuel);
             playerPackageDelivery = new PlayerPackageDelivery(towns, this);
@@ -52,7 +59,8 @@ namespace Courier.Game.PlayerCode
             Children.Add(enemyTarget);
 
             CollisionShape = new CollisionSphere(this, 6f);
-            
+
+            this.resetCurrentScene = resetCurrentScene;
             this.camera = camera;
             this.fuelMeterElement = fuelMeterElement;
         }
@@ -61,12 +69,19 @@ namespace Courier.Game.PlayerCode
         {
             base.Update(gameTime);
 
+            playerInput.UpdateKeyboardState();
+
+            // We put this above the check for playerState since we still want this input to work if the player is destroyed.
+            if (playerInput.HasPlayerPressedQuickRestartKey())
+            {
+                resetCurrentScene();
+            }
+
             if (playerState == PlayerState.Destroyed)
             {
                 return; 
             }
 
-            playerInput.UpdateKeyboardState();
             if (playerInput.HasPlayerPressedDeliverPackageKey())
             {
                 playerPackageDelivery.AttemptDeliverPackage();

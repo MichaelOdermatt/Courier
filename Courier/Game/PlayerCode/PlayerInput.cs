@@ -40,7 +40,7 @@ namespace Courier.Game.PlayerCode
         }
 
         /// <summary>
-        /// Reads the Players input and returns true if the player is pressing the accelerate button.
+        /// Reads the Players input and returns true if the Player is pressing the accelerate button.
         /// </summary>
         public bool IsPlayerPressingAccelerate()
         {
@@ -48,12 +48,27 @@ namespace Courier.Game.PlayerCode
         }
 
         /// <summary>
-        /// Reads the Players input and returns true if the player pressed the deliver package button.
+        /// Reads the Players input and returns true if the Player pressed the deliver package button.
         /// </summary>
         public bool HasPlayerPressedDeliverPackageKey()
         {
-            var deliverPackageKey = Keys.Enter;
-            return currentKeyboardState.IsKeyDown(deliverPackageKey) && !previousKeyboardState.IsKeyDown(deliverPackageKey);
+            return HasPlayerPressedKey(Keys.Enter);
+        }
+
+        /// <summary>
+        /// Reads the Players input and returns true if the Player pressed the quick restart button.
+        /// </summary>
+        public bool HasPlayerPressedQuickRestartKey()
+        {
+            return HasPlayerPressedKey(Keys.R);
+        }
+
+        /// <summary>
+        /// Compares the Players current and previous keyboard states to check if the given key was pressed a single time.
+        /// </summary>
+        private bool HasPlayerPressedKey(Keys key)
+        {
+            return currentKeyboardState.IsKeyDown(key) && !previousKeyboardState.IsKeyDown(key);
         }
     }
 }

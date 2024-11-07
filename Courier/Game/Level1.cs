@@ -23,7 +23,7 @@ namespace Courier.Game
         /// <summary>
         /// The points to use for the level's Ground object.
         /// </summary>
-        private Vector2[] groundPoints =
+        private readonly Vector2[] groundPoints =
         {
             new Vector2(0, 300),
             new Vector2(100, 400),
@@ -48,6 +48,13 @@ namespace Courier.Game
 
         public Level1(Camera2D camera) : base(camera)
         {
+        }
+
+        public override void Initialize()
+        {
+            screenSpaceRoot = new Node(null);
+            worldSpaceRoot = new Node(null);
+
             CreateUINodes();
             CreateGameplayNodes();
         }
@@ -57,8 +64,6 @@ namespace Courier.Game
         /// </summary>
         private void CreateUINodes()
         {
-            screenSpaceRoot = new Node(null);
-
             fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
             fuelMeterElement.LocalPosition = new Vector2(10, 10);
 
@@ -72,10 +77,14 @@ namespace Courier.Game
         {
             var towns = CreateTowns();
 
-            Player player = new Player(null, camera, fuelMeterElement, towns);
+            Player player = new Player(
+                null,
+                camera,
+                fuelMeterElement,
+                towns,
+                () => this.Initialize()
+            );
             this.player = player;
-
-            worldSpaceRoot = new Node(null);
 
             var ground = new Ground(worldSpaceRoot, groundPoints);
             var bulletPool = new BulletPool(worldSpaceRoot, 15);
