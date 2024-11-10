@@ -46,9 +46,13 @@ namespace Courier.Game
                 var segmentScale = new Vector2(lineSegments[i].SegmentLength, lineThickness);
                 var segmentRotation = MathF.Atan(segmentVector.Y / segmentVector.X);
 
+                var spritePos = GlobalPosition + lineSegments[i].StartPos;
+                // Transform the spitePos so that it is rendered as a world space Node.
+                var spritePosCameraTranslation = Vector2.Transform(spritePos, camera.GetViewTransformationMatrix());
+
                 spriteBatch.Draw(
                     texture, 
-                    GlobalPosition + lineSegments[i].StartPos,
+                    spritePosCameraTranslation,
                     null, 
                     Color.White, 
                     segmentRotation, 

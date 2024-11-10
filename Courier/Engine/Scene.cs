@@ -46,15 +46,14 @@ namespace Courier.Engine
         /// <summary>
         /// Calls Draw recursively on the root node until all it's children are rendered.
         /// </summary>
-        /// <param name="worldSpaceSpriteBatch">The SpriteBatch instance initialized in Game1, used for world space objects like the player, enemies... etc.</param>
-        /// <param name="screenSpaceSpriteBatch">The SpriteBatch instance initialized in Game1, used for screen space objects like the UI.</param>
+        /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>
         /// <param name="assetManager">The AssetManager instance initialized in Game1.</param>
-        public void Draw(SpriteBatch worldSpaceSpriteBatch, SpriteBatch screenSpaceSpriteBatch, AssetManager assetManager)
+        public void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
         {
             // Since root is the top level node, pass Vector2.Zero as its parent position.
-            screenSpaceRoot.Draw(screenSpaceSpriteBatch, assetManager, camera);
-            worldSpaceRoot.Draw(worldSpaceSpriteBatch, assetManager, camera);
-            player.Draw(worldSpaceSpriteBatch, assetManager, camera);
+            screenSpaceRoot.Draw(spriteBatch, assetManager, camera);
+            worldSpaceRoot.Draw(spriteBatch, assetManager, camera);
+            player.Draw(spriteBatch, assetManager, camera);
         }
 
         /// <summary>

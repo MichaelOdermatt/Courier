@@ -101,8 +101,7 @@ namespace Courier.Engine
                 _transform = _camTranslationMatrix *
                              _camRotationMatrix *
                              _camScaleMatrix *
-                             _resTranslationMatrix *
-                             ResolutionIndependentRenderer.GetTransformationMatrix();
+                             _resTranslationMatrix;
 
                 _isViewTransformationDirty = false;
             }

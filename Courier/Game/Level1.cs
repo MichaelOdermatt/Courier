@@ -55,18 +55,21 @@ namespace Courier.Game
             screenSpaceRoot = new Node(null);
             worldSpaceRoot = new Node(null);
 
-            CreateUINodes();
+            CreateScreenSpaceNodes();
             CreateGameplayNodes();
         }
 
         /// <summary>
         /// Creates all Nodes that are drawn in screen space and used for UI.
         /// </summary>
-        private void CreateUINodes()
+        private void CreateScreenSpaceNodes()
         {
             fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
             fuelMeterElement.LocalPosition = new Vector2(10, 10);
 
+            var skyBackground = new SkyBackground(screenSpaceRoot);
+
+            screenSpaceRoot.Children.Add(skyBackground);
             screenSpaceRoot.Children.Add(fuelMeterElement);
         }
 

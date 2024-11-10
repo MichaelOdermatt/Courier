@@ -14,14 +14,7 @@ namespace Courier
         private const int DefaultRealScreenHeight = 1080;
 
         private GraphicsDeviceManager graphics;
-        /// <summary>
-        /// SpriteBatch used for drawing world space sprites.
-        /// </summary>
-        private SpriteBatch worldSpaceSpriteBatch;
-        /// <summary>
-        /// SpriteBatch used for drawing screen space sprites.
-        /// </summary>
-        private SpriteBatch screenSpaceSpriteBatch;
+        private SpriteBatch spriteBatch;
         private AssetManager assetManager;
         private ResolutionIndependentRenderer renderer;
         private Camera2D camera;
@@ -55,8 +48,7 @@ namespace Courier
         {
             Content.RootDirectory = "Content";
 
-            worldSpaceSpriteBatch = new SpriteBatch(GraphicsDevice);
-            screenSpaceSpriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch = new SpriteBatch(GraphicsDevice);
 
             assetManager.LoadTextures();
             // TODO: use this.Content to load your game content here
@@ -78,34 +70,22 @@ namespace Courier
 
         protected override void Draw(GameTime gameTime)
         {
-            // TODO only draw what is in view of the camera.
-
             // Note: For UI in the future, use a seperate sprite batch that isn't given the camera's transformation matrix.
             renderer.BeginDraw();
 
-            worldSpaceSpriteBatch.Begin(
-                SpriteSortMode.Deferred, 
-                BlendState.AlphaBlend, 
-                SamplerState.PointClamp, 
-                DepthStencilState.None, 
-                RasterizerState.CullNone, 
-                null, 
-                camera.GetViewTransformationMatrix()
-            );
-            screenSpaceSpriteBatch.Begin(
+            spriteBatch.Begin(
                 SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
                 SamplerState.PointClamp,
                 DepthStencilState.None,
                 RasterizerState.CullNone,
                 null,
-                null
+                renderer.GetTransformationMatrix()
             );
 
-            level.Draw(worldSpaceSpriteBatch, screenSpaceSpriteBatch, assetManager);
+            level.Draw(spriteBatch, assetManager);
 
-            worldSpaceSpriteBatch.End();
-            screenSpaceSpriteBatch.End();
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

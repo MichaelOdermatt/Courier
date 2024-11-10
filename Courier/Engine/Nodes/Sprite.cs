@@ -41,9 +41,9 @@ namespace Courier.Engine.Nodes
         public bool Visible { get; set; } = true;
 
         /// <summary>
-        /// If true, the sprite will not be drawn if it's position is outside the view of the camera.
+        /// Boolean representing if the Sprite is intended to be a world space sprite rather than a screen space sprite.
         /// </summary>
-        public bool CullIfNotInView { get; set; } = true;
+        public bool IsWorldSpaceSprite { get; set; } = true;
 
         public Sprite(Node parent, string textureKey, float layerDepth = 0.0f) : base(parent)
         {
@@ -61,10 +61,16 @@ namespace Courier.Engine.Nodes
 
             var spritePos = GlobalPosition + Offset;
 
-            // If CullIfNotInView is enabled and the sprite is not in the camera's view, don't draw it. Or if the Sprite's Visible property is false, don't draw it.
-            if ((CullIfNotInView && !camera.IsPointInCameraView(spritePos)) || !Visible)
+            // If its in world space and the sprite is not in the camera's view, don't draw it. Or if the Sprite's Visible property is false, don't draw it.
+            if ((IsWorldSpaceSprite && !camera.IsPointInCameraView(spritePos)) || !Visible)
             {
                 return;
+            }
+
+            // If the sprite is not in world space then apply the camera's transform to it.
+            if (IsWorldSpaceSprite)
+            {
+                spritePos = Vector2.Transform(spritePos, camera.GetViewTransformationMatrix());
             }
 
             var texture = assetManager.Textures[textureKey];

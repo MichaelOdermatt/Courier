@@ -25,13 +25,13 @@ namespace Courier.Game.UI
         public FuelMeterElement(Node parent) : base(parent)
         {
             meterFillSprite = new Sprite(this, "FuelMeterFill");
-            meterFillSprite.CullIfNotInView = false;
+            meterFillSprite.IsWorldSpaceSprite = false;
             meterFillSprite.Offset = new Vector2(2, 2);
             meterFillSprite.Origin = Vector2.Zero;
             Children.Add(meterFillSprite);
 
             meterOutlineSprite = new Sprite(this, "FuelMeterOutline");
-            meterOutlineSprite.CullIfNotInView = false;
+            meterOutlineSprite.IsWorldSpaceSprite = false;
             meterOutlineSprite.Origin = Vector2.Zero;
             Children.Add(meterOutlineSprite);
         }
