@@ -1,54 +1,55 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
-// Source: http://blog.roboblob.com/2013/07/27/solving-resolution-independent-rendering-and-2d-camera-using-monogame/comment-page-1/
+// Modified from source: http://blog.roboblob.com/2013/07/27/solving-resolution-independent-rendering-and-2d-camera-using-monogame/comment-page-1/
 namespace Courier.Engine
 {
     public class ResolutionIndependentRenderer
     {
-        private readonly Microsoft.Xna.Framework.Game _game;
-        private Viewport _viewport;
-        private float _ratioX;
-        private float _ratioY;
-        private Vector2 _virtualMousePosition = new Vector2();
+        // The virtual resolution we always want our game to display at.
+        public const int VirtualHeight = 480;
+        public const int VirtualWidth = 960;
 
-        public Color BackgroundColor = Color.Orange;
+        private const int DefaultRealScreenWidth = 1920;
+        private const int DefaultRealScreenHeight = 1080;
+
+        public readonly int ScreenWidth;
+        public readonly int ScreenHeight;
+
+        private readonly Microsoft.Xna.Framework.Game game;
+        private readonly GraphicsDeviceManager graphics;
+        private Viewport viewport;
+
+        private static Matrix scaleMatrix;
+        private bool dirtyMatrix = true;
+
+        public SpriteBatch SpriteBatch { get; private set; }
 
         public ResolutionIndependentRenderer(Microsoft.Xna.Framework.Game game)
         {
-            _game = game;
-            VirtualWidth = 1366;
-            VirtualHeight = 768;
+            this.game = game;
+            graphics = new GraphicsDeviceManager(game);
 
-            ScreenWidth = 1024;
-            ScreenHeight = 768;
+            ScreenWidth = DefaultRealScreenWidth;
+            ScreenHeight = DefaultRealScreenHeight;
+
         }
-
-        public int VirtualHeight;
-
-        public int VirtualWidth;
-
-        public int ScreenWidth;
-        public int ScreenHeight;
 
         public void Initialize()
         {
+            graphics.PreferredBackBufferWidth = DefaultRealScreenWidth;
+            graphics.PreferredBackBufferHeight = DefaultRealScreenHeight;
+            graphics.ApplyChanges();
+
             SetupVirtualScreenViewport();
 
-            _ratioX = (float)_viewport.Width / VirtualWidth;
-            _ratioY = (float)_viewport.Height / VirtualHeight;
-
-            _dirtyMatrix = true;
+            dirtyMatrix = true;
         }
 
-        public void SetupFullViewport()
+        public void LoadContent()
         {
-            var vp = new Viewport();
-            vp.X = vp.Y = 0;
-            vp.Width = ScreenWidth;
-            vp.Height = ScreenHeight;
-            _game.GraphicsDevice.Viewport = vp;
-            _dirtyMatrix = true;
+            SpriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
 
         public void BeginDraw()
@@ -56,44 +57,51 @@ namespace Courier.Engine
             // Start by reseting viewport to (0,0,1,1)
             SetupFullViewport();
             // Clear to Black
-            _game.GraphicsDevice.Clear(BackgroundColor);
+            game.GraphicsDevice.Clear(Color.Black);
             // Calculate Proper Viewport according to Aspect Ratio
             SetupVirtualScreenViewport();
-            // and clear that
-            // This way we are gonna have black bars if aspect ratio requires it and
-            // the clear color on the rest
+
+            SpriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                DepthStencilState.None,
+                RasterizerState.CullNone,
+                null,
+                GetTransformationMatrix()
+            );
         }
 
-        public bool RenderingToScreenIsFinished;
-        private static Matrix _scaleMatrix;
-        private bool _dirtyMatrix = true;
-
-        public Matrix GetTransformationMatrix()
+        public void EndDraw()
         {
-            if (_dirtyMatrix)
+            SpriteBatch.End();
+        }
+
+        private Matrix GetTransformationMatrix()
+        {
+            if (dirtyMatrix)
                 RecreateScaleMatrix();
 
-            return _scaleMatrix;
+            return scaleMatrix;
         }
 
         private void RecreateScaleMatrix()
         {
-            Matrix.CreateScale((float)ScreenWidth / VirtualWidth, (float)ScreenWidth / VirtualWidth, 1f, out _scaleMatrix);
-            _dirtyMatrix = false;
+            Matrix.CreateScale((float)ScreenWidth / VirtualWidth, (float)ScreenWidth / VirtualWidth, 1f, out scaleMatrix);
+            dirtyMatrix = false;
         }
 
-        public Vector2 ScaleMouseToScreenCoordinates(Vector2 screenPosition)
+        private void SetupFullViewport()
         {
-            var realX = screenPosition.X - _viewport.X;
-            var realY = screenPosition.Y - _viewport.Y;
-
-            _virtualMousePosition.X = realX / _ratioX;
-            _virtualMousePosition.Y = realY / _ratioY;
-
-            return _virtualMousePosition;
+            var vp = new Viewport();
+            vp.X = vp.Y = 0;
+            vp.Width = ScreenWidth;
+            vp.Height = ScreenHeight;
+            game.GraphicsDevice.Viewport = vp;
+            dirtyMatrix = true;
         }
 
-        public void SetupVirtualScreenViewport()
+        private void SetupVirtualScreenViewport()
         {
             var targetAspectRatio = VirtualWidth / (float)VirtualHeight;
             // figure out the largest area that fits in this resolution at the desired aspect ratio
@@ -108,7 +116,7 @@ namespace Courier.Engine
             }
 
             // set up the new viewport centered in the backbuffer
-            _viewport = new Viewport
+            viewport = new Viewport
             {
                 X = (ScreenWidth / 2) - (width / 2),
                 Y = (ScreenHeight / 2) - (height / 2),
@@ -116,7 +124,7 @@ namespace Courier.Engine
                 Height = height
             };
 
-            _game.GraphicsDevice.Viewport = _viewport;
+            game.GraphicsDevice.Viewport = viewport;
         }
     }
 }
