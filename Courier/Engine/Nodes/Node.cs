@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Courier.Engine.Render;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -41,12 +42,10 @@ namespace Courier.Engine.Nodes
         /// <summary>
         /// To be called in the overriding function. Draws all child Nodes.
         /// </summary>
-        /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>
-        /// <param name="assetManager">The AssetManager instance initialized in Game1.</param>
-        /// <param name="camera">The Camera2D instance used in the Scene. Used to determine if the sprite is in view of the camera.</param>
-        public virtual void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Camera2D camera)
+        /// <param name="spriteRenderer">An instance of the SpriteRenderer object used to draw all game sprites.</param>
+        public virtual void Draw(SpriteRenderer spriteRenderer)
         {
-            Children.ForEach(n => n.Draw(spriteBatch, assetManager, camera));
+            Children.ForEach(n => n.Draw(spriteRenderer));
         }
 
         /// <summary>

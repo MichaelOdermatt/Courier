@@ -1,4 +1,5 @@
 ﻿using Courier.Engine;
+using Courier.Engine.Render;
 using Courier.Game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,9 +11,11 @@ namespace Courier
 
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        private SpriteBatch spriteBatch;
         private AssetManager assetManager;
         private ResolutionIndependentRenderer renderer;
         private Camera2D camera;
+        private SpriteRenderer spriteRenderer;
 
         private Level1 level;
 
@@ -21,9 +24,8 @@ namespace Courier
             IsMouseVisible = true;
             renderer = new ResolutionIndependentRenderer(this);
             assetManager = new AssetManager(Services);
-
-            // Camera is created outside the Scene since ResolutionINdependentRenderer needs a reference to it.
             camera = new Camera2D(renderer);
+
             level = new Level1(camera);
         }
 
@@ -40,7 +42,8 @@ namespace Courier
         protected override void LoadContent()
         {
             Content.RootDirectory = "Content";
-            renderer.LoadContent();
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteRenderer = new SpriteRenderer(spriteBatch, assetManager, camera);
 
             assetManager.LoadTextures();
             // TODO: use this.Content to load your game content here
@@ -62,10 +65,22 @@ namespace Courier
 
         protected override void Draw(GameTime gameTime)
         {
-            // TODO depending on if i can setup the event bus, could reduce this to a single draw method.
+            spriteBatch.Begin(
+                SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                DepthStencilState.None,
+                RasterizerState.CullNone,
+                null,
+                renderer.GetTransformationMatrix()
+            );
+
             renderer.BeginDraw();
-            level.Draw(renderer.SpriteBatch, assetManager);
-            renderer.EndDraw();
+
+            level.Draw(spriteRenderer);
+            spriteRenderer.Render();
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

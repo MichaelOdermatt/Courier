@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Courier.Engine.Render;
+using Microsoft.Xna.Framework;
 
 // Source: http://blog.roboblob.com/2013/07/27/solving-resolution-independent-rendering-and-2d-camera-using-monogame/comment-page-1/
 namespace Courier.Engine

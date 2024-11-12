@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Courier.Engine.Render;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -54,29 +55,29 @@ namespace Courier.Engine.Nodes
         /// <summary>
         /// Draws the Sprite and calls the Draw function on any child Nodes.
         /// </summary>
-        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Camera2D camera)
+        public override void Draw(SpriteRenderer spriteRenderer)
         {
             // Draw all child Nodes
-            base.Draw(spriteBatch, assetManager, camera);
+            base.Draw(spriteRenderer);
 
-            var spritePos = GlobalPosition + Offset;
-
-            // If its in world space and the sprite is not in the camera's view, don't draw it. Or if the Sprite's Visible property is false, don't draw it.
-            if ((IsWorldSpaceSprite && !camera.IsPointInCameraView(spritePos)) || !Visible)
+            if (!Visible)
             {
                 return;
             }
 
-            // If the sprite is not in world space then apply the camera's transform to it.
-            if (IsWorldSpaceSprite)
+            var spritePos = GlobalPosition + Offset;
+
+            // Add the sprite to the renderer so it can be drawn in the next draw call.
+            spriteRenderer.AddSprite(new SpriteRenderData
             {
-                spritePos = Vector2.Transform(spritePos, camera.GetViewTransformationMatrix());
-            }
-
-            var texture = assetManager.Textures[textureKey];
-            var origin = Origin ?? new Vector2(texture.Width / 2, texture.Height / 2);
-
-            spriteBatch.Draw(texture, spritePos, null, Color.White, Rotation, origin, Scale, SpriteEffects.None, layerDepth);
+                TextureKey = textureKey,
+                Position = spritePos,
+                Rotation = Rotation,
+                Origin = Origin,
+                Scale = Scale,
+                LayerDepth = layerDepth,
+                IsWorldSpaceSprite = IsWorldSpaceSprite
+            });
         }
     }
 }

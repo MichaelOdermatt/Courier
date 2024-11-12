@@ -1,6 +1,7 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
+using Courier.Engine.Render;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -33,12 +34,10 @@ namespace Courier.Game
         /// <summary>
         /// Draws the line for the Ground and calls the Draw function on any child Nodes.
         /// </summary>
-        public override void Draw(SpriteBatch spriteBatch, AssetManager assetManager, Camera2D camera)
+        public override void Draw(SpriteRenderer spriteRenderer)
         {
             // Draw all child Nodes
-            base.Draw(spriteBatch, assetManager, camera);
-
-            var texture = assetManager.Textures[textureKey];
+            base.Draw(spriteRenderer);
 
             for (int i = 0; i < lineSegments.Length; i++)
             {
@@ -47,20 +46,18 @@ namespace Courier.Game
                 var segmentRotation = MathF.Atan(segmentVector.Y / segmentVector.X);
 
                 var spritePos = GlobalPosition + lineSegments[i].StartPos;
-                // Transform the spitePos so that it is rendered as a world space Node.
-                var spritePosCameraTranslation = Vector2.Transform(spritePos, camera.GetViewTransformationMatrix());
 
-                spriteBatch.Draw(
-                    texture, 
-                    spritePosCameraTranslation,
-                    null, 
-                    Color.White, 
-                    segmentRotation, 
-                    Vector2.Zero, 
-                    segmentScale, 
-                    SpriteEffects.None, 
-                    layerDepth
-                );
+                spriteRenderer.AddSprite(new SpriteRenderData
+                {
+                    TextureKey = textureKey,
+                    Position = spritePos,
+                    Rotation = segmentRotation,
+                    Origin = Vector2.Zero,
+                    Scale = segmentScale,
+                    LayerDepth = layerDepth,
+                    IsWorldSpaceSprite = true,
+                    NeverCull = true,
+                });
             }
         }
 

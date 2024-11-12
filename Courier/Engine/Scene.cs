@@ -1,5 +1,6 @@
 ﻿using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
+using Courier.Engine.Render;
 using Courier.Game;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,14 +47,13 @@ namespace Courier.Engine
         /// <summary>
         /// Calls Draw recursively on the root node until all it's children are rendered.
         /// </summary>
-        /// <param name="spriteBatch">The SpriteBatch instance initialized in Game1.</param>
-        /// <param name="assetManager">The AssetManager instance initialized in Game1.</param>
-        public void Draw(SpriteBatch spriteBatch, AssetManager assetManager)
+        /// <param name="spriteRenderer">An instance of the SpriteRenderer object used to draw all game sprites.</param>
+        public void Draw(SpriteRenderer spriteRenderer)
         {
             // Since root is the top level node, pass Vector2.Zero as its parent position.
-            screenSpaceRoot.Draw(spriteBatch, assetManager, camera);
-            worldSpaceRoot.Draw(spriteBatch, assetManager, camera);
-            player.Draw(spriteBatch, assetManager, camera);
+            screenSpaceRoot.Draw(spriteRenderer);
+            worldSpaceRoot.Draw(spriteRenderer);
+            player.Draw(spriteRenderer);
         }
 
         /// <summary>
