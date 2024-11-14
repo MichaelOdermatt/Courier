@@ -3,6 +3,7 @@ using Courier.Engine.Collisions;
 using Courier.Engine.Extensions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
+using Courier.Game.TownCode;
 using Courier.Game.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -23,7 +24,6 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         private readonly Node enemyTarget;
         private readonly Camera2D camera;
-        private readonly FuelMeterElement fuelMeterElement;
         private readonly Action resetCurrentScene;
         private readonly PlayerInput playerInput = new PlayerInput();
         private readonly PlayerFuel playerFuel = new PlayerFuel();
@@ -44,13 +44,12 @@ namespace Courier.Game.PlayerCode
         public Player(
             Node parent, 
             Camera2D camera, 
-            FuelMeterElement fuelMeterElement, 
-            List<Town> towns, 
+            TownManager townManager,
             Action resetCurrentScene
         ) : base(parent)
         {
             playerMovement = new PlayerMovement(playerInput, playerFuel);
-            playerPackageDelivery = new PlayerPackageDelivery(towns, this);
+            playerPackageDelivery = new PlayerPackageDelivery(townManager, this);
 
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
@@ -62,7 +61,6 @@ namespace Courier.Game.PlayerCode
 
             this.resetCurrentScene = resetCurrentScene;
             this.camera = camera;
-            this.fuelMeterElement = fuelMeterElement;
         }
 
         public override void Update(GameTime gameTime)
@@ -88,7 +86,6 @@ namespace Courier.Game.PlayerCode
             }
 
             Velocity = playerMovement.CalcNewVelocity(gameTime, Velocity);
-            fuelMeterElement.UpdateMeterFill(playerFuel.FuelAmountScaled);
             ApplyVelocity();
 
             // Update the sprites rotation to match the angle of attack.

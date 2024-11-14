@@ -4,6 +4,7 @@ using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.EnemyCode;
 using Courier.Game.PlayerCode;
+using Courier.Game.TownCode;
 using Courier.Game.UI;
 using Microsoft.Xna.Framework;
 using System;
@@ -18,8 +19,6 @@ namespace Courier.Game
 {
     public class Level1 : Scene
     {
-        private FuelMeterElement fuelMeterElement;
-
         /// <summary>
         /// The points to use for the level's Ground object.
         /// </summary>
@@ -64,7 +63,7 @@ namespace Courier.Game
         /// </summary>
         private void CreateScreenSpaceNodes()
         {
-            fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
+            var fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
             fuelMeterElement.LocalPosition = new Vector2(10, 10);
 
             var skyBackground = new SkyBackground(screenSpaceRoot);
@@ -79,12 +78,12 @@ namespace Courier.Game
         private void CreateGameplayNodes()
         {
             var towns = CreateTowns();
+            var townManager = new TownManager(worldSpaceRoot, towns);
 
             Player player = new Player(
                 null,
                 camera,
-                fuelMeterElement,
-                towns,
+                townManager,
                 () => this.Initialize()
             );
             this.player = player;
@@ -96,7 +95,7 @@ namespace Courier.Game
             worldSpaceRoot.Children.Add(ground);
             worldSpaceRoot.Children.Add(bulletPool);
             worldSpaceRoot.Children.AddRange(enemies);
-            worldSpaceRoot.Children.AddRange(towns);
+            worldSpaceRoot.Children.Add(townManager);
         }
 
         /// <summary>

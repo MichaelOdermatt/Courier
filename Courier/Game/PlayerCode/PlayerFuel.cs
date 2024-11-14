@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PubSub;
+using Courier.Game.EventData;
 
 namespace Courier.Game.PlayerCode
 {
     public class PlayerFuel
     {
+        private readonly Hub hub;
+
         private const float MaxFuelAmount = 100f;
         private const float FuelDepletionAmount = 10f;
 
@@ -19,6 +23,11 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public float FuelAmountScaled { get => fuelAmount / MaxFuelAmount; }
 
+        public PlayerFuel()
+        {
+            hub = Hub.Default;
+        }
+
         /// <summary>
         /// Depletes the fuel amount by 1 increment of the FuelDepletionAmount.
         /// </summary>
@@ -27,6 +36,10 @@ namespace Courier.Game.PlayerCode
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             fuelAmount -= FuelDepletionAmount * deltaTime;
+            hub.Publish(new UpdateFuelEvent
+            {
+                newFuelLevel = FuelAmountScaled,
+            });
         }
 
         public bool IsOutOfFuel()

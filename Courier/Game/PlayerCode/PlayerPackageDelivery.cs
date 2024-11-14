@@ -5,26 +5,24 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Courier.Game.TownCode;
 
 namespace Courier.Game.PlayerCode
 {
     public class PlayerPackageDelivery
     {
+        private readonly TownManager townManager;
         private readonly Player player;
-        /// <summary>
-        /// A reference to all the Towns in the current level.
-        /// </summary>
-        private readonly List<Town> levelTowns;
 
         /// <summary>
         /// The range that the Player must be in of a Town to successfully deliver a package.
         /// </summary>
         private const float SuccessfulDeliveryTownRange = 150f;
 
-        public PlayerPackageDelivery(List<Town> towns, Player player)
+        public PlayerPackageDelivery(TownManager townManager, Player player)
         {
+            this.townManager = townManager;
             this.player = player;
-            levelTowns = towns;
         }
 
         /// <summary>
@@ -32,7 +30,7 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public void AttemptDeliverPackage()
         {
-            Town nearestTown = GetNearestTown();
+            Town nearestTown = townManager.GetNearestTown(player.GlobalPosition);
             float distanceToNearestTown = (nearestTown.GlobalPosition - player.GlobalPosition).Length();
 
             if (distanceToNearestTown <= SuccessfulDeliveryTownRange)
@@ -40,27 +38,6 @@ namespace Courier.Game.PlayerCode
                 nearestTown.DeliverPackage();
                 return;
             }
-        }
-
-        /// <summary>
-        /// Returns the closest town to the player from the levelTowns list.
-        /// </summary>
-        private Town GetNearestTown()
-        {
-            Town nearestTown = levelTowns.First();
-            float distanceToNearestTown = (nearestTown.GlobalPosition - player.GlobalPosition).Length();
-
-            foreach (Town town in levelTowns)
-            {
-                float distanceTo = (town.GlobalPosition - player.GlobalPosition).Length();
-                if (distanceTo <= distanceToNearestTown)
-                {
-                    nearestTown = town;
-                    distanceToNearestTown = distanceTo;
-                }
-            }
-
-            return nearestTown;
         }
     }
 }
