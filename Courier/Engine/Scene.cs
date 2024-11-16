@@ -86,6 +86,7 @@ namespace Courier.Engine
                 if (player.CollisionShape.Intersects(collisionNode.CollisionShape))
                 {
                     player.OnCollision(collisionNode);
+                    collisionNode.OnCollision(player);
                 }
             }
         }

@@ -84,5 +84,10 @@ namespace Courier.Game
 
             return lineSegments;
         }
+
+        public void OnCollision(ICollisionNode collisionNode)
+        {
+            // Do nothing
+        }
     }
 }

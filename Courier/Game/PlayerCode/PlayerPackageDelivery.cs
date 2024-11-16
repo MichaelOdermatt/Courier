@@ -13,16 +13,19 @@ namespace Courier.Game.PlayerCode
     {
         private readonly TownManager townManager;
         private readonly Player player;
+        private readonly PlayerFuel playerFuel;
 
         /// <summary>
         /// The range that the Player must be in of a Town to successfully deliver a package.
         /// </summary>
         private const float SuccessfulDeliveryTownRange = 150f;
+        private const float FuelToAddOnSuccessfulDelivery = 20f;
 
-        public PlayerPackageDelivery(TownManager townManager, Player player)
+        public PlayerPackageDelivery(TownManager townManager, Player player, PlayerFuel playerFuel)
         {
             this.townManager = townManager;
             this.player = player;
+            this.playerFuel = playerFuel;
         }
 
         /// <summary>
@@ -35,7 +38,11 @@ namespace Courier.Game.PlayerCode
 
             if (distanceToNearestTown <= SuccessfulDeliveryTownRange)
             {
-                nearestTown.DeliverPackage();
+                var wasDeliverySuccessful = nearestTown.AttemptDeliverPackage();
+                if (wasDeliverySuccessful)
+                {
+                    playerFuel.AddFuel(FuelToAddOnSuccessfulDelivery);
+                }
                 return;
             }
         }

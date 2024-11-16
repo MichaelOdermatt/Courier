@@ -14,7 +14,7 @@ namespace Courier.Game.PlayerCode
         private readonly Hub hub;
 
         private const float MaxFuelAmount = 100f;
-        private const float FuelDepletionAmount = 10f;
+        private const float FuelDepletionAmount = 30f;
 
         private float fuelAmount = 100f;
 
@@ -26,6 +26,19 @@ namespace Courier.Game.PlayerCode
         public PlayerFuel()
         {
             hub = Hub.Default;
+        }
+
+        /// <summary>
+        /// Adds the given amount of fuel to the players fuel amount.
+        /// </summary>
+        public void AddFuel(float newFuelAmount)
+        {
+            var updatedFuelAmount = fuelAmount + newFuelAmount;
+            fuelAmount = updatedFuelAmount >= MaxFuelAmount ? MaxFuelAmount : updatedFuelAmount;
+            hub.Publish(new UpdateFuelEvent
+            {
+                newFuelLevel = FuelAmountScaled,
+            });
         }
 
         /// <summary>

@@ -39,6 +39,7 @@ namespace Courier.Engine
             Textures.Add("BulletLarge", contentManager.Load<Texture2D>($"{spritesDirectory}BulletLarge"));
             Textures.Add("LineTexture", contentManager.Load<Texture2D>($"{spritesDirectory}LineTexture"));
             Textures.Add("Town", contentManager.Load<Texture2D>($"{spritesDirectory}Town"));
+            Textures.Add("TownCelebrate", contentManager.Load<Texture2D>($"{spritesDirectory}TownCelebrate"));
             Textures.Add("Sky", contentManager.Load<Texture2D>($"{spritesDirectory}Sky"));
         }
     }

@@ -17,5 +17,11 @@ namespace Courier.Engine.Collisions
         /// Boolean value representing if collision checking should be performed on this CollisionNode.
         /// </summary>
         bool CollisionsEnabled { get; }
+
+        /// <summary>
+        /// Called when notifying the ICollisionNode of a collision with another ICollisionNode
+        /// </summary>
+        /// <param name="collisionNode">The object which has collided with this Node.</param>
+        public void OnCollision(ICollisionNode collisionNode);
     }
 }

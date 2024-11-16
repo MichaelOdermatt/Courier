@@ -24,6 +24,7 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         private readonly Node enemyTarget;
         private readonly Camera2D camera;
+        // TODO instead of using a callback for resetCurrentScene maybe submit an event to a scene manager?
         private readonly Action resetCurrentScene;
         private readonly PlayerInput playerInput = new PlayerInput();
         private readonly PlayerFuel playerFuel = new PlayerFuel();
@@ -49,7 +50,7 @@ namespace Courier.Game.PlayerCode
         ) : base(parent)
         {
             playerMovement = new PlayerMovement(playerInput, playerFuel);
-            playerPackageDelivery = new PlayerPackageDelivery(townManager, this);
+            playerPackageDelivery = new PlayerPackageDelivery(townManager, this, playerFuel);
 
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
@@ -93,9 +94,7 @@ namespace Courier.Game.PlayerCode
             sprite.Rotation = angleOfAttack;
 
             UpdateEnemyTargetPosition();
-
-            // Update the camera position to always follow the Player.
-            camera.SetPosition(GlobalPosition);
+            UpdateCameraPosition();
         }
 
         public override void OnCollision(ICollisionNode collisionNode)
@@ -103,7 +102,6 @@ namespace Courier.Game.PlayerCode
             if (collisionNode is BulletBase bulletNode)
             {
                 playerHealth.reduceHealth(1);
-                bulletNode.Deactivate();
             } else if (collisionNode is Ground groundNode)
             {
                 playerHealth.reduceHealth(2);
@@ -113,6 +111,17 @@ namespace Courier.Game.PlayerCode
             {
                 playerState = PlayerState.Destroyed;
             }
+        }
+
+        private void UpdateCameraPosition()
+        {
+            var newCameraPos = GlobalPosition;
+            if (newCameraPos.Y <= -200)
+            {
+                newCameraPos.Y = -200;
+            }
+            // Update the camera position to always follow the Player.
+            camera.SetPosition(newCameraPos);
         }
 
         /// <summary>

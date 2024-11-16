@@ -17,12 +17,12 @@ namespace Courier.Game.PlayerCode
 
         private Vector2 gravityDirection = Vector2.UnitY;
 
-        private const float TerminalVelocity = 12f;
+        private const float TerminalVelocity = 10f;
         private const float ThrustPower = 100f;
         private const float GravityPower = 5f;
-        private const float LiftPower = 0.1f;
-        private const float InducedDragPower = 0.1f;
-        private const float DragPower = 0.09f;
+        private const float LiftPower = 0.12f;
+        private const float InducedDragPower = 0.2f;
+        private const float DragPower = 0.8f;
 
         public PlayerMovement(PlayerInput playerInput, PlayerFuel playerFuel)
         {

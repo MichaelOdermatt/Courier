@@ -75,5 +75,10 @@ namespace Courier.Game.BulletCode
             // Apply the velocity to the Bullet.
             LocalPosition += velocity;
         }
+
+        public void OnCollision(ICollisionNode collisionNode)
+        {
+            Deactivate();
+        }
     }
 }

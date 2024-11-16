@@ -11,22 +11,41 @@ namespace Courier.Game.TownCode
 {
     public class Town : Node
     {
-        public readonly Sprite sprite;
+        public Sprite sprite;
+        public readonly Vector2 spriteOffset;
 
         private bool hasPackageBeenDelivered;
 
         public Town(Node parent) : base(parent)
         {
+            spriteOffset = new Vector2(0, -23);
             sprite = new Sprite(this, "Town")
             {
-                Offset = new Vector2(0, -11)
+                Offset = spriteOffset,
             };
             Children.Add(sprite);
         }
 
-        public void DeliverPackage()
+        /// <summary>
+        /// Attempts to deliver the package to the town. Returns a bool representing if the delivery was successful or not.
+        /// </summary>
+        public bool AttemptDeliverPackage()
         {
+            if (hasPackageBeenDelivered)
+            {
+                return false;
+            }
+
+            // Update the town sprite
+            Children.Remove(sprite);
+            sprite = new Sprite(this, "TownCelebrate")
+            {
+                Offset = spriteOffset,
+            };
+            Children.Add(sprite);
+
             hasPackageBeenDelivered = true;
+            return true;
         }
     }
 }
