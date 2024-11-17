@@ -14,7 +14,7 @@ namespace Courier.Game.TownCode
         public Sprite sprite;
         public readonly Vector2 spriteOffset;
 
-        private bool hasPackageBeenDelivered;
+        private bool hasParcelBeenDelivered;
 
         public Town(Node parent) : base(parent)
         {
@@ -27,11 +27,11 @@ namespace Courier.Game.TownCode
         }
 
         /// <summary>
-        /// Attempts to deliver the package to the town. Returns a bool representing if the delivery was successful or not.
+        /// Attempts to deliver the parcel to the town. Returns a bool representing if the delivery was successful or not.
         /// </summary>
         public bool AttemptDeliverPackage()
         {
-            if (hasPackageBeenDelivered)
+            if (hasParcelBeenDelivered)
             {
                 return false;
             }
@@ -44,7 +44,7 @@ namespace Courier.Game.TownCode
             };
             Children.Add(sprite);
 
-            hasPackageBeenDelivered = true;
+            hasParcelBeenDelivered = true;
             return true;
         }
     }

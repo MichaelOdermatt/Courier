@@ -48,9 +48,9 @@ namespace Courier.Game.PlayerCode
         }
 
         /// <summary>
-        /// Reads the Players input and returns true if the Player pressed the deliver package button.
+        /// Reads the Players input and returns true if the Player pressed the deliver parcel button.
         /// </summary>
-        public bool HasPlayerPressedDeliverPackageKey()
+        public bool HasPlayerPressedDeliverParcelKey()
         {
             return HasPlayerPressedKey(Keys.Enter);
         }

@@ -26,23 +26,35 @@ namespace Courier.Game
         {
             new Vector2(0, 300),
             new Vector2(100, 400),
-            new Vector2(300, 400),
-            new Vector2(400, 450),
-            new Vector2(800, 300),
-            new Vector2(1000, 500),
-            new Vector2(1200, 450),
-            new Vector2(1300, 400),
-            new Vector2(1400, 400),
-            new Vector2(1600, 400),
-            new Vector2(1800, 350),
-            new Vector2(1900, 450),
-            new Vector2(2200, 500),
-            new Vector2(2400, 500),
-            new Vector2(2600, 400),
-            new Vector2(3200, 550),
-            new Vector2(3500, 450),
-            new Vector2(3700, 500),
-            new Vector2(4000, 400),
+            new Vector2(600, 400),
+            new Vector2(750, 450),
+            new Vector2(950, 400),
+            new Vector2(1300, 300),
+            new Vector2(1700, 300),
+            new Vector2(2100, 150),
+            new Vector2(2300, 100),
+            new Vector2(2500, 300),
+            new Vector2(2700, 350),
+            new Vector2(3000, 350),
+            new Vector2(3500, 100),
+            new Vector2(3800, 100),
+            new Vector2(4200, 0),
+            new Vector2(4600, 100),
+            new Vector2(4800, 100),
+            new Vector2(5200, -150),
+            new Vector2(5600, -150),
+            new Vector2(6000, -250),
+            new Vector2(6400, -50),
+            new Vector2(6700, 200),
+            new Vector2(7100, 350),
+            new Vector2(7300, 450),
+            new Vector2(7600, 600),
+            new Vector2(7900, 850),
+            new Vector2(8100, 900),
+            new Vector2(8200, 800),
+            new Vector2(8300, 750),
+            new Vector2(8500, 775),
+            new Vector2(8600, 850),
         };
 
         public Level1(Camera2D camera) : base(camera)
@@ -79,11 +91,11 @@ namespace Courier.Game
         {
             var towns = CreateTowns();
             var townManager = new TownManager(worldSpaceRoot, towns);
+            var parcelManager = new ParcelManager(worldSpaceRoot);
 
             Player player = new Player(
                 null,
                 camera,
-                townManager,
                 () => this.Initialize()
             );
             this.player = player;
@@ -96,6 +108,7 @@ namespace Courier.Game
             worldSpaceRoot.Children.Add(bulletPool);
             worldSpaceRoot.Children.AddRange(enemies);
             worldSpaceRoot.Children.Add(townManager);
+            worldSpaceRoot.Children.Add(parcelManager);
         }
 
         /// <summary>

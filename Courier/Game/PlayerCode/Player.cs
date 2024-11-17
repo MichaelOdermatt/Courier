@@ -7,6 +7,7 @@ using Courier.Game.TownCode;
 using Courier.Game.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using PubSub;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,10 +28,10 @@ namespace Courier.Game.PlayerCode
         // TODO instead of using a callback for resetCurrentScene maybe submit an event to a scene manager?
         private readonly Action resetCurrentScene;
         private readonly PlayerInput playerInput = new PlayerInput();
-        private readonly PlayerFuel playerFuel = new PlayerFuel();
+        private readonly PlayerFuel playerFuel;
         private readonly PlayerMovement playerMovement;
         private readonly PlayerHealth playerHealth = new PlayerHealth();
-        private readonly PlayerPackageDelivery playerPackageDelivery;
+        private readonly PlayerParcelDelivery playerParcelDelivery;
 
         private PlayerState playerState = PlayerState.Alive;
 
@@ -45,12 +46,14 @@ namespace Courier.Game.PlayerCode
         public Player(
             Node parent, 
             Camera2D camera, 
-            TownManager townManager,
             Action resetCurrentScene
         ) : base(parent)
         {
+            var hub = Hub.Default;
+
+            playerFuel = new PlayerFuel(hub);
             playerMovement = new PlayerMovement(playerInput, playerFuel);
-            playerPackageDelivery = new PlayerPackageDelivery(townManager, this, playerFuel);
+            playerParcelDelivery = new PlayerParcelDelivery(this, playerFuel, hub);
 
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
@@ -81,9 +84,9 @@ namespace Courier.Game.PlayerCode
                 return; 
             }
 
-            if (playerInput.HasPlayerPressedDeliverPackageKey())
+            if (playerInput.HasPlayerPressedDeliverParcelKey())
             {
-                playerPackageDelivery.AttemptDeliverPackage();
+                playerParcelDelivery.DropParcel();
             }
 
             Velocity = playerMovement.CalcNewVelocity(gameTime, Velocity);

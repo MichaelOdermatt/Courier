@@ -23,9 +23,9 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public float FuelAmountScaled { get => fuelAmount / MaxFuelAmount; }
 
-        public PlayerFuel()
+        public PlayerFuel(Hub hub)
         {
-            hub = Hub.Default;
+            this.hub = hub;
         }
 
         /// <summary>

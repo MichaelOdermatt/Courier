@@ -15,7 +15,10 @@ namespace Courier.Engine
 
         private double currentTime = 0.0;
 
-        private bool isRunning = false;
+        /// <summary>
+        /// Bool keeps track of if the timer is currently running.
+        /// </summary>
+        public bool IsRunning { get; private set; } = false;
 
         /// <summary>
         /// If true the timer will restart once the set duration has elapsed.
@@ -38,7 +41,7 @@ namespace Courier.Engine
         /// </summary>
         public void Start()
         {
-            isRunning = true; 
+            IsRunning = true; 
         }
 
         /// <summary>
@@ -46,7 +49,7 @@ namespace Courier.Engine
         /// </summary>
         public void Tick(GameTime gameTime)
         {
-            if (!isRunning)
+            if (!IsRunning)
             {
                 return;
             }
@@ -58,7 +61,7 @@ namespace Courier.Engine
                 action.Invoke();
                 if (!Loop)
                 {
-                    isRunning = false;
+                    IsRunning = false;
                 }
             }
         }

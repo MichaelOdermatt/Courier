@@ -41,6 +41,7 @@ namespace Courier.Engine
             Textures.Add("Town", contentManager.Load<Texture2D>($"{spritesDirectory}Town"));
             Textures.Add("TownCelebrate", contentManager.Load<Texture2D>($"{spritesDirectory}TownCelebrate"));
             Textures.Add("Sky", contentManager.Load<Texture2D>($"{spritesDirectory}Sky"));
+            Textures.Add("Parcel", contentManager.Load<Texture2D>($"{spritesDirectory}Parcel"));
         }
     }
 }

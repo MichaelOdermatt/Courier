@@ -46,7 +46,7 @@ namespace Courier.Game.UI
         /// <summary>
         /// Updates the fill amount displayed by the meter.
         /// </summary>
-        public void OnUpdateFuelEvent(UpdateFuelEvent eventData)
+        private void OnUpdateFuelEvent(UpdateFuelEvent eventData)
         {
             var clampedFillAmount = Math.Clamp(eventData.newFuelLevel, 0, 1);
             var fillAmountWidth = (clampedFillAmount * maxFillWidth) - minFillWidth;
