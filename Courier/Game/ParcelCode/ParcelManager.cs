@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Game
+namespace Courier.Game.ParcelCode
 {
     public class ParcelManager : Node
     {
@@ -55,7 +55,6 @@ namespace Courier.Game
         /// </summary>
         private void DestroyParcel(Parcel parcel)
         {
-            // TODO use disposable?? Is there anything else I should add disposable to?
             Children.Remove(parcel);
         }
     }

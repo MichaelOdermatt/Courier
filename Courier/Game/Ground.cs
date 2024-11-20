@@ -1,5 +1,6 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Nodes;
 using Courier.Engine.Render;
 using Microsoft.Xna.Framework;
@@ -12,8 +13,10 @@ using System.Threading.Tasks;
 
 namespace Courier.Game
 {
-    public class Ground : Node, ICollisionNode
+    public class Ground : Node
     {
+        private readonly CollisionNode collisionNode;
+
         private Vector2[] points;
 
         private string textureKey = "LineTexture";
@@ -21,14 +24,14 @@ namespace Courier.Game
         private float lineThickness = 5.0f;
         private LineSegment[] lineSegments;
 
-        public ICollisionShape CollisionShape { get; set; }
-        public bool CollisionsEnabled { get; set; } = true;
-
         public Ground(Node parent, Vector2[] points): base(parent)
         {
             this.points = points;
-            CollisionShape = new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down);
             lineSegments = CreateLineSegments(points);
+
+            var collisionShape = new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down);
+            collisionNode = new CollisionNode(this, collisionShape);
+            Children.Add(collisionNode);
         }
 
         /// <summary>

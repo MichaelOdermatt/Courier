@@ -1,7 +1,9 @@
 ﻿using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Nodes;
 using Courier.Engine.Render;
 using Courier.Game;
+using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -27,7 +29,7 @@ namespace Courier.Engine
         /// <summary>
         /// The player Node for the scene. Does not exist in the game tree (as a descendant of the root Node).
         /// </summary>
-        protected PlayerController player;
+        protected Player player;
 
         /// <summary>
         /// The camera used in the Scene.
@@ -66,27 +68,31 @@ namespace Courier.Engine
             worldSpaceRoot.Update(gameTime);
             player.Update(gameTime);
 
-            // Only need to check collisions on world space Nodes.
-            var allNodes = worldSpaceRoot.GetSelfAndAllChildren();
+            var allNodes = player.GetSelfAndAllChildren();
+            allNodes.AddRange(worldSpaceRoot.GetSelfAndAllChildren());
             var enabledCollisionNodes = allNodes.OfType<ICollisionNode>().Where(c => c.CollisionsEnabled);
 
-            CheckPlayerCollisions(player, enabledCollisionNodes);
+            CheckSceneCollisions(enabledCollisionNodes);
         }
 
         /// <summary>
-        /// Checks if the given PlayerController collides with anything in the given list of ICollisionNodes. If there is
-        /// a collision then notify the PlayerController of the collision.
+        /// Checks for collisions between the given list of ICollisionNodes.
         /// </summary>
-        /// <param name="playerController">The PlayerController to check for collisions against.</param>
         /// <param name="collisionNodes">The list of ICollisionNodes that could be colliding with the PlayerController.</param>
-        private void CheckPlayerCollisions(PlayerController playerController, IEnumerable<ICollisionNode> collisionNodes)
+        private void CheckSceneCollisions(IEnumerable<ICollisionNode> collisionNodes)
         {
-            foreach (ICollisionNode collisionNode in collisionNodes) 
+            for (int i = 0; i < collisionNodes.Count() - 1; i++)
             {
-                if (player.CollisionShape.Intersects(collisionNode.CollisionShape))
+                for (int j = i + 1; j < collisionNodes.Count(); j++)
                 {
-                    player.OnCollision(collisionNode);
-                    collisionNode.OnCollision(player);
+                    var firstCollisionNode = collisionNodes.ElementAt(i);
+                    var secondCollisionNode = collisionNodes.ElementAt(j);
+                    // If the collision nodes intersect, notify them.
+                    if (firstCollisionNode.CollisionShape.Intersects(secondCollisionNode.CollisionShape))
+                    {
+                        firstCollisionNode.Collide(new CollisionEventArgs() { collisionNode = secondCollisionNode });
+                        secondCollisionNode.Collide(new CollisionEventArgs() { collisionNode = firstCollisionNode });
+                    }
                 }
             }
         }

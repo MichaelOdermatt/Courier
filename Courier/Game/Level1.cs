@@ -3,6 +3,7 @@ using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.EnemyCode;
+using Courier.Game.ParcelCode;
 using Courier.Game.PlayerCode;
 using Courier.Game.TownCode;
 using Courier.Game.UI;
@@ -116,27 +117,28 @@ namespace Courier.Game
         /// </summary>
         private List<EnemyBase> CreateEnemies(Player player, BulletPool bulletPool)
         {
+            float enemyYOffset = 10;
             return new List<EnemyBase>
             {
                 // Gunner 1
                 new Gunner(worldSpaceRoot, player, bulletPool)
                 {
-                    LocalPosition = groundPoints[4],
+                    LocalPosition = new Vector2(groundPoints[4].X, groundPoints[4].Y - enemyYOffset)
                 },
                 // Gunner 2
                 new Gunner(worldSpaceRoot, player, bulletPool)
                 {
-                    LocalPosition = groundPoints[9],
+                    LocalPosition = new Vector2(groundPoints[9].X, groundPoints[9].Y - enemyYOffset)
                 },
                 // Tank 1
                 new Tank(worldSpaceRoot, player, bulletPool)
                 {
-                    LocalPosition = groundPoints[5],
+                    LocalPosition = new Vector2(groundPoints[5].X, groundPoints[5].Y - enemyYOffset)
                 },
                 // Tank 2
                 new Tank(worldSpaceRoot, player, bulletPool)
                 {
-                    LocalPosition = groundPoints[10],
+                    LocalPosition = new Vector2(groundPoints[10].X, groundPoints[10].Y - enemyYOffset)
                 },
             };
         }

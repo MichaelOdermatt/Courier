@@ -1,4 +1,5 @@
 ﻿using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Nodes;
 using Microsoft.Xna.Framework;
 using System;
@@ -9,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace Courier.Game.BulletCode
 {
-    public abstract class BulletBase : Node, ICollisionNode
+    public abstract class BulletBase : Node
     {
         private readonly Sprite sprite;
+        private readonly CollisionNode collisionNode;
 
         private Vector2 bulletDirection;
 
@@ -21,8 +23,6 @@ namespace Courier.Game.BulletCode
         /// Boolean representing if the Bullet is active. i.e. is visible, moving, and able to collide with the player.
         /// </summary>
         public bool IsActive { get; set; } = false;
-        public ICollisionShape CollisionShape { get; set; }
-        public bool CollisionsEnabled { get; set; } = false;
 
         public BulletBase(Node parent, string textureKey, float bulletRadius, float bulletSpeed) : base(parent)
         {
@@ -30,7 +30,11 @@ namespace Courier.Game.BulletCode
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
 
-            CollisionShape = new CollisionSphere(this, bulletRadius);
+            var collisionShape = new CollisionSphere(this, bulletRadius);
+            collisionNode = new CollisionNode(this, collisionShape);
+            collisionNode.CollisionsEnabled = false;
+            collisionNode.OnCollision += OnCollision;
+            Children.Add(collisionNode);
 
             // The bullet starts as inactive, so hide the sprite.
             sprite.Visible = false;
@@ -46,7 +50,7 @@ namespace Courier.Game.BulletCode
             LocalPosition = initialPosition;
             bulletDirection = direction;
             IsActive = true;
-            CollisionsEnabled = true;
+            collisionNode.CollisionsEnabled = true;
             sprite.Visible = true;
         }
 
@@ -56,7 +60,7 @@ namespace Courier.Game.BulletCode
         public void Deactivate()
         {
             IsActive = false;
-            CollisionsEnabled = false;
+            collisionNode.CollisionsEnabled = false;
             sprite.Visible = false;
         }
 
@@ -76,7 +80,7 @@ namespace Courier.Game.BulletCode
             LocalPosition += velocity;
         }
 
-        public void OnCollision(ICollisionNode collisionNode)
+        public void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
             Deactivate();
         }

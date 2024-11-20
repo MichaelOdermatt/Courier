@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine.Collisions
+namespace Courier.Engine.Collisions.Interfaces
 {
     /// <summary>
     /// Interface to be implemented by all Collision Shapes. Collision Shapes in this game are only used to detect intersections and not for creating collision simulations.

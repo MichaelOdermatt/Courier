@@ -1,5 +1,6 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Extensions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
@@ -17,9 +18,10 @@ using System.Threading.Tasks;
 
 namespace Courier.Game.PlayerCode
 {
-    public class Player : PlayerController
+    public class Player : Node
     {
         private readonly Sprite sprite;
+        private readonly CollisionNode collisionNode;
         /// <summary>
         /// A Node which has the Players position with an additional offset. This is what Enemies should fire at.
         /// </summary>
@@ -61,7 +63,10 @@ namespace Courier.Game.PlayerCode
             enemyTarget = new Node(this);
             Children.Add(enemyTarget);
 
-            CollisionShape = new CollisionSphere(this, 6f);
+            var collisionShape = new CollisionSphere(this, 6f);
+            collisionNode = new CollisionNode(this, collisionShape);
+            collisionNode.OnCollision += OnCollision;
+            Children.Add(collisionNode);
 
             this.resetCurrentScene = resetCurrentScene;
             this.camera = camera;
@@ -89,23 +94,23 @@ namespace Courier.Game.PlayerCode
                 playerParcelDelivery.DropParcel();
             }
 
-            Velocity = playerMovement.CalcNewVelocity(gameTime, Velocity);
-            ApplyVelocity();
+            playerMovement.UpdateMovement(gameTime);
+            // Apply the velocity to the players position.
+            LocalPosition += playerMovement.Velocity;
 
             // Update the sprites rotation to match the angle of attack.
-            var angleOfAttack = playerMovement.CalcAngleOfAttack(Velocity);
-            sprite.Rotation = angleOfAttack;
+            sprite.Rotation = playerMovement.AngleOfAttack;
 
             UpdateEnemyTargetPosition();
             UpdateCameraPosition();
         }
 
-        public override void OnCollision(ICollisionNode collisionNode)
+        public void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
-            if (collisionNode is BulletBase bulletNode)
+            if (eventArgs.collisionNode is BulletBase bulletNode)
             {
                 playerHealth.reduceHealth(1);
-            } else if (collisionNode is Ground groundNode)
+            } else if (eventArgs.collisionNode is Ground groundNode)
             {
                 playerHealth.reduceHealth(2);
             }
@@ -132,10 +137,10 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         private void UpdateEnemyTargetPosition()
         {
-            var distanceFromPlayer = Velocity.Length() / SpeedAtMaxEnemyTargetDistance * MaxEnemyTargetDistance;
+            var distanceFromPlayer = playerMovement.Velocity.Length() / SpeedAtMaxEnemyTargetDistance * MaxEnemyTargetDistance;
 
             distanceFromPlayer = Math.Clamp(distanceFromPlayer, 0, MaxEnemyTargetDistance);
-            var playerXDirectionSign = MathF.Sign(Velocity.X);
+            var playerXDirectionSign = MathF.Sign(playerMovement.Velocity.X);
             enemyTarget.LocalPosition = new Vector2(distanceFromPlayer * playerXDirectionSign, 0);
         }
     }

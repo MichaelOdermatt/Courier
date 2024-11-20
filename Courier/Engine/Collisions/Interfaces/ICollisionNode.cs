@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine.Collisions
+namespace Courier.Engine.Collisions.Interfaces
 {
     /// <summary>
     /// Nodes that implement this interface are ones that have collision checks and can collide with other Nodes.
@@ -18,10 +18,12 @@ namespace Courier.Engine.Collisions
         /// </summary>
         bool CollisionsEnabled { get; }
 
+        public event EventHandler<CollisionEventArgs> OnCollision;
+
         /// <summary>
-        /// Called when notifying the ICollisionNode of a collision with another ICollisionNode
+        /// Called when notifying the ICollisionNode of a collision with another ICollisionNode.
         /// </summary>
-        /// <param name="collisionNode">The object which has collided with this Node.</param>
-        public void OnCollision(ICollisionNode collisionNode);
+        /// <param name="e">The CollisionEventArgs which contain a reference to the colliding Node.</param>
+        public void Collide(CollisionEventArgs e);
     }
 }

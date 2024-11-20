@@ -24,6 +24,9 @@ namespace Courier.Game.PlayerCode
         private const float InducedDragPower = 0.3f;
         private const float DragPower = 0.8f;
 
+        public Vector2 Velocity { get; private set; } = Vector2.Zero;
+        public float AngleOfAttack { get; private set; } = 0f;
+
         public PlayerMovement(PlayerInput playerInput, PlayerFuel playerFuel)
         {
             this.playerInput = playerInput;
@@ -31,12 +34,12 @@ namespace Courier.Game.PlayerCode
         }
 
         /// <summary>
-        /// Calculate and return the new velocity value for the Update.
+        /// Calculate and update the new movement values for this Update call.
         /// </summary>
         /// <param name="gameTime">The gameTime object.</param>
         /// <param name="velocity">The players old velocity.</param>
         /// <returns></returns>
-        public Vector2 CalcNewVelocity(GameTime gameTime, Vector2 velocity)
+        public void UpdateMovement(GameTime gameTime)
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -46,10 +49,10 @@ namespace Courier.Game.PlayerCode
             var steeringDirection = playerInput.GetPlayerSteeringDirection();
             var steeringAmount = steeringDirection * RotateSpeed * deltaTime;
 
-            velocity = velocity.Rotate(steeringAmount);
+            var newVelocity = Velocity.Rotate(steeringAmount);
 
-            var normalizedVelocity = velocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(velocity);
-            var angleOfAttack = CalcAngleOfAttack(velocity);
+            var normalizedVelocity = newVelocity == Vector2.Zero ? Vector2.Zero : Vector2.Normalize(newVelocity);
+            var angleOfAttack = CalcAngleOfAttack(newVelocity);
             var normalizedAngleOfAttack = NormalizeAngleOfAttack(angleOfAttack);
 
             var gravity = gravityDirection * GravityPower;
@@ -61,31 +64,32 @@ namespace Courier.Game.PlayerCode
             {
                 playerFuel.DepleteFuel(gameTime);
                 var thrust = normalizedVelocity * (ThrustPower * deltaTime);
-                velocity += thrust * deltaTime;
+                newVelocity += thrust * deltaTime;
             }
 
             // Apply gravity.
-            velocity += gravity * deltaTime;
+            newVelocity += gravity * deltaTime;
 
             // Apply lift.
-            velocity += lift * deltaTime;
+            newVelocity += lift * deltaTime;
 
             // Apply Drag.
-            velocity += drag * deltaTime;
+            newVelocity += drag * deltaTime;
 
             // Cap velocity to the terminal velocty value.
-            if (velocity.Length() >= TerminalVelocity)
+            if (newVelocity.Length() >= TerminalVelocity)
             {
-                velocity = Vector2.Normalize(velocity) * TerminalVelocity;
+                newVelocity = Vector2.Normalize(newVelocity) * TerminalVelocity;
             }
 
-            return velocity;
+            Velocity = newVelocity;
+            AngleOfAttack = angleOfAttack;
         }
 
         /// <summary>
         /// Calculate and return the Players angle of attack.
         /// </summary>
-        public float CalcAngleOfAttack(Vector2 velocity)
+        private float CalcAngleOfAttack(Vector2 velocity)
         {
             return MathF.Atan2(velocity.Y, velocity.X);
         }
