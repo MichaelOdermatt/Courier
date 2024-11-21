@@ -38,8 +38,14 @@ namespace Courier.Engine.Collisions
         /// <inheritdoc/>
         public bool Intersects(ICollisionShape collisionShape)
         {
-            // Throwing a NotImplementedException since we don't need to wory about calling intersects on a CollisionPolygon at the moment.
-            throw new NotImplementedException();
+            if (collisionShape is CollisionSphere collisionSphere)
+            {
+                return collisionShape.Intersects(this);
+            } else
+            {
+                // Throwing a NotImplementedException since we don't need to wory about calling intersects on a CollisionPolygon at the moment.
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -64,7 +64,7 @@ namespace Courier.Game.PlayerCode
             Children.Add(enemyTarget);
 
             var collisionShape = new CollisionSphere(this, 6f);
-            collisionNode = new CollisionNode(this, collisionShape);
+            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Player);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);
 
@@ -107,12 +107,17 @@ namespace Courier.Game.PlayerCode
 
         public void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
-            if (eventArgs.collisionNode is BulletBase bulletNode)
+            switch (eventArgs.collisionNode.CollisionNodeType)
             {
-                playerHealth.reduceHealth(1);
-            } else if (eventArgs.collisionNode is Ground groundNode)
-            {
-                playerHealth.reduceHealth(2);
+                case CollisionNodeType.SmallBullet:
+                    playerHealth.reduceHealth(1);
+                    break;
+                case CollisionNodeType.LargeBullet:
+                    playerHealth.reduceHealth(2);
+                    break;
+                case CollisionNodeType.Ground:
+                    playerHealth.reduceHealth(5);
+                    break;
             }
 
             if (playerHealth.HasZeroHealth)

@@ -11,7 +11,7 @@ namespace Courier.Game.PlayerCode
         /// <summary>
         /// The current Player health value.
         /// </summary>
-        public float Health { get; set; } = 2;
+        public float Health { get; set; } = 5;
 
         /// <summary>
         /// Boolean value representing if the player's health is zero or less.

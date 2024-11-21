@@ -30,7 +30,7 @@ namespace Courier.Game
             lineSegments = CreateLineSegments(points);
 
             var collisionShape = new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down);
-            collisionNode = new CollisionNode(this, collisionShape);
+            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Ground);
             Children.Add(collisionNode);
         }
 

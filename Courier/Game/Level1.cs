@@ -99,12 +99,12 @@ namespace Courier.Game
                 camera,
                 () => this.Initialize()
             );
-            this.player = player;
 
             var ground = new Ground(worldSpaceRoot, groundPoints);
             var bulletPool = new BulletPool(worldSpaceRoot, 15);
             var enemies = CreateEnemies(player, bulletPool);
 
+            worldSpaceRoot.Children.Add(player);
             worldSpaceRoot.Children.Add(ground);
             worldSpaceRoot.Children.Add(bulletPool);
             worldSpaceRoot.Children.AddRange(enemies);

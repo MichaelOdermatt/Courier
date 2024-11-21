@@ -24,14 +24,14 @@ namespace Courier.Game.BulletCode
         /// </summary>
         public bool IsActive { get; set; } = false;
 
-        public BulletBase(Node parent, string textureKey, float bulletRadius, float bulletSpeed) : base(parent)
+        public BulletBase(Node parent, string textureKey, float bulletRadius, float bulletSpeed, CollisionNodeType collisionNodeType) : base(parent)
         {
             speed = bulletSpeed;
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
 
             var collisionShape = new CollisionSphere(this, bulletRadius);
-            collisionNode = new CollisionNode(this, collisionShape);
+            collisionNode = new CollisionNode(this, collisionShape, collisionNodeType);
             collisionNode.CollisionsEnabled = false;
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);

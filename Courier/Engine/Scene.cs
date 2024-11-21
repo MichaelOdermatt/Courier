@@ -27,11 +27,6 @@ namespace Courier.Engine
         protected Node worldSpaceRoot;
 
         /// <summary>
-        /// The player Node for the scene. Does not exist in the game tree (as a descendant of the root Node).
-        /// </summary>
-        protected Player player;
-
-        /// <summary>
         /// The camera used in the Scene.
         /// </summary>
         protected Camera2D camera;
@@ -55,7 +50,6 @@ namespace Courier.Engine
             // Since root is the top level node, pass Vector2.Zero as its parent position.
             screenSpaceRoot.Draw(spriteRenderer);
             worldSpaceRoot.Draw(spriteRenderer);
-            player.Draw(spriteRenderer);
         }
 
         /// <summary>
@@ -66,10 +60,8 @@ namespace Courier.Engine
         {
             screenSpaceRoot.Update(gameTime);
             worldSpaceRoot.Update(gameTime);
-            player.Update(gameTime);
 
-            var allNodes = player.GetSelfAndAllChildren();
-            allNodes.AddRange(worldSpaceRoot.GetSelfAndAllChildren());
+            var allNodes = worldSpaceRoot.GetSelfAndAllChildren();
             var enabledCollisionNodes = allNodes.OfType<ICollisionNode>().Where(c => c.CollisionsEnabled);
 
             CheckSceneCollisions(enabledCollisionNodes);
@@ -90,8 +82,8 @@ namespace Courier.Engine
                     // If the collision nodes intersect, notify them.
                     if (firstCollisionNode.CollisionShape.Intersects(secondCollisionNode.CollisionShape))
                     {
-                        firstCollisionNode.Collide(new CollisionEventArgs() { collisionNode = secondCollisionNode });
-                        secondCollisionNode.Collide(new CollisionEventArgs() { collisionNode = firstCollisionNode });
+                        firstCollisionNode.Collide(secondCollisionNode);
+                        secondCollisionNode.Collide(firstCollisionNode);
                     }
                 }
             }

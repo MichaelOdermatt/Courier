@@ -1,4 +1,5 @@
-﻿using Courier.Engine.Nodes;
+﻿using Courier.Engine.Collisions;
+using Courier.Engine.Nodes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Courier.Game.BulletCode
 {
     public class SmallBullet : BulletBase
     {
-        public SmallBullet(Node parent) : base(parent, "BulletSmall", 2f, 250f)
+        public SmallBullet(Node parent) : base(parent, "BulletSmall", 2f, 250f, CollisionNodeType.SmallBullet)
         {
         }
     }

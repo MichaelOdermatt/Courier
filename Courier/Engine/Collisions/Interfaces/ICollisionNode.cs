@@ -14,6 +14,11 @@ namespace Courier.Engine.Collisions.Interfaces
         ICollisionShape CollisionShape { get; }
 
         /// <summary>
+        /// The type of the CollisionNode. Player, Ground, Bullet... etc
+        /// </summary>
+        CollisionNodeType CollisionNodeType { get; }
+
+        /// <summary>
         /// Boolean value representing if collision checking should be performed on this CollisionNode.
         /// </summary>
         bool CollisionsEnabled { get; }
@@ -23,7 +28,7 @@ namespace Courier.Engine.Collisions.Interfaces
         /// <summary>
         /// Called when notifying the ICollisionNode of a collision with another ICollisionNode.
         /// </summary>
-        /// <param name="e">The CollisionEventArgs which contain a reference to the colliding Node.</param>
-        public void Collide(CollisionEventArgs e);
+        /// <param name="e">The ICollisionNode that collided with this ICollisionNode colliding Node.</param>
+        public void Collide(ICollisionNode e);
     }
 }
