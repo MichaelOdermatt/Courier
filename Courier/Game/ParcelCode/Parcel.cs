@@ -20,6 +20,11 @@ namespace Courier.Game.ParcelCode
         private const float Speed = 4;
         private const float collisionRadius = 5f;
 
+        /// <summary>
+        /// Bool value used to mark whether this parcel should be destroyed or not.
+        /// </summary>
+        public bool ShouldDestroy { get; private set; } = false;
+
         public Parcel(Node parent) : base(parent)
         {
             sprite = new Sprite(this, "Parcel");
@@ -42,8 +47,14 @@ namespace Courier.Game.ParcelCode
             LocalPosition += velocity;
         }
 
-        public void OnCollision(object sender, CollisionEventArgs collisionNode)
+        public void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
+            if (eventArgs.collisionNode.CollisionNodeType == CollisionNodeType.Player)
+            {
+                return;
+            }
+
+            ShouldDestroy = true;
         }
     }
 }

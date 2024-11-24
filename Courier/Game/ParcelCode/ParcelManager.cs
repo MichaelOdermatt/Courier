@@ -15,6 +15,7 @@ namespace Courier.Game.ParcelCode
     {
         private readonly Hub hub;
 
+        private readonly List<Parcel> parcels = new List<Parcel>();
         private readonly List<GameTimer> parcelTimers = new List<GameTimer>();
 
         private const float ParcelActiveTime = 5f;
@@ -28,6 +29,11 @@ namespace Courier.Game.ParcelCode
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            // Remove any parcels that have been marked as ShouldDestroy
+            var parcelsToRemove = parcels.Where(parcel => parcel.ShouldDestroy);
+            Children.RemoveAll(c => parcelsToRemove.Contains(c));
+            parcels.RemoveAll(p => parcelsToRemove.Contains(p));
 
             parcelTimers.ForEach(timer => timer.Tick(gameTime));
             // Remove any parcel timers from the list that are no longer running.
@@ -43,6 +49,7 @@ namespace Courier.Game.ParcelCode
             var newParcel = new Parcel(this);
             newParcel.LocalPosition = eventData.Position;
             Children.Add(newParcel);
+            parcels.Add(newParcel);
 
             GameTimer newTimer;
             newTimer = new GameTimer(ParcelActiveTime, () => DestroyParcel(newParcel));
@@ -56,6 +63,7 @@ namespace Courier.Game.ParcelCode
         private void DestroyParcel(Parcel parcel)
         {
             Children.Remove(parcel);
+            parcels.Remove(parcel);
         }
     }
 }
