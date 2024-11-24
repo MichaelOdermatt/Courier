@@ -101,12 +101,12 @@ namespace Courier.Game
             );
 
             var ground = new Ground(worldSpaceRoot, groundPoints);
-            var bulletPool = new BulletPool(worldSpaceRoot, 15);
-            var enemies = CreateEnemies(player, bulletPool);
+            var bulletManager = new BulletManager(worldSpaceRoot);
+            var enemies = CreateEnemies(player);
 
             worldSpaceRoot.Children.Add(player);
             worldSpaceRoot.Children.Add(ground);
-            worldSpaceRoot.Children.Add(bulletPool);
+            worldSpaceRoot.Children.Add(bulletManager);
             worldSpaceRoot.Children.AddRange(enemies);
             worldSpaceRoot.Children.Add(townManager);
             worldSpaceRoot.Children.Add(parcelManager);
@@ -115,28 +115,28 @@ namespace Courier.Game
         /// <summary>
         /// Creates and returns all the enemies to be used in the level.
         /// </summary>
-        private List<EnemyBase> CreateEnemies(Player player, BulletPool bulletPool)
+        private List<EnemyBase> CreateEnemies(Player player)
         {
             float enemyYOffset = 10;
             return new List<EnemyBase>
             {
                 // Gunner 1
-                new Gunner(worldSpaceRoot, player, bulletPool)
+                new Gunner(worldSpaceRoot, player)
                 {
                     LocalPosition = new Vector2(groundPoints[4].X, groundPoints[4].Y - enemyYOffset)
                 },
                 // Gunner 2
-                new Gunner(worldSpaceRoot, player, bulletPool)
+                new Gunner(worldSpaceRoot, player)
                 {
                     LocalPosition = new Vector2(groundPoints[9].X, groundPoints[9].Y - enemyYOffset)
                 },
                 // Tank 1
-                new Tank(worldSpaceRoot, player, bulletPool)
+                new Tank(worldSpaceRoot, player)
                 {
                     LocalPosition = new Vector2(groundPoints[5].X, groundPoints[5].Y - enemyYOffset)
                 },
                 // Tank 2
-                new Tank(worldSpaceRoot, player, bulletPool)
+                new Tank(worldSpaceRoot, player)
                 {
                     LocalPosition = new Vector2(groundPoints[10].X, groundPoints[10].Y - enemyYOffset)
                 },

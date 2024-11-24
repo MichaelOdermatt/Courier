@@ -51,8 +51,7 @@ namespace Courier.Game.ParcelCode
             Children.Add(newParcel);
             parcels.Add(newParcel);
 
-            GameTimer newTimer;
-            newTimer = new GameTimer(ParcelActiveTime, () => DestroyParcel(newParcel));
+            var newTimer = new GameTimer(ParcelActiveTime, () => DestroyParcel(newParcel));
             newTimer.Start();
             parcelTimers.Add(newTimer);
         }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Courier.Game.EventData
 {
-    public struct DropParcelEvent
+    public class DropParcelEvent
     {
-        public Vector2 Position;
+        public Vector2 Position { get; set; }
     }
 }

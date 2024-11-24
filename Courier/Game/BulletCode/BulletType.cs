@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Game.EventData
+namespace Courier.Game.BulletCode
 {
-    public class UpdateFuelEvent
+    public enum BulletType
     {
-        public float NewFuelLevel { get; set; }
+        Small,
+        Large,
     }
 }

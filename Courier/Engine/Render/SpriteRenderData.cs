@@ -9,17 +9,17 @@ namespace Courier.Engine.Render
 {
     public class SpriteRenderData
     {
-        public string TextureKey;
-        public Vector2 Position;
-        public float Rotation;
-        public Vector2? Origin;
-        public Vector2 Scale;
-        public float LayerDepth;
-        public bool IsWorldSpaceSprite;
+        public string TextureKey { get; set; }
+        public Vector2 Position { get; set; }
+        public float Rotation { get; set; }
+        public Vector2? Origin { get; set; }
+        public Vector2 Scale { get; set; }
+        public float LayerDepth { get; set; }
+        public bool IsWorldSpaceSprite { get; set; }
         /// <summary>
         /// Normally Sprites aren't added to the sprite batch if they are in world space and outside the view of the camera.
         /// However, if this value is set to true, Sprites won't be culled not matter what, even if they are outside the camera view.
         /// </summary>
-        public bool NeverCull = false;
+        public bool NeverCull { get; set; } = false;
     }
 }

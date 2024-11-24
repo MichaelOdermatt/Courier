@@ -1,6 +1,7 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
+using Courier.Game.EventData;
 using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
 using System;
@@ -13,7 +14,7 @@ namespace Courier.Game.EnemyCode
 {
     public class Tank : EnemyBase
     {
-        public Tank(Node parent, Player player, BulletPool bulletPool) : base(parent, player, bulletPool, 0.95f, 700f, "Tank")
+        public Tank(Node parent, Player player) : base(parent, player, 0.95f, 700f, "Tank")
         {
         }
 
@@ -29,7 +30,12 @@ namespace Courier.Game.EnemyCode
                 return;
             }
 
-            bulletPool.ActivateBullet(GlobalPosition, -Vector2.UnitY, BulletType.Large);
+            hub.Publish(new FireBulletEvent
+            {
+                InitialPosition = GlobalPosition,
+                Direction = -Vector2.UnitY,
+                BulletType = BulletType.Large,
+            });
         }
     }
 }

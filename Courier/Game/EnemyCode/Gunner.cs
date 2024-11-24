@@ -1,6 +1,7 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
+using Courier.Game.EventData;
 using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
 using System;
@@ -16,7 +17,7 @@ namespace Courier.Game.EnemyCode
     {
         private const float EnemyTargetThresholdAngle = 1.57f;
 
-        public Gunner(Node parent, Player player, BulletPool bulletPool) : base(parent, player, bulletPool, 0.75f, 500f, "Gunner")
+        public Gunner(Node parent, Player player) : base(parent, player, 0.75f, 500f, "Gunner")
         {
         }
 
@@ -47,7 +48,12 @@ namespace Courier.Game.EnemyCode
             sprite.Rotation = angleToPoint;
 
             pointToShootAt.Normalize();
-            bulletPool.ActivateBullet(GlobalPosition, pointToShootAt, BulletType.Small);
+            hub.Publish(new FireBulletEvent
+            {
+                InitialPosition = GlobalPosition,
+                Direction = pointToShootAt,
+                BulletType = BulletType.Small,
+            });
         }
 
         /// <summary>

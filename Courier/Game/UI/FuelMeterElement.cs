@@ -48,7 +48,7 @@ namespace Courier.Game.UI
         /// </summary>
         private void OnUpdateFuelEvent(UpdateFuelEvent eventData)
         {
-            var clampedFillAmount = Math.Clamp(eventData.newFuelLevel, 0, 1);
+            var clampedFillAmount = Math.Clamp(eventData.NewFuelLevel, 0, 1);
             var fillAmountWidth = (clampedFillAmount * maxFillWidth) - minFillWidth;
             meterFillSprite.Scale = new Vector2(fillAmountWidth, 1);
         }

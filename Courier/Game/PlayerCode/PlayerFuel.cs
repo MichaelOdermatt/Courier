@@ -37,7 +37,7 @@ namespace Courier.Game.PlayerCode
             fuelAmount = updatedFuelAmount >= MaxFuelAmount ? MaxFuelAmount : updatedFuelAmount;
             hub.Publish(new UpdateFuelEvent
             {
-                newFuelLevel = FuelAmountScaled,
+                NewFuelLevel = FuelAmountScaled,
             });
         }
 
@@ -51,7 +51,7 @@ namespace Courier.Game.PlayerCode
             fuelAmount -= FuelDepletionAmount * deltaTime;
             hub.Publish(new UpdateFuelEvent
             {
-                newFuelLevel = FuelAmountScaled,
+                NewFuelLevel = FuelAmountScaled,
             });
         }
 

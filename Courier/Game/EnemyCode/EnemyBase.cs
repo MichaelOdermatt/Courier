@@ -3,6 +3,7 @@ using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
+using PubSub;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,11 @@ namespace Courier.Game.EnemyCode
 {
     public abstract class EnemyBase : Node
     {
+        protected readonly Hub hub;
+
         protected readonly Player player;
         protected readonly Sprite sprite;
 
-        protected readonly BulletPool bulletPool;
         protected readonly GameTimer shootTimer;
         protected readonly float timeBetweenBullets;
         protected readonly float shootRange;
@@ -29,16 +31,15 @@ namespace Courier.Game.EnemyCode
         public EnemyBase(
             Node parent, 
             Player player, 
-            BulletPool bulletPool, 
             float timeBetweenBullets, 
             float shootRange,
             string textureKey
         ) : base(parent)
         {
+            hub = Hub.Default;
             this.timeBetweenBullets = timeBetweenBullets;
             this.shootRange = shootRange;
             this.player = player;
-            this.bulletPool = bulletPool;
             CreateBulletAction = TryCreateBullet;
 
             sprite = new Sprite(this, textureKey);
