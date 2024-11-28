@@ -1,5 +1,6 @@
 ﻿using Courier.Engine.Extensions;
 using Microsoft.Xna.Framework;
+using PubSub;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,10 +28,10 @@ namespace Courier.Game.PlayerCode
         public Vector2 Velocity { get; private set; } = Vector2.Zero;
         public float AngleOfAttack { get; private set; } = 0f;
 
-        public PlayerMovement(PlayerInput playerInput, PlayerFuel playerFuel)
+        public PlayerMovement(PlayerInput playerInput, Hub hub)
         {
             this.playerInput = playerInput;
-            this.playerFuel = playerFuel;
+            playerFuel = new PlayerFuel(hub);
         }
 
         /// <summary>

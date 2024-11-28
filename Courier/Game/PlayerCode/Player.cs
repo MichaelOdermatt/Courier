@@ -30,7 +30,6 @@ namespace Courier.Game.PlayerCode
         // TODO instead of using a callback for resetCurrentScene maybe submit an event to a scene manager?
         private readonly Action resetCurrentScene;
         private readonly PlayerInput playerInput = new PlayerInput();
-        private readonly PlayerFuel playerFuel;
         private readonly PlayerMovement playerMovement;
         private readonly PlayerHealth playerHealth = new PlayerHealth();
         private readonly PlayerParcelDelivery playerParcelDelivery;
@@ -53,9 +52,8 @@ namespace Courier.Game.PlayerCode
         {
             var hub = Hub.Default;
 
-            playerFuel = new PlayerFuel(hub);
-            playerMovement = new PlayerMovement(playerInput, playerFuel);
-            playerParcelDelivery = new PlayerParcelDelivery(this, playerFuel, hub);
+            playerMovement = new PlayerMovement(playerInput, hub);
+            playerParcelDelivery = new PlayerParcelDelivery(this, hub);
 
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
@@ -89,7 +87,8 @@ namespace Courier.Game.PlayerCode
                 return; 
             }
 
-            if (playerInput.HasPlayerPressedDeliverParcelKey())
+            playerParcelDelivery.UpdateParcelDropCooldown(gameTime);
+            if (playerInput.IsPlayerPressingDeliverParcelKey())
             {
                 playerParcelDelivery.DropParcel();
             }

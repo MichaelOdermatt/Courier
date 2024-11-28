@@ -49,9 +49,11 @@ namespace Courier.Game.ParcelCode
 
         public void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
-            if (eventArgs.collisionNode.CollisionNodeType == CollisionNodeType.Player)
+            switch (eventArgs.collisionNode.CollisionNodeType)
             {
-                return;
+                case CollisionNodeType.Player:
+                case CollisionNodeType.Parcel:
+                    return;
             }
 
             ShouldDestroy = true;

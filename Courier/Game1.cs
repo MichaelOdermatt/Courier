@@ -46,6 +46,7 @@ namespace Courier
             spriteRenderer = new SpriteRenderer(spriteBatch, assetManager, camera);
 
             assetManager.LoadTextures();
+            assetManager.LoadFonts();
             // TODO: use this.Content to load your game content here
         }
 

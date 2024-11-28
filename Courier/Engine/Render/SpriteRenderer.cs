@@ -15,12 +15,21 @@ namespace Courier.Engine.Render
         private readonly Camera2D camera;
 
         private readonly List<SpriteRenderData> spritesToRender = new List<SpriteRenderData>();
+        private readonly List<TextRenderData> textToRender = new List<TextRenderData>();
 
         public SpriteRenderer(SpriteBatch spriteBatch, AssetManager assetManager, Camera2D camera)
         {
             this.spriteBatch = spriteBatch;
             this.assetManager = assetManager;
             this.camera = camera;
+        }
+
+        /// <summary>
+        /// Adds the given TextRenderData object to the list of Text objects that need to be rendered.
+        /// </summary>
+        public void AddText(TextRenderData textRenderData)
+        {
+            textToRender.Add(textRenderData);
         }
 
         /// <summary>
@@ -31,10 +40,32 @@ namespace Courier.Engine.Render
             spritesToRender.Add(spriteRenderData);
         }
 
+        public void Render()
+        {
+            RenderSprites();
+            RenderText();
+        }
+
+        /// <summary>
+        /// Draws all the Text for all the added TextRenderData then clears the list of Text to render.
+        /// </summary>
+        public void RenderText()
+        {
+            foreach (var data in textToRender)
+            {
+                var font = assetManager.Fonts[data.FontKey];
+                var origin = font.MeasureString(data.StringValue) * 0.5f;
+
+                spriteBatch.DrawString(font, data.StringValue, data.Position, Color.White, 0, origin, 1.0f, SpriteEffects.None, 0);
+            }
+
+            textToRender.Clear();
+        }
+
         /// <summary>
         /// Draws all the Sprites for all the added SpriteRenderData then clears the list of sprites to render.
         /// </summary>
-        public void Render()
+        public void RenderSprites()
         {
             foreach (var data in spritesToRender)
             {

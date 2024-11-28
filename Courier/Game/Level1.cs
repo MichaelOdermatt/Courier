@@ -78,11 +78,14 @@ namespace Courier.Game
         {
             var fuelMeterElement = new FuelMeterElement(screenSpaceRoot);
             fuelMeterElement.LocalPosition = new Vector2(10, 10);
+            var weightDisplayElement = new WeightDisplayElement(screenSpaceRoot);
+            weightDisplayElement.LocalPosition = new Vector2(100, 50);
 
             var skyBackground = new SkyBackground(screenSpaceRoot, camera);
 
             screenSpaceRoot.Children.Add(skyBackground);
             screenSpaceRoot.Children.Add(fuelMeterElement);
+            screenSpaceRoot.Children.Add(weightDisplayElement);
         }
 
         /// <summary>
