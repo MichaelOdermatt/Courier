@@ -14,7 +14,7 @@ namespace Courier.Game.PlayerCode
         private readonly Hub hub;
 
         private const float MaxFuelAmount = 100f;
-        private const float FuelDepletionAmount = 30f;
+        private const float FuelDepletionAmount = 20f;
 
         private float fuelAmount = 100f;
 

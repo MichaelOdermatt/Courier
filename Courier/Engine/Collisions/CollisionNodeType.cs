@@ -12,6 +12,7 @@ namespace Courier.Engine.Collisions
         LargeBullet,
         Ground,
         Player,
-        Parcel
+        Parcel,
+        Town
     }
 }

@@ -1,4 +1,5 @@
-﻿using Courier.Engine.Nodes;
+﻿using Courier.Engine.Collisions;
+using Courier.Engine.Nodes;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,10 @@ namespace Courier.Game.TownCode
         public Sprite sprite;
         public readonly Vector2 spriteOffset;
 
-        private bool hasParcelBeenDelivered;
+        private readonly CollisionNode collisionNode;
+        private const float CollisionRadius = 10;
+
+        private bool destroyed;
 
         public Town(Node parent) : base(parent)
         {
@@ -24,16 +28,18 @@ namespace Courier.Game.TownCode
                 Offset = spriteOffset,
             };
             Children.Add(sprite);
+
+            var collisionShape = new CollisionSphere(this, CollisionRadius);
+            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Town);
+            collisionNode.OnCollision += OnCollision;
+            Children.Add(collisionNode);
         }
 
-        /// <summary>
-        /// Attempts to deliver the parcel to the town. Returns a bool representing if the delivery was successful or not.
-        /// </summary>
-        public bool AttemptDeliverPackage()
+        private void TownHitByParcel()
         {
-            if (hasParcelBeenDelivered)
+            if (destroyed)
             {
-                return false;
+                return;
             }
 
             // Update the town sprite
@@ -44,8 +50,15 @@ namespace Courier.Game.TownCode
             };
             Children.Add(sprite);
 
-            hasParcelBeenDelivered = true;
-            return true;
+            destroyed = true;
+        }
+
+        private void OnCollision(object sender, CollisionEventArgs eventArgs)
+        {
+            if (eventArgs.collisionNode.CollisionNodeType == CollisionNodeType.Parcel)
+            {
+                TownHitByParcel();
+            }
         }
     }
 }
