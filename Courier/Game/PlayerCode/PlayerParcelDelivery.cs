@@ -23,6 +23,7 @@ namespace Courier.Game.PlayerCode
 
         private const float FuelToAddOnSuccessfulDelivery = 20f;
         private const float ParcelDropCooldownDuration = 0.1f;
+        private const float ParcelWeight = 3f;
 
         public PlayerParcelDelivery(Player player, Hub hub)
         {
@@ -42,8 +43,7 @@ namespace Courier.Game.PlayerCode
             }
 
             hub.Publish(new DropParcelEvent { Position = player.GlobalPosition });
-            // TODO get this value from somewhere
-            playerWeight.ReduceWeight(5f);
+            playerWeight.ReduceWeight(ParcelWeight);
             canDropParcel = false;
         }
 

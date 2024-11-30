@@ -18,15 +18,21 @@ namespace Courier.Game.PlayerCode
         public PlayerWantedLevel(Hub hub)
         {
             this.hub = hub;
+            hub.Subscribe<TownDestroyedEvent>(OnTownDestroyed);
         }
 
         /// <summary>
         /// Increases the player's wanted level by a set amount.
         /// </summary>
-        public void IncreasePlayerWantedLevel()
+        private void IncreasePlayerWantedLevel()
         {
             currentWantedLevel += 1;
             hub.Publish(new UpdateWantedLevelEvent { NewWantedLevel = currentWantedLevel });
+        }
+
+        private void OnTownDestroyed(TownDestroyedEvent eventData)
+        {
+            IncreasePlayerWantedLevel();
         }
     }
 }

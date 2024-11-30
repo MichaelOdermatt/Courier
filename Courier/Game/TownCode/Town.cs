@@ -18,7 +18,10 @@ namespace Courier.Game.TownCode
         private readonly CollisionNode collisionNode;
         private const float CollisionRadius = 10;
 
-        private bool destroyed;
+        /// <summary>
+        /// Boolean value representing if the town has been destroyed.
+        /// </summary>
+        public bool Destroyed { get; private set; }
 
         public Town(Node parent) : base(parent)
         {
@@ -37,7 +40,7 @@ namespace Courier.Game.TownCode
 
         private void TownHitByParcel()
         {
-            if (destroyed)
+            if (Destroyed)
             {
                 return;
             }
@@ -50,7 +53,7 @@ namespace Courier.Game.TownCode
             };
             Children.Add(sprite);
 
-            destroyed = true;
+            Destroyed = true;
         }
 
         private void OnCollision(object sender, CollisionEventArgs eventArgs)

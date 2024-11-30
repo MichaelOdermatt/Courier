@@ -33,6 +33,7 @@ namespace Courier.Game.PlayerCode
         private readonly PlayerMovement playerMovement;
         private readonly PlayerHealth playerHealth = new PlayerHealth();
         private readonly PlayerParcelDelivery playerParcelDelivery;
+        private readonly PlayerWantedLevel playerWantedLevel;
 
         private PlayerState playerState = PlayerState.Alive;
 
@@ -54,6 +55,7 @@ namespace Courier.Game.PlayerCode
 
             playerMovement = new PlayerMovement(playerInput, hub);
             playerParcelDelivery = new PlayerParcelDelivery(this, hub);
+            playerWantedLevel = new PlayerWantedLevel(hub);
 
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
