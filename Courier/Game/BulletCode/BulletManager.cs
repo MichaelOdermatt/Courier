@@ -30,8 +30,8 @@ namespace Courier.Game.BulletCode
         {
             base.Update(gameTime);
 
-            // Remove any parcels that have been marked as ShouldDestroy
-            var bulletsToRemove = bullets.Where(parcel => parcel.ShouldDestroy);
+            // Remove any parcels that have been marked as Destroyed
+            var bulletsToRemove = bullets.Where(parcel => parcel.Destroyed);
             Children.RemoveAll(c => bulletsToRemove.Contains(c));
             bullets.RemoveAll(p => bulletsToRemove.Contains(p));
 

@@ -14,14 +14,14 @@ namespace Courier.Game.EnemyCode
 {
     public class Tank : EnemyBase
     {
-        public Tank(Node parent, Player player) : base(parent, player, 0.95f, 700f, "Tank")
+        public Tank(Node parent, Player player) : base(parent, player, 0.95f, 700f, "Tank", 10f)
         {
         }
 
         /// <summary>
         /// Attempts to create a Bullet and fires it directly up.
         /// </summary>
-        public override void TryCreateBullet()
+        protected override void TryCreateBullet()
         {
             var vectorToPlayer = player.GlobalPosition - GlobalPosition;
             // Don't shoot if the player is out of range.

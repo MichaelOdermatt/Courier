@@ -17,7 +17,7 @@ namespace Courier.Game.EnemyCode
     {
         private const float EnemyTargetThresholdAngle = 1.57f;
 
-        public Gunner(Node parent, Player player) : base(parent, player, 0.75f, 500f, "Gunner")
+        public Gunner(Node parent, Player player) : base(parent, player, 0.75f, 500f, "Gunner", 5f)
         {
         }
 
@@ -32,7 +32,7 @@ namespace Courier.Game.EnemyCode
         /// <summary>
         /// Attempts to create a Bullet and fires it in the direction of the player.
         /// </summary>
-        public override void TryCreateBullet()
+        protected override void TryCreateBullet()
         {
             var vectorToPlayer = player.GlobalPosition - GlobalPosition;
             // Don't shoot if the player is out of range.

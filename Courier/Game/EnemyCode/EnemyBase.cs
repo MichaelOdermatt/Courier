@@ -1,4 +1,5 @@
 ﻿using Courier.Engine;
+using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.PlayerCode;
@@ -18,10 +19,13 @@ namespace Courier.Game.EnemyCode
 
         protected readonly Player player;
         protected readonly Sprite sprite;
+        protected readonly CollisionNode collisionNode;
 
         protected readonly GameTimer shootTimer;
         protected readonly float timeBetweenBullets;
         protected readonly float shootRange;
+
+        public EnemyState State { get; protected set; } = EnemyState.OneStar;
 
         private Action CreateBulletAction;
 
@@ -33,7 +37,8 @@ namespace Courier.Game.EnemyCode
             Player player, 
             float timeBetweenBullets, 
             float shootRange,
-            string textureKey
+            string textureKey,
+            float collisionRadius
         ) : base(parent)
         {
             hub = Hub.Default;
@@ -44,6 +49,11 @@ namespace Courier.Game.EnemyCode
 
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
+
+            var collisionShape = new CollisionSphere(this, collisionRadius);
+            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Enemy);
+            collisionNode.OnCollision += OnCollision;
+            Children.Add(collisionNode);
 
             // Create the shoot timer.
             shootTimer = new GameTimer(timeBetweenBullets, CreateBulletAction);
@@ -59,10 +69,17 @@ namespace Courier.Game.EnemyCode
             shootTimer.Tick(gameTime);
         }
 
+        private void OnCollision(object sender, CollisionEventArgs eventArgs)
+        {
+            if (eventArgs.collisionNode.CollisionNodeType == CollisionNodeType.Parcel)
+            {
+                State = EnemyState.Destroyed;
+            }
+        }
 
         /// <summary>
         /// Attempts to create a Bullet and fires it in the direction of the player.
         /// </summary>
-        public abstract void TryCreateBullet();
+        protected abstract void TryCreateBullet();
     }
 }

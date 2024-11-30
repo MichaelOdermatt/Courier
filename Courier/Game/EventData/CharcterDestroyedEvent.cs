@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Courier.Game.EventData
 {
-    public class TownDestroyedEvent
+    public class CharcterDestroyedEvent
     {
     }
 }

@@ -13,6 +13,7 @@ namespace Courier.Engine.Collisions
         Ground,
         Player,
         Parcel,
-        Town
+        Town,
+        Enemy,
     }
 }

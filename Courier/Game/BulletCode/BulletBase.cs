@@ -19,9 +19,9 @@ namespace Courier.Game.BulletCode
         private readonly float speed;
 
         /// <summary>
-        /// Bool value used to mark whether this parcel should be destroyed or not.
+        /// Bool value used to mark whether this bullet has been destroyed or not.
         /// </summary>
-        public bool ShouldDestroy { get; set; } = false;
+        public bool Destroyed { get; set; } = false;
 
         public BulletBase(
             Node parent, 
@@ -57,7 +57,13 @@ namespace Courier.Game.BulletCode
 
         public void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
-            ShouldDestroy = true;
+            switch (eventArgs.collisionNode.CollisionNodeType)
+            {
+                case CollisionNodeType.Enemy:
+                case CollisionNodeType.Town:
+                    return;
+            }
+            Destroyed = true;
         }
     }
 }

@@ -109,11 +109,12 @@ namespace Courier.Game
             var ground = new Ground(worldSpaceRoot, groundPoints);
             var bulletManager = new BulletManager(worldSpaceRoot);
             var enemies = CreateEnemies(player);
+            var enemyManager = new EnemyManager(worldSpaceRoot, enemies);
 
             worldSpaceRoot.Children.Add(player);
             worldSpaceRoot.Children.Add(ground);
             worldSpaceRoot.Children.Add(bulletManager);
-            worldSpaceRoot.Children.AddRange(enemies);
+            worldSpaceRoot.Children.Add(enemyManager);
             worldSpaceRoot.Children.Add(townManager);
             worldSpaceRoot.Children.Add(parcelManager);
         }

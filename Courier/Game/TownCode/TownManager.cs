@@ -49,7 +49,7 @@ namespace Courier.Game.TownCode
                 var town = this.towns[i];
                 if (town.Destroyed && !hasSentDestroyedEvent[i])
                 {
-                    hub.Publish(new TownDestroyedEvent());
+                    hub.Publish(new CharcterDestroyedEvent());
                     hasSentDestroyedEvent[i] = true;
                 }
             }
