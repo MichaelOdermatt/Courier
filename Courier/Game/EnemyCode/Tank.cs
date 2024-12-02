@@ -18,6 +18,27 @@ namespace Courier.Game.EnemyCode
         {
         }
 
+        protected override void UpdateShootTimerDuration()
+        {
+            float newShootTimerDuration;
+            switch(State)
+            {
+                case EnemyState.OneStar:
+                    newShootTimerDuration = 0.95f;
+                    break;
+                case EnemyState.ThreeStar:
+                    newShootTimerDuration = 0.75f;
+                    break;
+                case EnemyState.FiveStar:
+                    newShootTimerDuration = 0.7f;
+                    break;
+                default:
+                    newShootTimerDuration = shootTimer.Duration;
+                    break;
+            }
+            shootTimer.Duration = newShootTimerDuration;
+        }
+
         /// <summary>
         /// Attempts to create a Bullet and fires it directly up.
         /// </summary>

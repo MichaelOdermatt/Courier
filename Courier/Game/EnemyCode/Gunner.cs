@@ -21,12 +21,25 @@ namespace Courier.Game.EnemyCode
         {
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateShootTimerDuration()
         {
-            base.Update(gameTime);
-
-            // Tick the shootTimer.
-            shootTimer.Tick(gameTime);
+            float newShootTimerDuration;
+            switch(State)
+            {
+                case EnemyState.OneStar:
+                    newShootTimerDuration = 0.75f;
+                    break;
+                case EnemyState.ThreeStar:
+                    newShootTimerDuration = 0.5f;
+                    break;
+                case EnemyState.FiveStar:
+                    newShootTimerDuration = 0.25f;
+                    break;
+                default:
+                    newShootTimerDuration = shootTimer.Duration;
+                    break;
+            }
+            shootTimer.Duration = newShootTimerDuration;
         }
 
         /// <summary>

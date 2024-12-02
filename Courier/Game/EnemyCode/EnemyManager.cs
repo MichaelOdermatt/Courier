@@ -31,6 +31,7 @@ namespace Courier.Game.EnemyCode
             }
 
             this.hub = Hub.Default;
+            this.hub.Subscribe<UpdateWantedLevelEvent>(OnWantedLevelEvent);
         }
 
         public override void Update(GameTime gameTime)
@@ -47,12 +48,21 @@ namespace Courier.Game.EnemyCode
         {
             for (int i = 0; i < enemies.Length; i++)
             {
-                var town = enemies[i];
-                if (town.State == EnemyState.Destroyed && !hasSentDestroyedEvent[i])
+                var enemy = enemies[i];
+                if (enemy.State == EnemyState.Destroyed && !hasSentDestroyedEvent[i])
                 {
                     hub.Publish(new CharcterDestroyedEvent());
                     hasSentDestroyedEvent[i] = true;
                 }
+            }
+        }
+
+        private void OnWantedLevelEvent(UpdateWantedLevelEvent eventData)
+        {
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                var enemy = enemies[i];
+                enemy.UpdateEnemyState(eventData.NewWantedLevel);
             }
         }
     }

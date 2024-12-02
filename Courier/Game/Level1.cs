@@ -167,6 +167,16 @@ namespace Courier.Game
                 {
                     LocalPosition = groundPoints[12],
                 },
+                // Town 3
+                new Town(worldSpaceRoot)
+                {
+                    LocalPosition = groundPoints[16],
+                },
+                // Town 4
+                new Town(worldSpaceRoot)
+                {
+                    LocalPosition = groundPoints[19],
+                },
             };
         }
     }

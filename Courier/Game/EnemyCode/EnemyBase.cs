@@ -22,16 +22,15 @@ namespace Courier.Game.EnemyCode
         protected readonly CollisionNode collisionNode;
 
         protected readonly GameTimer shootTimer;
-        protected readonly float timeBetweenBullets;
         protected readonly float shootRange;
+        protected readonly float timeBetweenBullets;
 
         public EnemyState State { get; protected set; } = EnemyState.OneStar;
-
-        private Action CreateBulletAction;
 
         /// <param name="timeBetweenBullets">The time interval between bullets fired by the enemy.</param>
         /// <param name="shootRange">The range that the player must be in for the enemy to shoot at them.</param>
         /// <param name="textureKey">The texture key for the emeny's sprite.</param>
+        /// <param name="collisionRadius">The radius of the enemy's collision sphere.</param>
         public EnemyBase(
             Node parent, 
             Player player, 
@@ -45,7 +44,6 @@ namespace Courier.Game.EnemyCode
             this.timeBetweenBullets = timeBetweenBullets;
             this.shootRange = shootRange;
             this.player = player;
-            CreateBulletAction = TryCreateBullet;
 
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
@@ -56,7 +54,7 @@ namespace Courier.Game.EnemyCode
             Children.Add(collisionNode);
 
             // Create the shoot timer.
-            shootTimer = new GameTimer(timeBetweenBullets, CreateBulletAction);
+            shootTimer = new GameTimer(timeBetweenBullets, TryCreateBullet);
             shootTimer.Loop = true;
             shootTimer.Start();
         }
@@ -65,8 +63,29 @@ namespace Courier.Game.EnemyCode
         {
             base.Update(gameTime);
 
+            if (State == EnemyState.Destroyed)
+            {
+                return;
+            }
+
             // Tick the shootTimer.
             shootTimer.Tick(gameTime);
+        }
+
+        /// <summary>
+        /// Calling this function updates the enemy's State.
+        /// </summary>
+        /// <param name="playerWantedLevel">The player's wanted level.</param>
+        public void UpdateEnemyState(int playerWantedLevel)
+        {
+            if (playerWantedLevel == 3)
+            {
+                State = EnemyState.ThreeStar;
+            } else if (playerWantedLevel == 5)
+            {
+                State = EnemyState.FiveStar;
+            }
+            UpdateShootTimerDuration();
         }
 
         private void OnCollision(object sender, CollisionEventArgs eventArgs)
@@ -76,6 +95,11 @@ namespace Courier.Game.EnemyCode
                 State = EnemyState.Destroyed;
             }
         }
+
+        /// <summary>
+        /// Updates the shoot timer's duration based on the enemy's State.
+        /// </summary>
+        protected abstract void UpdateShootTimerDuration();
 
         /// <summary>
         /// Attempts to create a Bullet and fires it in the direction of the player.

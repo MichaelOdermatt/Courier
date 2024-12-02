@@ -10,10 +10,14 @@ namespace Courier.Engine
 {
     public class GameTimer
     {
-        private readonly float duration;
         private readonly Action action;
 
         private double currentTime = 0.0;
+
+        /// <summary>
+        /// The amount of time it take for the timer to complete.
+        /// </summary>
+        public float Duration { get; set; }
 
         /// <summary>
         /// Bool keeps track of if the timer is currently running.
@@ -32,7 +36,7 @@ namespace Courier.Engine
         /// <param name="action">The Action to invoke once the duration has elapsed.</param>
         public GameTimer(float duration, Action action) 
         {
-            this.duration = duration;
+            Duration = duration;
             this.action = action;
         }
 
@@ -55,7 +59,7 @@ namespace Courier.Engine
             }
 
             currentTime += gameTime.ElapsedGameTime.TotalSeconds; 
-            if (currentTime >= duration)
+            if (currentTime >= Duration)
             {
                 currentTime = 0.0;
                 action.Invoke();
