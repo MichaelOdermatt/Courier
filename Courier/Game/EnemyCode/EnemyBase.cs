@@ -25,7 +25,18 @@ namespace Courier.Game.EnemyCode
         protected readonly float shootRange;
         protected readonly float timeBetweenBullets;
 
-        public EnemyState State { get; protected set; } = EnemyState.OneStar;
+        /// <summary>
+        /// Timer used to give the enemy invincibility time after being hit.
+        /// </summary>
+        protected readonly GameTimer invincibiltyTimer;
+        protected const float InvincibiltyTimerDuration = 3f;
+
+        protected EnemyState state = EnemyState.OneStar;
+
+        /// <summary>
+        /// Bool value used to track if an enemy was hit.
+        /// </summary>
+        public bool WasHit { get; private set; } = false;
 
         /// <param name="timeBetweenBullets">The time interval between bullets fired by the enemy.</param>
         /// <param name="shootRange">The range that the player must be in for the enemy to shoot at them.</param>
@@ -57,19 +68,19 @@ namespace Courier.Game.EnemyCode
             shootTimer = new GameTimer(timeBetweenBullets, TryCreateBullet);
             shootTimer.Loop = true;
             shootTimer.Start();
+
+            // Create the invincibility timer. Once the timer finishes, set WasHit back to false so the enemy can be hit again.
+            invincibiltyTimer = new GameTimer(InvincibiltyTimerDuration, () => { WasHit = false; });
+            invincibiltyTimer.Loop = false;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            if (State == EnemyState.Destroyed)
-            {
-                return;
-            }
-
-            // Tick the shootTimer.
+            // Tick timers.
             shootTimer.Tick(gameTime);
+            invincibiltyTimer.Tick(gameTime);
         }
 
         /// <summary>
@@ -80,10 +91,10 @@ namespace Courier.Game.EnemyCode
         {
             if (playerWantedLevel == 3)
             {
-                State = EnemyState.ThreeStar;
+                state = EnemyState.ThreeStar;
             } else if (playerWantedLevel == 5)
             {
-                State = EnemyState.FiveStar;
+                state = EnemyState.FiveStar;
             }
             UpdateShootTimerDuration();
         }
@@ -92,7 +103,8 @@ namespace Courier.Game.EnemyCode
         {
             if (eventArgs.collisionNode.CollisionNodeType == CollisionNodeType.Parcel)
             {
-                State = EnemyState.Destroyed;
+                WasHit = true;
+                invincibiltyTimer.Start();
             }
         }
 

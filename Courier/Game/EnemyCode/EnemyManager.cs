@@ -15,20 +15,17 @@ namespace Courier.Game.EnemyCode
         private readonly Hub hub;
         private readonly EnemyBase[] enemies;
         /// <summary>
-        /// Boolean value used to track if an event was sent notifying all subscribers that a particular enemy was destroyed.
+        /// Boolean values used to track enemies WasHit value on the previous Update call.
         /// </summary>
-        private readonly bool[] hasSentDestroyedEvent;
+        private readonly bool[] previousWasHitValues;
 
         public EnemyManager(Node parent, List<EnemyBase> enemies) : base(parent)
         {
             this.enemies = enemies.ToArray();
             Children.AddRange(enemies);
 
-            hasSentDestroyedEvent = new bool[this.enemies.Length];
-            for (int i = 0; i < this.enemies.Length; i++)
-            {
-                hasSentDestroyedEvent[i] = false;
-            }
+            previousWasHitValues = new bool[this.enemies.Length];
+            UpdatePreviousWasHitValues();
 
             this.hub = Hub.Default;
             this.hub.Subscribe<UpdateWantedLevelEvent>(OnWantedLevelEvent);
@@ -38,22 +35,35 @@ namespace Courier.Game.EnemyCode
         {
             base.Update(gameTime);
 
-            PublishAnyEnemyDestroyedEvents();
+            PublishAnyEnemyHitEvents();
+            UpdatePreviousWasHitValues();
         }
 
         /// <summary>
-        /// Checks all enemies and publishes an event for each enemy that was destroyed and hasn't had an event published yet.
+        /// Checks all enemies and publishes an event for each enemy that was hit and hasn't had an event published yet.
         /// </summary>
-        private void PublishAnyEnemyDestroyedEvents()
+        private void PublishAnyEnemyHitEvents()
         {
             for (int i = 0; i < enemies.Length; i++)
             {
                 var enemy = enemies[i];
-                if (enemy.State == EnemyState.Destroyed && !hasSentDestroyedEvent[i])
+                // If the enemy was not hit last frame but was hit this frame, publish the hit event. 
+                if (enemy.WasHit && !previousWasHitValues[i])
                 {
-                    hub.Publish(new CharcterDestroyedEvent());
-                    hasSentDestroyedEvent[i] = true;
+                    hub.Publish(new CharcterHitEvent());
                 }
+            }
+        }
+
+        /// <summary>
+        /// Updates all the previousWasHitValues for all enemies to their current WasHitValue.
+        /// </summary>
+        private void UpdatePreviousWasHitValues()
+        {
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                var enemy = enemies[i];
+                previousWasHitValues[i] = enemy.WasHit;
             }
         }
 

@@ -14,19 +14,19 @@ namespace Courier.Game.TownCode
         private readonly Hub hub; 
         private readonly Town[] towns;
         /// <summary>
-        /// Boolean value used to track if an event was sent notifying all subscribers that a particular town was destroyed.
+        /// Boolean value used to track if an event was sent notifying all subscribers that a particular town was hit.
         /// </summary>
-        private readonly bool[] hasSentDestroyedEvent;
+        private readonly bool[] hasSentHitEvent;
 
         public TownManager(Node parent, List<Town> towns) : base(parent)
         {
             this.towns = towns.ToArray();
             Children.AddRange(towns);
 
-            hasSentDestroyedEvent = new bool[this.towns.Length];
+            hasSentHitEvent = new bool[this.towns.Length];
             for (int i = 0; i < this.towns.Length; i++)
             {
-                hasSentDestroyedEvent[i] = false;
+                hasSentHitEvent[i] = false;
             }
 
             hub = Hub.Default;
@@ -36,21 +36,21 @@ namespace Courier.Game.TownCode
         {
             base.Update(gameTime);
 
-            PublishAnyTownDestroyedEvents();
+            PublishAnyTownHitEvents();
         }
 
         /// <summary>
-        /// Checks all towns and publishes an event for each town that was destroyed and hasn't had an event published yet.
+        /// Checks all towns and publishes an event for each town that was hit and hasn't had an event published yet.
         /// </summary>
-        private void PublishAnyTownDestroyedEvents()
+        private void PublishAnyTownHitEvents()
         {
             for (int i = 0; i < this.towns.Length; i++)
             {
                 var town = this.towns[i];
-                if (town.Destroyed && !hasSentDestroyedEvent[i])
+                if (town.Destroyed && !hasSentHitEvent[i])
                 {
-                    hub.Publish(new CharcterDestroyedEvent());
-                    hasSentDestroyedEvent[i] = true;
+                    hub.Publish(new CharcterHitEvent());
+                    hasSentHitEvent[i] = true;
                 }
             }
         }

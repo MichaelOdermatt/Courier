@@ -11,6 +11,5 @@ namespace Courier.Game.EnemyCode
         OneStar,
         ThreeStar,
         FiveStar,
-        Destroyed,
     }
 }

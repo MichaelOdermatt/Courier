@@ -21,7 +21,7 @@ namespace Courier.Game.EnemyCode
         protected override void UpdateShootTimerDuration()
         {
             float newShootTimerDuration;
-            switch(State)
+            switch(state)
             {
                 case EnemyState.OneStar:
                     newShootTimerDuration = 0.95f;
