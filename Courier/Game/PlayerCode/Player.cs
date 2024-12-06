@@ -1,16 +1,12 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
-using Courier.Engine.Collisions.Interfaces;
-using Courier.Engine.Extensions;
+using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Nodes;
-using Courier.Game.BulletCode;
-using Courier.Game.TownCode;
-using Courier.Game.UI;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using PubSub;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -22,6 +18,9 @@ namespace Courier.Game.PlayerCode
     {
         private readonly Sprite sprite;
         private readonly CollisionNode collisionNode;
+        private const CollisionNodeType CollisionType = CollisionNodeType.Player;
+        private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.SmallBullet, CollisionNodeType.LargeBullet, CollisionNodeType.Ground, CollisionNodeType.RefuelPoint };
+
         /// <summary>
         /// A Node which has the Players position with an additional offset. This is what Enemies should fire at.
         /// </summary>
@@ -30,6 +29,7 @@ namespace Courier.Game.PlayerCode
         // TODO instead of using a callback for resetCurrentScene maybe submit an event to a scene manager?
         private readonly Action resetCurrentScene;
         private readonly PlayerInput playerInput = new PlayerInput();
+        private readonly PlayerFuel playerFuel;
         private readonly PlayerMovement playerMovement;
         private readonly PlayerHealth playerHealth = new PlayerHealth();
         private readonly PlayerParcelDelivery playerParcelDelivery;
@@ -53,7 +53,8 @@ namespace Courier.Game.PlayerCode
         {
             var hub = Hub.Default;
 
-            playerMovement = new PlayerMovement(playerInput, hub);
+            playerFuel = new PlayerFuel(hub);
+            playerMovement = new PlayerMovement(playerInput, playerFuel);
             playerParcelDelivery = new PlayerParcelDelivery(this, hub);
             playerWantedLevel = new PlayerWantedLevel(hub);
 
@@ -64,7 +65,7 @@ namespace Courier.Game.PlayerCode
             Children.Add(enemyTarget);
 
             var collisionShape = new CollisionSphere(this, 6f);
-            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Player);
+            collisionNode = new CollisionNode(this, collisionShape, CollisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);
 
@@ -110,6 +111,9 @@ namespace Courier.Game.PlayerCode
         {
             switch (eventArgs.collisionNode.CollisionNodeType)
             {
+                case CollisionNodeType.RefuelPoint:
+                    playerFuel.SetFuelToMax();
+                    break;
                 case CollisionNodeType.SmallBullet:
                     playerHealth.reduceHealth(1);
                     break;

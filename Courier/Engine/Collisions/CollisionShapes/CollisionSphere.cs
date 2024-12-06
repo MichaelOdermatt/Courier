@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine.Collisions
+namespace Courier.Engine.Collisions.CollisionShapes
 {
     public class CollisionSphere : ICollisionShape
     {
@@ -27,12 +27,17 @@ namespace Courier.Engine.Collisions
         /// <inheritdoc/>
         public bool Intersects(ICollisionShape collisionShape)
         {
-            if (collisionShape is CollisionSegmentedBoundry collisionSB && collisionSB.Direction == SegmentedBoundryDirection.Down)
+            if (collisionShape is CollisionSegmentedBoundry collisionSB && collisionSB.Direction == CollisionBoundryDirection.Down)
             {
                 return IntersectsWithCollisionSegmentedBoundry(collisionSB);
-            } else if (collisionShape is CollisionSphere collisionSphere)
+            }
+            else if (collisionShape is CollisionSphere collisionSphere)
             {
                 return IntersectsWithCollisionSphere(collisionSphere);
+            }
+            else if (collisionShape is CollisionLineBoundry collisionLB && collisionLB.Direction == CollisionBoundryDirection.Right)
+            {
+                return IntersectsWithCollisionLineBoundry(collisionLB);
             }
 
             throw new NotImplementedException();
@@ -47,7 +52,7 @@ namespace Courier.Engine.Collisions
 
             var index = Array.BinarySearch(collisionSB.Points, GlobalPosition, CollisionSegmentedBoundry.Vector2Comparer);
 
-            var rightIndex = (index * -1) - 1;
+            var rightIndex = index * -1 - 1;
             var leftIndex = rightIndex - 1;
 
             // If the left and right index are out of the range of they array, the player is not above any line segment.
@@ -67,7 +72,7 @@ namespace Courier.Engine.Collisions
             // Find the closest point to the sphere center along the lineSegmentVector.
             float closestPointAsFloat = Vector2.Dot(startPosToSphereCenter, lineSegmentVector) / lineSegmentVector.LengthSquared();
 
-            closestPointAsFloat = Math.Clamp(closestPointAsFloat, 0 , 1);
+            closestPointAsFloat = Math.Clamp(closestPointAsFloat, 0, 1);
 
             Vector2 closestPoint = leftPoint + closestPointAsFloat * lineSegmentVector;
 
@@ -75,6 +80,15 @@ namespace Courier.Engine.Collisions
 
             // True if the distance between the closest point on the line to the sphere is less than the radius, or if the sphere's origin is below the closest point.
             return closestPoint.Y <= GlobalPosition.Y || distanceTo <= radius * radius;
+        }
+
+        /// <summary>
+        /// Returns true if this CollisionSphere intersects with the given CollisionSphere. Otherwise false.
+        /// </summary>
+        private bool IntersectsWithCollisionLineBoundry(CollisionLineBoundry collisionLB)
+        {
+            var distanceTo = collisionLB.GlobalPosition.X - GlobalPosition.X;
+            return distanceTo <= radius;
         }
 
         /// <summary>

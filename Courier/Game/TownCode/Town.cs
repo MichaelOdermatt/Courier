@@ -1,4 +1,5 @@
 ﻿using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Nodes;
 using Microsoft.Xna.Framework;
 using System;
@@ -16,6 +17,8 @@ namespace Courier.Game.TownCode
         public readonly Vector2 spriteOffset;
 
         private readonly CollisionNode collisionNode;
+        private const CollisionNodeType collisionType = CollisionNodeType.Town;
+        private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.Parcel };
         private const float CollisionRadius = 10;
 
         /// <summary>
@@ -33,7 +36,7 @@ namespace Courier.Game.TownCode
             Children.Add(sprite);
 
             var collisionShape = new CollisionSphere(this, CollisionRadius);
-            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Town);
+            collisionNode = new CollisionNode(this, collisionShape, collisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);
         }
@@ -58,10 +61,7 @@ namespace Courier.Game.TownCode
 
         private void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
-            if (eventArgs.collisionNode.CollisionNodeType == CollisionNodeType.Parcel)
-            {
-                TownHitByParcel();
-            }
+            TownHitByParcel();
         }
     }
 }

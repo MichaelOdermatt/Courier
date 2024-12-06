@@ -15,5 +15,6 @@ namespace Courier.Engine.Collisions
         Parcel,
         Town,
         Enemy,
+        RefuelPoint,
     }
 }

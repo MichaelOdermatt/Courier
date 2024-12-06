@@ -1,5 +1,6 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Nodes;
 using Courier.Engine.Render;
@@ -29,8 +30,8 @@ namespace Courier.Game
             this.points = points;
             lineSegments = CreateLineSegments(points);
 
-            var collisionShape = new CollisionSegmentedBoundry(points, SegmentedBoundryDirection.Down);
-            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Ground);
+            var collisionShape = new CollisionSegmentedBoundry(points, CollisionBoundryDirection.Down);
+            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Ground, null);
             Children.Add(collisionNode);
         }
 
@@ -86,11 +87,6 @@ namespace Courier.Game
             }
 
             return lineSegments;
-        }
-
-        public void OnCollision(ICollisionNode collisionNode)
-        {
-            // Do nothing
         }
     }
 }

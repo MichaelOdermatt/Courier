@@ -79,11 +79,22 @@ namespace Courier.Engine
                 {
                     var firstCollisionNode = collisionNodes.ElementAt(i);
                     var secondCollisionNode = collisionNodes.ElementAt(j);
-                    // If the collision nodes intersect, notify them.
-                    if (firstCollisionNode.CollisionShape.Intersects(secondCollisionNode.CollisionShape))
+                    var firstCollisionNodeMasksSecondNode = firstCollisionNode.IsMaskingNodeType(secondCollisionNode.CollisionNodeType);
+                    var secondCollisionNodeMasksFirstNode = secondCollisionNode.IsMaskingNodeType(firstCollisionNode.CollisionNodeType);
+
+                    // If either of the Nodes mask the other, and they are colliding, notify them.
+                    if ((firstCollisionNodeMasksSecondNode || secondCollisionNodeMasksFirstNode) &&
+                        firstCollisionNode.CollisionShape.Intersects(secondCollisionNode.CollisionShape)
+                    )
                     {
-                        firstCollisionNode.Collide(secondCollisionNode);
-                        secondCollisionNode.Collide(firstCollisionNode);
+                        if (firstCollisionNodeMasksSecondNode)
+                        {
+                            firstCollisionNode.Collide(secondCollisionNode);
+                        }
+                        if (secondCollisionNodeMasksFirstNode)
+                        {
+                            secondCollisionNode.Collide(firstCollisionNode);
+                        }
                     }
                 }
             }

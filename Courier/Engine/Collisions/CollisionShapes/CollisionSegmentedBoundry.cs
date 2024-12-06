@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Courier.Engine.Collisions
+namespace Courier.Engine.Collisions.CollisionShapes
 {
     /// <summary>
     /// A CollisionShape representing a level boundry that consists of a segmented line rather than a straight line. 
@@ -22,14 +22,14 @@ namespace Courier.Engine.Collisions
         /// <summary>
         /// The direction in which the collision shape should bound off.
         /// </summary>
-        public readonly SegmentedBoundryDirection Direction;
+        public readonly CollisionBoundryDirection Direction;
 
         /// <summary>
         /// A Comparer object for Vector2 that is used with binary search to detect which Vector2 points the player is closest to.
         /// </summary>
         public static Comparer<Vector2> Vector2Comparer { get; } = Comparer<Vector2>.Create((a, b) => a.X > b.X ? 1 : a.X < b.X ? -1 : 1);
 
-        public CollisionSegmentedBoundry(Vector2[] points, SegmentedBoundryDirection direction)
+        public CollisionSegmentedBoundry(Vector2[] points, CollisionBoundryDirection direction)
         {
             Points = points;
             Direction = direction;
@@ -41,9 +41,9 @@ namespace Courier.Engine.Collisions
             if (collisionShape is CollisionSphere collisionSphere)
             {
                 return collisionShape.Intersects(this);
-            } else
+            }
+            else
             {
-                // Throwing a NotImplementedException since we don't need to wory about calling intersects on a CollisionPolygon at the moment.
                 throw new NotImplementedException();
             }
         }

@@ -19,11 +19,21 @@ namespace Courier.Engine.Collisions.Interfaces
         CollisionNodeType CollisionNodeType { get; }
 
         /// <summary>
+        /// The types of CollisionNodes that this CollisionNode is checking for collisions with.
+        /// </summary>
+        CollisionNodeType[] CollisionNodeTypeMask { get; }
+
+        /// <summary>
         /// Boolean value representing if collision checking should be performed on this CollisionNode.
         /// </summary>
         bool CollisionsEnabled { get; }
 
         public event EventHandler<CollisionEventArgs> OnCollision;
+
+        /// <summary>
+        /// Returns true if the given CollisionNodeType is masked by this CollisionNode. Otherwise false.
+        /// </summary>
+        public bool IsMaskingNodeType(CollisionNodeType nodeType);
 
         /// <summary>
         /// Called when notifying the ICollisionNode of a collision with another ICollisionNode.

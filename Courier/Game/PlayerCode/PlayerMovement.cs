@@ -28,10 +28,10 @@ namespace Courier.Game.PlayerCode
         public Vector2 Velocity { get; private set; } = Vector2.Zero;
         public float AngleOfAttack { get; private set; } = 0f;
 
-        public PlayerMovement(PlayerInput playerInput, Hub hub)
+        public PlayerMovement(PlayerInput playerInput, PlayerFuel playerFuel)
         {
             this.playerInput = playerInput;
-            playerFuel = new PlayerFuel(hub);
+            this.playerFuel = playerFuel;
         }
 
         /// <summary>

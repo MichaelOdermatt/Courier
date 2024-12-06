@@ -28,13 +28,13 @@ namespace Courier.Game.PlayerCode
             this.hub = hub;
         }
 
+
         /// <summary>
-        /// Adds the given amount of fuel to the players fuel amount.
+        /// Updates the players fuel amount to the maximum possible value.
         /// </summary>
-        public void AddFuel(float newFuelAmount)
+        public void SetFuelToMax()
         {
-            var updatedFuelAmount = fuelAmount + newFuelAmount;
-            fuelAmount = updatedFuelAmount >= MaxFuelAmount ? MaxFuelAmount : updatedFuelAmount;
+            fuelAmount = MaxFuelAmount;
             hub.Publish(new UpdateFuelEvent
             {
                 NewFuelLevel = FuelAmountScaled,

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Courier.Engine.Collisions
 {
-    public enum SegmentedBoundryDirection
+    public enum CollisionBoundryDirection
     {
         Up,
         Down,

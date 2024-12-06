@@ -1,5 +1,5 @@
 ﻿using Courier.Engine.Collisions;
-using Courier.Engine.Collisions.Interfaces;
+using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Nodes;
 using Microsoft.Xna.Framework;
 using System;
@@ -14,6 +14,7 @@ namespace Courier.Game.BulletCode
     {
         private readonly Sprite sprite;
         private readonly CollisionNode collisionNode;
+        private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.Player, CollisionNodeType.Ground };
 
         public Vector2 bulletDirection;
         private readonly float speed;
@@ -39,7 +40,7 @@ namespace Courier.Game.BulletCode
             Children.Add(sprite);
 
             var collisionShape = new CollisionSphere(this, bulletRadius);
-            collisionNode = new CollisionNode(this, collisionShape, collisionNodeType);
+            collisionNode = new CollisionNode(this, collisionShape, collisionNodeType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);
         }
@@ -57,12 +58,6 @@ namespace Courier.Game.BulletCode
 
         public void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
-            switch (eventArgs.collisionNode.CollisionNodeType)
-            {
-                case CollisionNodeType.Enemy:
-                case CollisionNodeType.Town:
-                    return;
-            }
             Destroyed = true;
         }
     }

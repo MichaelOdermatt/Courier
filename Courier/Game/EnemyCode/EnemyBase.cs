@@ -1,5 +1,6 @@
 ﻿using Courier.Engine;
 using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.PlayerCode;
@@ -20,6 +21,8 @@ namespace Courier.Game.EnemyCode
         protected readonly Player player;
         protected readonly Sprite sprite;
         protected readonly CollisionNode collisionNode;
+        private const CollisionNodeType CollisionType = CollisionNodeType.Enemy;
+        private readonly CollisionNodeType[] CollisionTypeMask = { CollisionNodeType.Parcel };
 
         protected readonly GameTimer shootTimer;
         protected readonly float shootRange;
@@ -60,7 +63,7 @@ namespace Courier.Game.EnemyCode
             Children.Add(sprite);
 
             var collisionShape = new CollisionSphere(this, collisionRadius);
-            collisionNode = new CollisionNode(this, collisionShape, CollisionNodeType.Enemy);
+            collisionNode = new CollisionNode(this, collisionShape, CollisionType, CollisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);
 
@@ -101,11 +104,8 @@ namespace Courier.Game.EnemyCode
 
         private void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
-            if (eventArgs.collisionNode.CollisionNodeType == CollisionNodeType.Parcel)
-            {
-                WasHit = true;
-                invincibiltyTimer.Start();
-            }
+            WasHit = true;
+            invincibiltyTimer.Start();
         }
 
         /// <summary>

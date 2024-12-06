@@ -110,6 +110,8 @@ namespace Courier.Game
             var bulletManager = new BulletManager(worldSpaceRoot);
             var enemies = CreateEnemies(player);
             var enemyManager = new EnemyManager(worldSpaceRoot, enemies);
+            var refuelPoint = new RefuelPoint(worldSpaceRoot);
+            refuelPoint.LocalPosition = groundPoints[10];
 
             worldSpaceRoot.Children.Add(player);
             worldSpaceRoot.Children.Add(ground);
@@ -117,6 +119,7 @@ namespace Courier.Game
             worldSpaceRoot.Children.Add(enemyManager);
             worldSpaceRoot.Children.Add(townManager);
             worldSpaceRoot.Children.Add(parcelManager);
+            worldSpaceRoot.Children.Add(refuelPoint);
         }
 
         /// <summary>
