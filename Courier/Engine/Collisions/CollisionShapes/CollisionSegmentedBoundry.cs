@@ -40,7 +40,7 @@ namespace Courier.Engine.Collisions.CollisionShapes
         {
             if (collisionShape is CollisionSphere collisionSphere)
             {
-                return collisionShape.Intersects(this);
+                return CheckIntersections.SphereIntersectsWithSegmentedBoundry(collisionSphere, this);
             }
             else
             {

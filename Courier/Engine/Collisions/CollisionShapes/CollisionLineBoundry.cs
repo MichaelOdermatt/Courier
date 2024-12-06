@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Courier.Engine.Collisions.CollisionShapes
 {
-    internal class CollisionLineBoundry : ICollisionShape
+    public class CollisionLineBoundry : ICollisionShape
     {
         /// <summary>
         /// The Node which the CollisionLineBoundry is attached to.
@@ -33,7 +33,7 @@ namespace Courier.Engine.Collisions.CollisionShapes
         {
             if (collisionShape is CollisionSphere collisionSphere)
             {
-                return collisionSphere.Intersects(this);
+                return CheckIntersections.SphereIntersectsWithLineBoundry(collisionSphere, this);
             }
             else
             {

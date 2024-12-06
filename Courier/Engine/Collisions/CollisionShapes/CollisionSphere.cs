@@ -11,12 +11,12 @@ namespace Courier.Engine.Collisions.CollisionShapes
 {
     public class CollisionSphere : ICollisionShape
     {
-        private float radius;
+        public float radius;
         /// <summary>
         /// The Node which the CollisionSphere is attached to.
         /// </summary>
         private readonly Node instantiatingNode;
-        private Vector2 GlobalPosition { get => instantiatingNode.GlobalPosition; }
+        public Vector2 GlobalPosition { get => instantiatingNode.GlobalPosition; }
 
         public CollisionSphere(Node instantiatingNode, float radius)
         {
@@ -29,75 +29,18 @@ namespace Courier.Engine.Collisions.CollisionShapes
         {
             if (collisionShape is CollisionSegmentedBoundry collisionSB && collisionSB.Direction == CollisionBoundryDirection.Down)
             {
-                return IntersectsWithCollisionSegmentedBoundry(collisionSB);
+                return CheckIntersections.SphereIntersectsWithSegmentedBoundry(this, collisionSB);
             }
             else if (collisionShape is CollisionSphere collisionSphere)
             {
-                return IntersectsWithCollisionSphere(collisionSphere);
+                return CheckIntersections.SphereIntersectsWithSphere(this, collisionSphere);
             }
             else if (collisionShape is CollisionLineBoundry collisionLB && collisionLB.Direction == CollisionBoundryDirection.Right)
             {
-                return IntersectsWithCollisionLineBoundry(collisionLB);
+                return CheckIntersections.SphereIntersectsWithLineBoundry(this, collisionLB);
             }
 
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Returns true if this CollisionSphere intersects with the given CollisionSegmentedBoundry. Otherwise false.
-        /// </summary>
-        private bool IntersectsWithCollisionSegmentedBoundry(CollisionSegmentedBoundry collisionSB)
-        {
-            // Find the line segment below the player.
-
-            var index = Array.BinarySearch(collisionSB.Points, GlobalPosition, CollisionSegmentedBoundry.Vector2Comparer);
-
-            var rightIndex = index * -1 - 1;
-            var leftIndex = rightIndex - 1;
-
-            // If the left and right index are out of the range of they array, the player is not above any line segment.
-            if (rightIndex > collisionSB.Points.Length - 1 || leftIndex < 0)
-            {
-                return false;
-            }
-
-            Vector2 leftPoint = collisionSB.Points[leftIndex];
-            Vector2 rightPoint = collisionSB.Points[rightIndex];
-
-            Vector2 lineSegmentVector = rightPoint - leftPoint;
-            Vector2 startPosToSphereCenter = GlobalPosition - leftPoint;
-
-            // Check if the sphere and line intersect
-
-            // Find the closest point to the sphere center along the lineSegmentVector.
-            float closestPointAsFloat = Vector2.Dot(startPosToSphereCenter, lineSegmentVector) / lineSegmentVector.LengthSquared();
-
-            closestPointAsFloat = Math.Clamp(closestPointAsFloat, 0, 1);
-
-            Vector2 closestPoint = leftPoint + closestPointAsFloat * lineSegmentVector;
-
-            float distanceTo = (closestPoint - GlobalPosition).LengthSquared();
-
-            // True if the distance between the closest point on the line to the sphere is less than the radius, or if the sphere's origin is below the closest point.
-            return closestPoint.Y <= GlobalPosition.Y || distanceTo <= radius * radius;
-        }
-
-        /// <summary>
-        /// Returns true if this CollisionSphere intersects with the given CollisionSphere. Otherwise false.
-        /// </summary>
-        private bool IntersectsWithCollisionLineBoundry(CollisionLineBoundry collisionLB)
-        {
-            var distanceTo = collisionLB.GlobalPosition.X - GlobalPosition.X;
-            return distanceTo <= radius;
-        }
-
-        /// <summary>
-        /// Returns true if this CollisionSphere intersects with the given CollisionSphere. Otherwise false.
-        /// </summary>
-        private bool IntersectsWithCollisionSphere(CollisionSphere collisionSphere)
-        {
-            var distanceTo = (collisionSphere.GlobalPosition - GlobalPosition).Length();
-            return distanceTo <= radius + collisionSphere.radius;
         }
     }
 }
