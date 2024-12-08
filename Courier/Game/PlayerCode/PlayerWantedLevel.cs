@@ -26,8 +26,12 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         private void IncreasePlayerWantedLevel()
         {
-            currentWantedLevel += 1;
-            hub.Publish(new UpdateWantedLevelEvent { NewWantedLevel = currentWantedLevel });
+            var newWantedLevel = currentWantedLevel + 1 >= MaxWantedLevel ? MaxWantedLevel : currentWantedLevel + 1;
+            if (newWantedLevel != currentWantedLevel)
+            {
+                currentWantedLevel = newWantedLevel;
+                hub.Publish(new UpdateWantedLevelEvent { NewWantedLevel = currentWantedLevel });
+            }
         }
 
         private void OnTownDestroyed(CharcterHitEvent eventData)

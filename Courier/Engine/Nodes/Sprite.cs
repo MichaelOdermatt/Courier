@@ -46,6 +46,12 @@ namespace Courier.Engine.Nodes
         /// </summary>
         public bool IsWorldSpaceSprite { get; set; } = true;
 
+        /// <summary>
+        /// Normally Sprites aren't added to the sprite batch if they are in world space and outside the view of the camera.
+        /// However, if this value is set to true, Sprites won't be culled not matter what, even if they are outside the camera view.
+        /// </summary>
+        public bool NeverCull { get; set; } = false;
+
         public Sprite(Node parent, string textureKey, float layerDepth = 0.0f) : base(parent)
         {
             this.textureKey = textureKey;
@@ -76,7 +82,8 @@ namespace Courier.Engine.Nodes
                 Origin = Origin,
                 Scale = Scale,
                 LayerDepth = layerDepth,
-                IsWorldSpaceSprite = IsWorldSpaceSprite
+                IsWorldSpaceSprite = IsWorldSpaceSprite,
+                NeverCull = NeverCull
             });
         }
     }

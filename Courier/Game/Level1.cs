@@ -82,6 +82,8 @@ namespace Courier.Game
             weightDisplayElement.LocalPosition = new Vector2(100, 50);
             var wantedLevelElement = new WantedLevelElement(screenSpaceRoot);
             wantedLevelElement.LocalPosition = new Vector2(100, 150);
+            var playerHealthElement = new PlayerHealthElement(screenSpaceRoot);
+            playerHealthElement.LocalPosition = new Vector2(100, 200);
 
             var skyBackground = new SkyBackground(screenSpaceRoot, camera);
 
@@ -89,6 +91,7 @@ namespace Courier.Game
             screenSpaceRoot.Children.Add(fuelMeterElement);
             screenSpaceRoot.Children.Add(weightDisplayElement);
             screenSpaceRoot.Children.Add(wantedLevelElement);
+            screenSpaceRoot.Children.Add(playerHealthElement);
         }
 
         /// <summary>
@@ -111,7 +114,7 @@ namespace Courier.Game
             var enemies = CreateEnemies(player);
             var enemyManager = new EnemyManager(worldSpaceRoot, enemies);
             var refuelPoint = new RefuelPoint(worldSpaceRoot);
-            refuelPoint.LocalPosition = groundPoints[10];
+            refuelPoint.LocalPosition = groundPoints[19];
 
             worldSpaceRoot.Children.Add(player);
             worldSpaceRoot.Children.Add(ground);
@@ -140,6 +143,21 @@ namespace Courier.Game
                 {
                     LocalPosition = new Vector2(groundPoints[9].X, groundPoints[9].Y - enemyYOffset)
                 },
+                // Gunner 3
+                new Gunner(worldSpaceRoot, player)
+                {
+                    LocalPosition = new Vector2(groundPoints[13].X, groundPoints[13].Y - enemyYOffset)
+                },
+                // Gunner 4
+                new Gunner(worldSpaceRoot, player)
+                {
+                    LocalPosition = new Vector2(groundPoints[15].X, groundPoints[15].Y - enemyYOffset)
+                },
+                // Gunner 4
+                new Gunner(worldSpaceRoot, player)
+                {
+                    LocalPosition = new Vector2(groundPoints[20].X, groundPoints[20].Y - enemyYOffset)
+                },
                 // Tank 1
                 new Tank(worldSpaceRoot, player)
                 {
@@ -149,6 +167,16 @@ namespace Courier.Game
                 new Tank(worldSpaceRoot, player)
                 {
                     LocalPosition = new Vector2(groundPoints[10].X, groundPoints[10].Y - enemyYOffset)
+                },
+                // Tank 3
+                new Tank(worldSpaceRoot, player)
+                {
+                    LocalPosition = new Vector2(groundPoints[14].X, groundPoints[14].Y - enemyYOffset)
+                },
+                // Tank 4
+                new Tank(worldSpaceRoot, player)
+                {
+                    LocalPosition = new Vector2(groundPoints[17].X, groundPoints[17].Y - enemyYOffset)
                 },
             };
         }
@@ -178,7 +206,7 @@ namespace Courier.Game
                 // Town 4
                 new Town(worldSpaceRoot)
                 {
-                    LocalPosition = groundPoints[19],
+                    LocalPosition = groundPoints[18],
                 },
             };
         }

@@ -31,7 +31,7 @@ namespace Courier.Game.PlayerCode
         private readonly PlayerInput playerInput = new PlayerInput();
         private readonly PlayerFuel playerFuel;
         private readonly PlayerMovement playerMovement;
-        private readonly PlayerHealth playerHealth = new PlayerHealth();
+        private readonly PlayerHealth playerHealth;
         private readonly PlayerParcelDelivery playerParcelDelivery;
         private readonly PlayerWantedLevel playerWantedLevel;
 
@@ -53,6 +53,7 @@ namespace Courier.Game.PlayerCode
         {
             var hub = Hub.Default;
 
+            playerHealth = new PlayerHealth(hub);
             playerFuel = new PlayerFuel(hub);
             playerMovement = new PlayerMovement(playerInput, playerFuel);
             playerParcelDelivery = new PlayerParcelDelivery(this, hub);

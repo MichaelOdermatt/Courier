@@ -92,6 +92,18 @@
 /processorParam:TextureFormat=Color
 /build:Sprites/LineTexture.png
 
+#begin Sprites/LineTextureWhite.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Sprites/LineTextureWhite.png
+
 #begin Sprites/Parcel.png
 /importer:TextureImporter
 /processor:TextureProcessor

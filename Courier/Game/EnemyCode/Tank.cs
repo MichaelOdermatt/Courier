@@ -27,10 +27,10 @@ namespace Courier.Game.EnemyCode
                     newShootTimerDuration = 0.95f;
                     break;
                 case EnemyState.ThreeStar:
-                    newShootTimerDuration = 0.75f;
+                    newShootTimerDuration = 0.7f;
                     break;
                 case EnemyState.FiveStar:
-                    newShootTimerDuration = 0.7f;
+                    newShootTimerDuration = 0.5f;
                     break;
                 default:
                     newShootTimerDuration = shootTimer.Duration;

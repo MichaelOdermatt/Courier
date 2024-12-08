@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Courier.Game.EventData;
+using PubSub;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,8 @@ namespace Courier.Game.PlayerCode
 {
     public class PlayerHealth
     {
+        private readonly Hub hub;
+
         /// <summary>
         /// The current Player health value.
         /// </summary>
@@ -18,9 +22,18 @@ namespace Courier.Game.PlayerCode
         /// </summary>
         public bool HasZeroHealth { get =>  Health <= 0; }
 
+        public PlayerHealth(Hub hub) 
+        {
+            this.hub = hub;
+        }
+
         public void reduceHealth(float reductionAmount)
         {
             Health -= reductionAmount;
+            if (!HasZeroHealth)
+            {
+                hub.Publish(new UpdatePlayerHealthEvent { NewHealthValue = Health });
+            }
         }
     }
 }
