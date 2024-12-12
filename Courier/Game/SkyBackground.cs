@@ -13,9 +13,16 @@ namespace Courier.Game
         private const float maxYSpriteOffset = 0f;
         private const float minYSpriteOffset = -160f;
 
-        private const float paralaxSpeed = 0.2f;
-        private const float maxYParalaxOffset = 100f;
-        private const float minYParalaxOffset = -100f;
+        private const float parallaxSpeed = 0.5f;
+
+        /// <summary>
+        /// The Y position that the camera must be at to reach the max end of the parallax effect.
+        /// </summary>
+        private const float maxYParallaxOffset = 600f;
+        /// <summary>
+        /// The Y position that the camera must be at to reach the min end of the parallax effect.
+        /// </summary>
+        private const float minYParallaxOffset = 200f;
 
         public SkyBackground(Node parent, Camera2D camera) : base(parent)
         {
@@ -35,13 +42,14 @@ namespace Courier.Game
 
         private float GetSpriteOffsetY()
         {
-            var clampedScaledYPos = Math.Clamp(camera.Position.Y * paralaxSpeed, minYParalaxOffset, maxYParalaxOffset);
-            // Get the camera's Y pos as a value between 0 and 1.
-            var yPosAsFloat = (clampedScaledYPos + maxYParalaxOffset) / (Math.Abs(maxYParalaxOffset) + Math.Abs(minYParalaxOffset));
+            // Get the camera's Y pos as a value relative to the min and max parallax offsets.
+            var yPosAsPercentage = (camera.Position.Y - minYParallaxOffset) / (maxYParallaxOffset - minYParallaxOffset);
+            // Scale the y pos so that it matches the desired parallax speed
+            var scaledYPos = yPosAsPercentage * parallaxSpeed;
             // Apply a smoothstep function to the Y pos so that paralax movement looks more gradual.
-            var yPosSmoothStepped = 1 - MathHelper.SmoothStep(0, 1, yPosAsFloat);
+            var yPosSmoothStepped = 1 - MathHelper.SmoothStep(0, 1, Math.Clamp(scaledYPos, 0f, 1f));
             // Convert the smoothstepped Y pos to a new Y coordinate.
-            return yPosSmoothStepped * (Math.Abs(minYSpriteOffset) + Math.Abs(maxYSpriteOffset)) + minYSpriteOffset;
+            return yPosSmoothStepped * (maxYSpriteOffset - minYSpriteOffset) + minYSpriteOffset;
         }
     }
 }

@@ -108,6 +108,7 @@ namespace Courier.Game
                 camera,
                 () => this.Initialize()
             );
+            player.LocalPosition = new Vector2(0, 650);
 
             var ground = new Ground(worldSpaceRoot, groundPoints);
             var bulletManager = new BulletManager(worldSpaceRoot);
