@@ -1,4 +1,5 @@
-﻿using Courier.Engine.Collisions;
+﻿using Auios.QuadTree;
+using Courier.Engine.Collisions;
 using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Nodes;
 using Courier.Engine.Render;
@@ -31,9 +32,16 @@ namespace Courier.Engine
         /// </summary>
         protected Camera2D camera;
 
+        /// <summary>
+        /// QuadTree used for detecting intersections between collision nodes.
+        /// </summary>
+        private readonly QuadTree<ICollisionNode> quadTree;
+
         public Scene(Camera2D camera)
         {
             this.camera = camera;
+            // Collisions will be checked in a 10000 by 10000 square starting at the level's origin.
+            quadTree = new QuadTree<ICollisionNode>(10000, 10000, new CollisionNodeQuadTreeBounds());
         }
 
         /// <summary>
@@ -70,30 +78,37 @@ namespace Courier.Engine
         /// <summary>
         /// Checks for collisions between the given list of ICollisionNodes.
         /// </summary>
-        /// <param name="collisionNodes">The list of ICollisionNodes that could be colliding with the PlayerController.</param>
+        /// <param name="collisionNodes">The list all CollisionNodes in the Scene.</param>
         private void CheckSceneCollisions(IEnumerable<ICollisionNode> collisionNodes)
         {
-            for (int i = 0; i < collisionNodes.Count() - 1; i++)
+            // Clear all the nodes from the previous Update call.
+            quadTree.Clear();
+            // Add all the node from the current Update call.
+            quadTree.InsertRange(collisionNodes);
+
+            foreach (var node in collisionNodes)
             {
-                for (int j = i + 1; j < collisionNodes.Count(); j++)
+                // Get the search area to check in the QuadTree.
+                var searchArea = node.GetQuadTreeRect();
+                // Get any nodes that are in the search area in the QuadTree.
+                var collidingNodes = quadTree.FindObjects(searchArea);
+                foreach (var collidingNode in collisionNodes)
                 {
-                    var firstCollisionNode = collisionNodes.ElementAt(i);
-                    var secondCollisionNode = collisionNodes.ElementAt(j);
-                    var firstCollisionNodeMasksSecondNode = firstCollisionNode.IsMaskingNodeType(secondCollisionNode.CollisionNodeType);
-                    var secondCollisionNodeMasksFirstNode = secondCollisionNode.IsMaskingNodeType(firstCollisionNode.CollisionNodeType);
+                    var firstCollisionNodeMasksSecondNode = node.IsMaskingNodeType(collidingNode.CollisionNodeType);
+                    var secondCollisionNodeMasksFirstNode = collidingNode.IsMaskingNodeType(node.CollisionNodeType);
 
                     // If either of the Nodes mask the other, and they are colliding, notify them.
                     if ((firstCollisionNodeMasksSecondNode || secondCollisionNodeMasksFirstNode) &&
-                        firstCollisionNode.CollisionShape.Intersects(secondCollisionNode.CollisionShape)
+                        node.CollisionShape.Intersects(collidingNode.CollisionShape)
                     )
                     {
                         if (firstCollisionNodeMasksSecondNode)
                         {
-                            firstCollisionNode.Collide(secondCollisionNode);
+                            node.Collide(collidingNode);
                         }
                         if (secondCollisionNodeMasksFirstNode)
                         {
-                            secondCollisionNode.Collide(firstCollisionNode);
+                            collidingNode.Collide(node);
                         }
                     }
                 }

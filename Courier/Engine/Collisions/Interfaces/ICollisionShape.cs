@@ -18,5 +18,23 @@ namespace Courier.Engine.Collisions.Interfaces
         /// </summary>
         /// <param name="collisionShape"></param>
         public bool Intersects(ICollisionShape collisionShape);
+        /// <summary>
+        /// Distance from the origin to the bottom of the collision shape. 
+        /// This number should be larger than the value for GetTop() since down is positive and up is negative in world space.
+        /// </summary>
+        public float GetBottom();
+        /// <summary>
+        /// Distance from the origin to the top of the collision shape.
+        /// This number should be smaller than the value for GetBottom() since down is positive and up is negative in world space.
+        /// </summary>
+        public float GetTop();
+        /// <summary>
+        /// Distance from the origin to the leftmost point of the collision shape.
+        /// </summary>
+        public float GetLeft();
+        /// <summary>
+        /// Distance from the origin to the rightmost point of the collision shape.
+        /// </summary>
+        public float GetRight();
     }
 }

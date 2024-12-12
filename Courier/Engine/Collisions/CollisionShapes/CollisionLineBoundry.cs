@@ -40,5 +40,28 @@ namespace Courier.Engine.Collisions.CollisionShapes
                 throw new NotImplementedException();
             }
         }
+
+        public float GetBottom() => 0;
+
+        public float GetTop()
+        {
+            if (Direction == CollisionBoundryDirection.Right)
+            {
+                // Give the line boundry a height of 1000, so collisions can be detected up to 1000 pixels above it.
+                return -1000;
+            }
+            throw new NotImplementedException();
+        }
+        public float GetLeft() => 0;
+
+        public float GetRight()
+        {
+            if (Direction == CollisionBoundryDirection.Right)
+            {
+                // Give the line boundry a width of 250, so collisions can be detected up to 250 pixels past it.
+                return 250;
+            }
+            throw new NotImplementedException();
+        }
     }
 }

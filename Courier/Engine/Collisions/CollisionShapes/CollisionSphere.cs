@@ -42,5 +42,13 @@ namespace Courier.Engine.Collisions.CollisionShapes
 
             throw new NotImplementedException();
         }
+
+        public float GetBottom() => radius;
+
+        public float GetTop() => -radius;
+
+        public float GetLeft() => -radius;
+
+        public float GetRight() => radius;
     }
 }

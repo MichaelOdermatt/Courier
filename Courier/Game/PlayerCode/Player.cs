@@ -39,6 +39,7 @@ namespace Courier.Game.PlayerCode
 
         private const float MaxEnemyTargetDistance = 500f;
         private const float SpeedAtMaxEnemyTargetDistance = 12f;
+        private const float MaxCameraYValue = 200f;
 
         /// <summary>
         /// The GlobalPosition of the EnemyTarget object.
@@ -135,9 +136,9 @@ namespace Courier.Game.PlayerCode
         private void UpdateCameraPosition()
         {
             var newCameraPos = GlobalPosition;
-            if (newCameraPos.Y <= -200)
+            if (newCameraPos.Y <= MaxCameraYValue)
             {
-                newCameraPos.Y = -200;
+                newCameraPos.Y = MaxCameraYValue;
             }
             // Update the camera position to always follow the Player.
             camera.SetPosition(newCameraPos);

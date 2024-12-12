@@ -1,4 +1,5 @@
-﻿using Courier.Engine.Collisions;
+﻿using Auios.QuadTree;
+using Courier.Engine.Collisions;
 using Courier.Engine.Collisions.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,27 @@ namespace Courier.Engine.Nodes
                     collisionNode = collidedNode,
                 });
             }
+        }
+
+        public float GetBottom() => GlobalPosition.Y + CollisionShape.GetBottom();
+
+        public float GetTop() => GlobalPosition.Y + CollisionShape.GetTop();
+
+        public float GetLeft() => GlobalPosition.X + CollisionShape.GetLeft();
+
+        public float GetRight() => GlobalPosition.X + CollisionShape.GetRight();
+
+        /// <summary>
+        /// Returns the CollisionNode as a QuadTreeRect. The QuadTreeRect will represent the CollisionNode's width, height, and position in world space.
+        /// </summary>
+        public QuadTreeRect GetQuadTreeRect() 
+        {
+            var height = GetBottom() - GetTop();
+            var width = GetRight() - GetLeft();
+            var x = GlobalPosition.X;
+            var y = GlobalPosition.Y;
+            // X and Y represent the top left of the rect.
+            return new QuadTreeRect(x, y, width, height);
         }
     }
 }

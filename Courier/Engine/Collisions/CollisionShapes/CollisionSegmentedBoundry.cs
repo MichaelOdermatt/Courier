@@ -14,6 +14,11 @@ namespace Courier.Engine.Collisions.CollisionShapes
     /// </summary>
     public class CollisionSegmentedBoundry : ICollisionShape
     {
+        private readonly float highestPointYValue;
+        private readonly float lowestPointYValue;
+        private readonly float rightmostPointXValue;
+        private readonly float leftmostPointXValue;
+
         /// <summary>
         /// The points that make up the segmented line.
         /// </summary>
@@ -33,6 +38,18 @@ namespace Courier.Engine.Collisions.CollisionShapes
         {
             Points = points;
             Direction = direction;
+
+            highestPointYValue = float.MinValue;
+            lowestPointYValue = float.MaxValue;
+            rightmostPointXValue = float.MinValue;
+            leftmostPointXValue = float.MaxValue;
+            foreach (var point in points)
+            {
+                highestPointYValue = point.Y > highestPointYValue ? point.Y : highestPointYValue;
+                lowestPointYValue = point.Y < lowestPointYValue ? point.Y : lowestPointYValue;
+                rightmostPointXValue = point.X > rightmostPointXValue ? point.X : rightmostPointXValue;
+                leftmostPointXValue = point.X < leftmostPointXValue ? point.X : leftmostPointXValue;
+            }
         }
 
         /// <inheritdoc/>
@@ -47,5 +64,22 @@ namespace Courier.Engine.Collisions.CollisionShapes
                 throw new NotImplementedException();
             }
         }
+
+        public float GetBottom()
+        {
+            if (Direction == CollisionBoundryDirection.Down)
+            {
+                // Return the lowest point on the segmented boundry an additional buffer so
+                // that collisions can be detected for an extra number pixels under the lowest point.
+                return highestPointYValue + 250;
+            }
+            throw new NotImplementedException();
+        }
+
+        public float GetTop() => lowestPointYValue;
+
+        public float GetLeft() => leftmostPointXValue;
+
+        public float GetRight() => rightmostPointXValue;
     }
 }

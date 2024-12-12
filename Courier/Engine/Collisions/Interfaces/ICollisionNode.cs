@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Auios.QuadTree;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,5 +41,24 @@ namespace Courier.Engine.Collisions.Interfaces
         /// </summary>
         /// <param name="e">The ICollisionNode that collided with this ICollisionNode colliding Node.</param>
         public void Collide(ICollisionNode e);
+
+        /// <summary>
+        /// Returns the Y position of the bottom of the collisionNode.
+        /// </summary>
+        public float GetBottom();
+        /// <summary>
+        /// Returns the Y position of the top of the collisionNode.
+        /// </summary>
+        public float GetTop();
+        /// <summary>
+        /// Returns the X position of the leftmost point of the collisionNode.
+        /// </summary>
+        public float GetLeft();
+        /// <summary>
+        /// Returns the X position of the rightmost point of the collisionNode.
+        /// </summary>
+        public float GetRight();
+
+        public QuadTreeRect GetQuadTreeRect();
     }
 }
