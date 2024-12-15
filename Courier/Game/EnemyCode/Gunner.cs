@@ -16,6 +16,7 @@ namespace Courier.Game.EnemyCode
     public class Gunner : EnemyBase
     {
         private const float EnemyTargetThresholdAngle = 1.57f;
+        private const float BulletSpeed = 275f;
 
         public Gunner(Node parent, Player player) : base(parent, player, 0.75f, 500f, "Gunner", 5f)
         {
@@ -60,29 +61,52 @@ namespace Courier.Game.EnemyCode
             var angleToPoint = MathF.Atan2(-pointToShootAt.Y, -pointToShootAt.X);
             sprite.Rotation = angleToPoint;
 
-            pointToShootAt.Normalize();
+            // From the PointToShootAt Get the direction that the enemy should fire the bullet.
+            var shootDirection = Vector2.Normalize(pointToShootAt - GlobalPosition);
             hub.Publish(new FireBulletEvent
             {
                 InitialPosition = GlobalPosition,
-                Direction = pointToShootAt,
+                Direction = shootDirection,
                 BulletType = BulletType.Small,
+                BulletSpeed = BulletSpeed
             });
         }
 
         /// <summary>
-        /// Returns the point that the Gunner should shoot at. It is either the Player itself or the Player's EnemyTarget
+        /// Returns the point that the Gunner should shoot at.
         /// </summary>
         private Vector2 PointToShootAt()
         {
+            var predictedPlayerPosition = PredictPlayerPosition();
+            var vectorToPlayerPredictedPosition = predictedPlayerPosition - GlobalPosition;
             var vectorToPlayer = player.GlobalPosition - GlobalPosition;
-            var vectorToEnemyTarget = player.EnemyTargetGlobalPosition - GlobalPosition;
 
-            var dotProduct = Vector2.Dot(vectorToPlayer, vectorToEnemyTarget);
-            var angle = MathF.Acos(dotProduct / (vectorToPlayer.Length() * vectorToEnemyTarget.Length()));
+            var dotProduct = Vector2.Dot(vectorToPlayer, vectorToPlayerPredictedPosition);
+            var angle = MathF.Acos(dotProduct / (vectorToPlayer.Length() * vectorToPlayerPredictedPosition.Length()));
 
             // We calculate the angle between the Player and the Player's EnemyTarget relative to the Gunner. If the angle is sufficiently large
             // it means the EnemyTarget and Player are on either side of the Gunner, so point at the Player.
-            return angle >= EnemyTargetThresholdAngle ? vectorToPlayer : vectorToEnemyTarget;
+            // return angle >= EnemyTargetThresholdAngle ? player.GlobalPosition : predictedPlayerPosition;
+            return predictedPlayerPosition;
+        }
+
+        private Vector2 PredictPlayerPosition()
+        {
+            var bulletSpeed = BulletSpeed * 0.01666667f;
+            var playerVelocity = player.Velocity;
+
+            Vector2 predictedPlayerPosition = player.GlobalPosition;
+            var vectorToPredictedPosition = player.GlobalPosition - GlobalPosition;
+            for (var i = 0; i <= 4; i++)
+            {
+                // Find the time it will take for the bullet to reach the predicted position.
+                var timeToHit = vectorToPredictedPosition.Length() / bulletSpeed;
+                // Update the predicted position.
+                predictedPlayerPosition = player.GlobalPosition + playerVelocity * timeToHit;
+                vectorToPredictedPosition = predictedPlayerPosition - GlobalPosition;
+            }
+
+            return predictedPlayerPosition;
         }
     }
 }

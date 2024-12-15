@@ -49,10 +49,10 @@ namespace Courier.Game.BulletCode
             BulletBase newBullet;
             if (eventData.BulletType == BulletType.Small)
             {
-                newBullet = new SmallBullet(this, eventData.InitialPosition, eventData.Direction);
+                newBullet = new SmallBullet(this, eventData.BulletSpeed, eventData.InitialPosition, eventData.Direction);
             } else
             {
-                newBullet = new LargeBullet(this, eventData.InitialPosition, eventData.Direction);
+                newBullet = new LargeBullet(this, eventData.BulletSpeed, eventData.InitialPosition, eventData.Direction);
             }
             Children.Add(newBullet);
             bullets.Add(newBullet);

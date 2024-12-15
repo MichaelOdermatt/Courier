@@ -14,6 +14,8 @@ namespace Courier.Game.EnemyCode
 {
     public class Tank : EnemyBase
     {
+        private const float BulletSpeed = 150f;
+
         public Tank(Node parent, Player player) : base(parent, player, 0.95f, 700f, "Tank", 10f)
         {
         }
@@ -56,6 +58,7 @@ namespace Courier.Game.EnemyCode
                 InitialPosition = GlobalPosition,
                 Direction = -Vector2.UnitY,
                 BulletType = BulletType.Large,
+                BulletSpeed = BulletSpeed
             });
         }
     }

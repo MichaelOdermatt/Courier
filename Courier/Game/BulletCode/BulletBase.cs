@@ -16,7 +16,7 @@ namespace Courier.Game.BulletCode
         private readonly CollisionNode collisionNode;
         private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.Player, CollisionNodeType.Ground };
 
-        public Vector2 bulletDirection;
+        private readonly Vector2 bulletDirection;
         private readonly float speed;
 
         /// <summary>
@@ -28,14 +28,14 @@ namespace Courier.Game.BulletCode
             Node parent, 
             string textureKey, 
             float bulletRadius, 
-            float bulletSpeed, 
             CollisionNodeType collisionNodeType,
+            float speed,
             Vector2 initialPos,
             Vector2 direction) : base(parent)
         {
             LocalPosition = initialPos;
             bulletDirection = direction;
-            speed = bulletSpeed;
+            this.speed = speed;
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
 

@@ -13,5 +13,6 @@ namespace Courier.Game.EventData
         public Vector2 InitialPosition { get; set; }
         public Vector2 Direction { get; set; }
         public BulletType BulletType { get; set; }
+        public float BulletSpeed { get; set; }
     }
 }

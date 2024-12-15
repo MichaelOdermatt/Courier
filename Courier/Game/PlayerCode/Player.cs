@@ -21,10 +21,6 @@ namespace Courier.Game.PlayerCode
         private const CollisionNodeType CollisionType = CollisionNodeType.Player;
         private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.SmallBullet, CollisionNodeType.LargeBullet, CollisionNodeType.Ground, CollisionNodeType.RefuelPoint };
 
-        /// <summary>
-        /// A Node which has the Players position with an additional offset. This is what Enemies should fire at.
-        /// </summary>
-        private readonly Node enemyTarget;
         private readonly Camera2D camera;
         // TODO instead of using a callback for resetCurrentScene maybe submit an event to a scene manager?
         private readonly Action resetCurrentScene;
@@ -41,10 +37,7 @@ namespace Courier.Game.PlayerCode
         private const float SpeedAtMaxEnemyTargetDistance = 12f;
         private const float MaxCameraYValue = 200f;
 
-        /// <summary>
-        /// The GlobalPosition of the EnemyTarget object.
-        /// </summary>
-        public Vector2 EnemyTargetGlobalPosition { get => enemyTarget.GlobalPosition; }
+        public Vector2 Velocity { get => playerMovement.Velocity; }
 
         public Player(
             Node parent, 
@@ -62,9 +55,6 @@ namespace Courier.Game.PlayerCode
 
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
-
-            enemyTarget = new Node(this);
-            Children.Add(enemyTarget);
 
             var collisionShape = new CollisionSphere(this, 6f);
             collisionNode = new CollisionNode(this, collisionShape, CollisionType, collisionTypeMask);
@@ -100,12 +90,11 @@ namespace Courier.Game.PlayerCode
 
             playerMovement.UpdateMovement(gameTime);
             // Apply the velocity to the players position.
-            LocalPosition += playerMovement.Velocity;
+            LocalPosition += Velocity;
 
             // Update the sprites rotation to match the angle of attack.
             sprite.Rotation = playerMovement.AngleOfAttack;
 
-            UpdateEnemyTargetPosition();
             UpdateCameraPosition();
         }
 
@@ -142,18 +131,6 @@ namespace Courier.Game.PlayerCode
             }
             // Update the camera position to always follow the Player.
             camera.SetPosition(newCameraPos);
-        }
-
-        /// <summary>
-        /// Update the Enemy Target Position.
-        /// </summary>
-        private void UpdateEnemyTargetPosition()
-        {
-            var distanceFromPlayer = playerMovement.Velocity.Length() / SpeedAtMaxEnemyTargetDistance * MaxEnemyTargetDistance;
-
-            distanceFromPlayer = Math.Clamp(distanceFromPlayer, 0, MaxEnemyTargetDistance);
-            var playerXDirectionSign = MathF.Sign(playerMovement.Velocity.X);
-            enemyTarget.LocalPosition = new Vector2(distanceFromPlayer * playerXDirectionSign, 0);
         }
     }
 }

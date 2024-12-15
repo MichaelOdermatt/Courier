@@ -11,7 +11,7 @@ namespace Courier.Game.BulletCode
 {
     public class SmallBullet : BulletBase
     {
-        public SmallBullet(Node parent, Vector2 initialPos, Vector2 direction) : base(parent, "BulletSmall", 2f, 250f, CollisionNodeType.SmallBullet, initialPos, direction)
+        public SmallBullet(Node parent, float speed, Vector2 initialPos, Vector2 direction) : base(parent, "BulletSmall", 2f, CollisionNodeType.SmallBullet, speed, initialPos, direction)
         {
         }
     }
