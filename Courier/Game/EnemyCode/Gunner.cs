@@ -15,8 +15,8 @@ namespace Courier.Game.EnemyCode
 {
     public class Gunner : EnemyBase
     {
-        private const float EnemyTargetThresholdAngle = 1.57f;
         private const float BulletSpeed = 275f;
+        private const float MaxPlayerPositionPrediction = 220f;
 
         public Gunner(Node parent, Player player) : base(parent, player, 0.75f, 500f, "Gunner", 5f)
         {
@@ -55,7 +55,7 @@ namespace Courier.Game.EnemyCode
                 return;
             }
 
-            var pointToShootAt = PointToShootAt();
+            var pointToShootAt = PredictPlayerPosition();
 
             // Rotate the sprite to face the Player. The sprite rotation will be updated in the next Draw call.
             var angleToPoint = MathF.Atan2(-pointToShootAt.Y, -pointToShootAt.X);
@@ -72,24 +72,6 @@ namespace Courier.Game.EnemyCode
             });
         }
 
-        /// <summary>
-        /// Returns the point that the Gunner should shoot at.
-        /// </summary>
-        private Vector2 PointToShootAt()
-        {
-            var predictedPlayerPosition = PredictPlayerPosition();
-            var vectorToPlayerPredictedPosition = predictedPlayerPosition - GlobalPosition;
-            var vectorToPlayer = player.GlobalPosition - GlobalPosition;
-
-            var dotProduct = Vector2.Dot(vectorToPlayer, vectorToPlayerPredictedPosition);
-            var angle = MathF.Acos(dotProduct / (vectorToPlayer.Length() * vectorToPlayerPredictedPosition.Length()));
-
-            // We calculate the angle between the Player and the Player's EnemyTarget relative to the Gunner. If the angle is sufficiently large
-            // it means the EnemyTarget and Player are on either side of the Gunner, so point at the Player.
-            // return angle >= EnemyTargetThresholdAngle ? player.GlobalPosition : predictedPlayerPosition;
-            return predictedPlayerPosition;
-        }
-
         private Vector2 PredictPlayerPosition()
         {
             var bulletSpeed = BulletSpeed * 0.01666667f;
@@ -104,6 +86,12 @@ namespace Courier.Game.EnemyCode
                 // Update the predicted position.
                 predictedPlayerPosition = player.GlobalPosition + playerVelocity * timeToHit;
                 vectorToPredictedPosition = predictedPlayerPosition - GlobalPosition;
+            }
+
+            // If the predicted position is farther than the max, return the max.
+            if (predictedPlayerPosition.Length() > MaxPlayerPositionPrediction)
+            {
+                return player.GlobalPosition + Vector2.Normalize(playerVelocity) * MaxPlayerPositionPrediction;
             }
 
             return predictedPlayerPosition;
