@@ -14,12 +14,12 @@ namespace Courier.Game.PlayerCode
         private readonly PlayerInput playerInput;
         private readonly PlayerFuel playerFuel;
 
-        private const float RotateSpeed = 1.6f;
+        private const float RotateSpeed = 0.0266f;
 
         private Vector2 gravityDirection = Vector2.UnitY;
 
-        private const float TerminalVelocity = 10f;
-        private const float ThrustPower = 80f;
+        private const float TerminalVelocity = 550f;
+        private const float ThrustPower = 1.2f;
         private const float GravityPower = 5f;
         private const float LiftPower = 0.5f;
         private const float InducedDragPower = 0.3f;
@@ -42,13 +42,11 @@ namespace Courier.Game.PlayerCode
         /// <returns></returns>
         public void UpdateMovement(GameTime gameTime)
         {
-            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
             var isThrustPressed = playerInput.IsPlayerPressingAccelerate();
 
             // Rotate the velocity vector based on the Players input.
             var steeringDirection = playerInput.GetPlayerSteeringDirection();
-            var steeringAmount = steeringDirection * RotateSpeed * deltaTime;
+            var steeringAmount = steeringDirection * RotateSpeed;
 
             var newVelocity = Velocity.Rotate(steeringAmount);
 
@@ -64,18 +62,18 @@ namespace Courier.Game.PlayerCode
             if (isThrustPressed && !playerFuel.IsOutOfFuel())
             {
                 playerFuel.DepleteFuel(gameTime);
-                var thrust = normalizedVelocity * (ThrustPower * deltaTime);
-                newVelocity += thrust * deltaTime;
+                var thrust = normalizedVelocity * ThrustPower;
+                newVelocity += thrust;
             }
 
             // Apply gravity.
-            newVelocity += gravity * deltaTime;
+            newVelocity += gravity;
 
             // Apply lift.
-            newVelocity += lift * deltaTime;
+            newVelocity += lift;
 
             // Apply Drag.
-            newVelocity += drag * deltaTime;
+            newVelocity += drag;
 
             // Cap velocity to the terminal velocty value.
             if (newVelocity.Length() >= TerminalVelocity)

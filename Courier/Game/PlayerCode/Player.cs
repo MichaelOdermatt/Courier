@@ -68,6 +68,7 @@ namespace Courier.Game.PlayerCode
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             playerInput.UpdateKeyboardState();
 
@@ -90,7 +91,7 @@ namespace Courier.Game.PlayerCode
 
             playerMovement.UpdateMovement(gameTime);
             // Apply the velocity to the players position.
-            LocalPosition += Velocity;
+            LocalPosition += Velocity * deltaTime;
 
             // Update the sprites rotation to match the angle of attack.
             sprite.Rotation = playerMovement.AngleOfAttack;

@@ -74,7 +74,7 @@ namespace Courier.Game.EnemyCode
 
         private Vector2 PredictPlayerPosition()
         {
-            var bulletSpeed = BulletSpeed * 0.01666667f;
+            var bulletSpeed = BulletSpeed;
             var playerVelocity = player.Velocity;
 
             Vector2 predictedPlayerPosition = player.GlobalPosition;
