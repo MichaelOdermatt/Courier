@@ -21,7 +21,7 @@ namespace Courier.Game.ParcelCode
         private Vector2 velocity = Vector2.Zero;
 
         private const float Speed = 4;
-        private const float collisionRadius = 5f;
+        private const float CollisionRadius = 5f;
 
         /// <summary>
         /// Bool value used to mark whether this parcel should be destroyed or not.
@@ -33,7 +33,7 @@ namespace Courier.Game.ParcelCode
             sprite = new Sprite(this, "Parcel");
             Children.Add(sprite);
 
-            var collisionShape = new CollisionSphere(this, collisionRadius);
+            var collisionShape = new CollisionSphere(this, CollisionRadius);
             collisionNode = new CollisionNode(this, collisionShape, CollisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);

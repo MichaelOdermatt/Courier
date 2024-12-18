@@ -39,6 +39,10 @@ namespace Courier.Engine.Collisions.CollisionShapes
             {
                 return CheckIntersections.SphereIntersectsWithLineBoundry(this, collisionLB);
             }
+            else if (collisionShape is CollisionRectangle collisionRectangle)
+            {
+                return CheckIntersections.SphereIntersectsWithRectangle(this, collisionRectangle);
+            }
 
             throw new NotImplementedException();
         }

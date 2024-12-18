@@ -19,7 +19,8 @@ namespace Courier.Game.TownCode
         private readonly CollisionNode collisionNode;
         private const CollisionNodeType collisionType = CollisionNodeType.Town;
         private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.Parcel };
-        private const float CollisionRadius = 10;
+        private const float CollisionWidth = 75;
+        private const float CollisionHeight = 12;
 
         /// <summary>
         /// Boolean value representing if the town has been destroyed.
@@ -35,7 +36,7 @@ namespace Courier.Game.TownCode
             };
             Children.Add(sprite);
 
-            var collisionShape = new CollisionSphere(this, CollisionRadius);
+            var collisionShape = new CollisionRectangle(this, CollisionWidth, CollisionHeight);
             collisionNode = new CollisionNode(this, collisionShape, collisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);

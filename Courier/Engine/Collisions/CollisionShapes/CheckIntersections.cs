@@ -59,6 +59,18 @@ namespace Courier.Engine.Collisions.CollisionShapes
         }
 
         /// <summary>
+        /// Returns true if this CollisionSphere intersects with the given CollisionRectangle. Otherwise false.
+        /// </summary>
+        public static bool SphereIntersectsWithRectangle(CollisionSphere collisionSphere, CollisionRectangle collisionRectangle)
+        {
+            var distanceToX = Math.Abs(collisionSphere.GlobalPosition.X - collisionRectangle.GlobalPosition.X);
+            var distanceToY = Math.Abs(collisionSphere.GlobalPosition.Y - collisionRectangle.GlobalPosition.Y);
+            var isIntersectingX = distanceToX <= collisionSphere.radius + collisionRectangle.Width * 0.5f;
+            var isIntersectingY = distanceToY <= collisionSphere.radius + collisionRectangle.Height * 0.5f;
+            return isIntersectingX && isIntersectingY;
+        }
+
+        /// <summary>
         /// Returns true if this CollisionSphere intersects with the given CollisionSphere. Otherwise false.
         /// </summary>
         public static bool SphereIntersectsWithSphere(CollisionSphere collisionSphere1, CollisionSphere collisionSphere2)

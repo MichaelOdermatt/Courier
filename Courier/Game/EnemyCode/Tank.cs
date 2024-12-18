@@ -1,4 +1,5 @@
 ﻿using Courier.Engine;
+using Courier.Engine.Extensions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.EventData;
@@ -16,8 +17,15 @@ namespace Courier.Game.EnemyCode
     {
         private const float BulletSpeed = 150f;
 
+        /// <summary>
+        /// The amount in radians that the Gunner's accuracy can randomly deviate.
+        /// </summary>
+        private float accuracyDeviation = 0.05f;
+        private readonly Random random;
+
         public Tank(Node parent, Player player) : base(parent, player, 0.95f, 700f, "Tank", 10f)
         {
+            random = new Random();
         }
 
         protected override void UpdateShootTimerDuration()
@@ -53,10 +61,12 @@ namespace Courier.Game.EnemyCode
                 return;
             }
 
+            var shootDirectionDeviation = -accuracyDeviation + ((float)random.NextDouble() * 2.0f) * accuracyDeviation;
+            var shootDirection = -Vector2.UnitY.Rotate(shootDirectionDeviation);
             hub.Publish(new FireBulletEvent
             {
                 InitialPosition = GlobalPosition,
-                Direction = -Vector2.UnitY,
+                Direction = shootDirection,
                 BulletType = BulletType.Large,
                 BulletSpeed = BulletSpeed
             });

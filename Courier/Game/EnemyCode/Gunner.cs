@@ -1,4 +1,5 @@
 ﻿using Courier.Engine;
+using Courier.Engine.Extensions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.EventData;
@@ -18,8 +19,15 @@ namespace Courier.Game.EnemyCode
         private const float BulletSpeed = 275f;
         private const float MaxPlayerPositionPrediction = 220f;
 
+        /// <summary>
+        /// The amount in radians that the Gunner's accuracy can randomly deviate.
+        /// </summary>
+        private float accuracyDeviation = 0.05f;
+        private readonly Random random;
+
         public Gunner(Node parent, Player player) : base(parent, player, 0.75f, 500f, "Gunner", 5f)
         {
+            random = new Random();
         }
 
         protected override void UpdateShootTimerDuration()
@@ -32,9 +40,11 @@ namespace Courier.Game.EnemyCode
                     break;
                 case EnemyState.ThreeStar:
                     newShootTimerDuration = 0.5f;
+                    accuracyDeviation = 0.03f;
                     break;
                 case EnemyState.FiveStar:
                     newShootTimerDuration = 0.25f;
+                    accuracyDeviation = 0.01f;
                     break;
                 default:
                     newShootTimerDuration = shootTimer.Duration;
@@ -63,6 +73,8 @@ namespace Courier.Game.EnemyCode
 
             // From the PointToShootAt Get the direction that the enemy should fire the bullet.
             var shootDirection = Vector2.Normalize(pointToShootAt - GlobalPosition);
+            var shootDirectionDeviation = -accuracyDeviation + ((float)random.NextDouble() * 2.0f) * accuracyDeviation;
+            shootDirection = shootDirection.Rotate(shootDirectionDeviation);
             hub.Publish(new FireBulletEvent
             {
                 InitialPosition = GlobalPosition,
