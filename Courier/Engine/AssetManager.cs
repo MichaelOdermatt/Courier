@@ -50,6 +50,7 @@ namespace Courier.Engine
             Textures.Add("TownCelebrate", contentManager.Load<Texture2D>($"{SpritesDirectory}TownCelebrate"));
             Textures.Add("Sky", contentManager.Load<Texture2D>($"{SpritesDirectory}Sky"));
             Textures.Add("Parcel", contentManager.Load<Texture2D>($"{SpritesDirectory}Parcel"));
+            Textures.Add("Missle", contentManager.Load<Texture2D>($"{SpritesDirectory}Missle"));
         }
 
         /// <summary>

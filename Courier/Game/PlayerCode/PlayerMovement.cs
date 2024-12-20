@@ -18,7 +18,7 @@ namespace Courier.Game.PlayerCode
 
         private Vector2 gravityDirection = Vector2.UnitY;
 
-        private const float TerminalVelocity = 550f;
+        private const float TerminalSpeed = 550f;
         private const float ThrustPower = 1.2f;
         private const float GravityPower = 5f;
         private const float LiftPower = 0.5f;
@@ -76,9 +76,9 @@ namespace Courier.Game.PlayerCode
             newVelocity += drag;
 
             // Cap velocity to the terminal velocty value.
-            if (newVelocity.Length() >= TerminalVelocity)
+            if (newVelocity.Length() >= TerminalSpeed)
             {
-                newVelocity = Vector2.Normalize(newVelocity) * TerminalVelocity;
+                newVelocity = Vector2.Normalize(newVelocity) * TerminalSpeed;
             }
 
             Velocity = newVelocity;

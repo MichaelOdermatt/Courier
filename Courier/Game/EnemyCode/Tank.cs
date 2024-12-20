@@ -20,7 +20,7 @@ namespace Courier.Game.EnemyCode
         /// <summary>
         /// The amount in radians that the Gunner's accuracy can randomly deviate.
         /// </summary>
-        private float accuracyDeviation = 0.05f;
+        private float accuracyDeviation = 0.07f;
         private readonly Random random;
 
         public Tank(Node parent, Player player) : base(parent, player, 0.95f, 700f, "Tank", 10f)
