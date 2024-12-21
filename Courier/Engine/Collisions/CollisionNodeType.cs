@@ -10,6 +10,7 @@ namespace Courier.Engine.Collisions
     {
         SmallBullet,
         LargeBullet,
+        Missile,
         Ground,
         Player,
         Parcel,

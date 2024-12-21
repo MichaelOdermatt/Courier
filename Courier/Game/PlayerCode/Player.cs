@@ -19,7 +19,14 @@ namespace Courier.Game.PlayerCode
         private readonly Sprite sprite;
         private readonly CollisionNode collisionNode;
         private const CollisionNodeType CollisionType = CollisionNodeType.Player;
-        private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.SmallBullet, CollisionNodeType.LargeBullet, CollisionNodeType.Ground, CollisionNodeType.RefuelPoint };
+        private readonly CollisionNodeType[] collisionTypeMask =
+        { 
+            CollisionNodeType.SmallBullet, 
+            CollisionNodeType.LargeBullet, 
+            CollisionNodeType.Missile, 
+            CollisionNodeType.Ground, 
+            CollisionNodeType.RefuelPoint 
+        };
 
         private readonly Camera2D camera;
         // TODO instead of using a callback for resetCurrentScene maybe submit an event to a scene manager?
@@ -111,6 +118,9 @@ namespace Courier.Game.PlayerCode
                     break;
                 case CollisionNodeType.LargeBullet:
                     playerHealth.reduceHealth(2);
+                    break;
+                case CollisionNodeType.Missile:
+                    playerHealth.reduceHealth(5);
                     break;
                 case CollisionNodeType.Ground:
                     playerHealth.reduceHealth(5);

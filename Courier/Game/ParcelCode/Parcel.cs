@@ -14,7 +14,7 @@ namespace Courier.Game.ParcelCode
     {
         private readonly Sprite sprite;
         private readonly CollisionNode collisionNode;
-        private const CollisionNodeType CollisionType = CollisionNodeType.Parcel;
+        private const CollisionNodeType collisionType = CollisionNodeType.Parcel;
         private readonly CollisionNodeType[] collisionTypeMask = { CollisionNodeType.Ground, CollisionNodeType.Town, CollisionNodeType.Enemy };
 
         private readonly Vector2 parcelDirection = Vector2.UnitY;
@@ -34,7 +34,7 @@ namespace Courier.Game.ParcelCode
             Children.Add(sprite);
 
             var collisionShape = new CollisionSphere(this, CollisionRadius);
-            collisionNode = new CollisionNode(this, collisionShape, CollisionType, collisionTypeMask);
+            collisionNode = new CollisionNode(this, collisionShape, collisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);
         }
@@ -50,7 +50,7 @@ namespace Courier.Game.ParcelCode
             LocalPosition += velocity;
         }
 
-        public void OnCollision(object sender, CollisionEventArgs eventArgs)
+        private void OnCollision(object sender, CollisionEventArgs eventArgs)
         {
             ShouldDestroy = true;
         }

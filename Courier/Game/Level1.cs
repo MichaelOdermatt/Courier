@@ -3,6 +3,7 @@ using Courier.Engine.Collisions;
 using Courier.Engine.Nodes;
 using Courier.Game.BulletCode;
 using Courier.Game.EnemyCode;
+using Courier.Game.MissileCode;
 using Courier.Game.ParcelCode;
 using Courier.Game.PlayerCode;
 using Courier.Game.TownCode;
@@ -118,7 +119,7 @@ namespace Courier.Game
             var bulletManager = new BulletManager(worldSpaceRoot);
             var enemies = CreateEnemies(player);
             var enemyManager = new EnemyManager(worldSpaceRoot, enemies);
-            var missleManager = new MissleManager(worldSpaceRoot, player);
+            var missileManager = new MissileManager(worldSpaceRoot, player);
             var refuelPoint = new RefuelPoint(worldSpaceRoot);
             refuelPoint.LocalPosition = groundPoints[19];
 
@@ -129,7 +130,7 @@ namespace Courier.Game
             worldSpaceRoot.Children.Add(townManager);
             worldSpaceRoot.Children.Add(parcelManager);
             worldSpaceRoot.Children.Add(refuelPoint);
-            worldSpaceRoot.Children.Add(missleManager);
+            worldSpaceRoot.Children.Add(missileManager);
         }
 
         /// <summary>
