@@ -1,4 +1,5 @@
-﻿using Courier.Engine.Nodes;
+﻿using Courier.Engine;
+using Courier.Engine.Nodes;
 using Courier.Game.EventData;
 using Courier.Game.PlayerCode;
 using Microsoft.Xna.Framework;
@@ -13,12 +14,14 @@ namespace Courier.Game.MissileCode
 {
     public class MissileManager : Node
     {
+        private const int MaxNumberOfMissiles = 2;
         private const int WantedLevelToStartFiringMissiles = 5;
-        private readonly Vector2 firstMissileSpawnPositionRelativeToPlayer = new Vector2(-300, -400);
-        private readonly Vector2 secondMissileSpawnPositionRelativeToPlayer = new Vector2(-100, -400);
+        private const float MissileTimerDuration = 0.75f;
+        private readonly Vector2 missileSpawnPositionRelativeToPlayer = new Vector2(-300, -400);
 
         private readonly Hub hub;
 
+        private readonly GameTimer missileTimer;
         private readonly Player player;
         private readonly List<Missile> missiles = new List<Missile>();
 
@@ -30,6 +33,11 @@ namespace Courier.Game.MissileCode
         public MissileManager(Node parent, Player player) : base(parent)
         {
             this.player = player;
+
+            this.missileTimer = new GameTimer(MissileTimerDuration, OnMissleTimerTimeout);
+            missileTimer.Loop = true;
+            missileTimer.Start();
+
             this.hub = Hub.Default;
             hub.Subscribe<UpdateWantedLevelEvent>(OnUpdateWantedLevel);
         }
@@ -38,32 +46,32 @@ namespace Courier.Game.MissileCode
         {
             base.Update(gameTime);
 
+            missileTimer.Tick(gameTime);
+
             // Remove any Missiles that have been marked as ShouldDestroy
             var missilesToRemove = missiles.Where(missile => missile.ShouldDestroy);
             Children.RemoveAll(c => missilesToRemove.Contains(c));
             missiles.RemoveAll(p => missilesToRemove.Contains(p));
-
-            // If there are no missiles currently active, create more.
-            if (missiles.Count() == 0 && shouldFireMissiles)
-            {
-                FireMissiles();
-            }
         }
 
         /// <summary>
-        /// Creates new Missiles.
+        /// Creates a new Missile.
         /// </summary>
-        private void FireMissiles()
+        private void FireMissile()
         {
-            var firstMissile = new Missile(this, player);
-            firstMissile.LocalPosition = player.GlobalPosition + firstMissileSpawnPositionRelativeToPlayer;
-            Children.Add(firstMissile);
-            missiles.Add(firstMissile);
+            var newMissile = new Missile(this, player);
+            newMissile.LocalPosition = player.GlobalPosition + missileSpawnPositionRelativeToPlayer;
+            Children.Add(newMissile);
+            missiles.Add(newMissile);
+        }
 
-            var secondMissile = new Missile(this, player);
-            secondMissile.LocalPosition = player.GlobalPosition + secondMissileSpawnPositionRelativeToPlayer;
-            Children.Add(secondMissile);
-            missiles.Add(secondMissile);
+        private void OnMissleTimerTimeout()
+        {
+            if (shouldFireMissiles && missiles.Count() < MaxNumberOfMissiles)
+            {
+                FireMissile();
+                missileTimer.Start();
+            }
         }
 
         private void OnUpdateWantedLevel(UpdateWantedLevelEvent eventData)

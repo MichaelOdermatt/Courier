@@ -18,7 +18,7 @@ namespace Courier.Game.PlayerCode
         public PlayerWantedLevel(Hub hub)
         {
             this.hub = hub;
-            hub.Subscribe<CharcterHitEvent>(OnTownDestroyed);
+            hub.Subscribe<CharcterHitEvent>(OnCharacterHit);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace Courier.Game.PlayerCode
             }
         }
 
-        private void OnTownDestroyed(CharcterHitEvent eventData)
+        private void OnCharacterHit(CharcterHitEvent eventData)
         {
             IncreasePlayerWantedLevel();
         }
