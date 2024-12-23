@@ -14,7 +14,6 @@ namespace Courier.Game.PlayerCode
         private readonly Hub hub;
 
         private const float MaxFuelAmount = 100f;
-        private const float FuelDepletionAmount = 20f;
 
         private float fuelAmount = 100f;
 
@@ -42,13 +41,14 @@ namespace Courier.Game.PlayerCode
         }
 
         /// <summary>
-        /// Depletes the fuel amount by 1 increment of the FuelDepletionAmount.
+        /// Depletes the fuel amount by the given fuelDepletionAmount.
         /// </summary>
         /// <param name="gameTime">The Update method GameTime object.</param>
-        public void DepleteFuel(GameTime gameTime)
+        /// <param name="fuelDepletionAmount">The amount be depleted.</param>
+        public void DepleteFuel(GameTime gameTime, float fuelDepletionAmount)
         {
             var deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            fuelAmount -= FuelDepletionAmount * deltaTime;
+            fuelAmount -= fuelDepletionAmount * deltaTime;
             hub.Publish(new UpdateFuelEvent
             {
                 NewFuelLevel = FuelAmountScaled,

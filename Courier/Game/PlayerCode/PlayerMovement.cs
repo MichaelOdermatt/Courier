@@ -24,6 +24,8 @@ namespace Courier.Game.PlayerCode
         private const float LiftPower = 0.5f;
         private const float InducedDragPower = 0.3f;
         private const float DragPower = 0.8f;
+        private const float ThrustFuelDepletionAmount = 9f;
+        private const float NormalFuelDepletionAmount = 2f;
 
         public Vector2 Velocity { get; private set; } = Vector2.Zero;
         public float AngleOfAttack { get; private set; } = 0f;
@@ -46,6 +48,12 @@ namespace Courier.Game.PlayerCode
 
             // Rotate the velocity vector based on the Players input.
             var steeringDirection = playerInput.GetPlayerSteeringDirection();
+
+            // Disable the Player's steering if they are out of fuel.
+            if (playerFuel.IsOutOfFuel()) {
+                steeringDirection = 0;
+            }
+
             var steeringAmount = steeringDirection * RotateSpeed;
 
             var newVelocity = Velocity.Rotate(steeringAmount);
@@ -61,9 +69,14 @@ namespace Courier.Game.PlayerCode
             // Apply thrust if space is pressed.
             if (isThrustPressed && !playerFuel.IsOutOfFuel())
             {
-                playerFuel.DepleteFuel(gameTime);
                 var thrust = normalizedVelocity * ThrustPower;
                 newVelocity += thrust;
+            }
+
+            // Reduce the player's fuel level.
+            if (!playerFuel.IsOutOfFuel()) {
+                var fuelDepletionAmount = isThrustPressed ? ThrustFuelDepletionAmount : NormalFuelDepletionAmount;
+                playerFuel.DepleteFuel(gameTime, fuelDepletionAmount);
             }
 
             // Apply gravity.
