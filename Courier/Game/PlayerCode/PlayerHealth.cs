@@ -1,5 +1,5 @@
 ﻿using Courier.Game.EventData;
-using PubSub;
+using Courier.Engine.PubSubCustom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace Courier.Game.PlayerCode
             this.hub = hub;
         }
 
-        public void reduceHealth(float reductionAmount)
+        public void ReduceHealth(float reductionAmount)
         {
             Health -= reductionAmount;
             if (!HasZeroHealth)

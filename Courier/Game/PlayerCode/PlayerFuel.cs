@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PubSub;
 using Courier.Game.EventData;
+using Courier.Engine.PubSubCustom;
 
 namespace Courier.Game.PlayerCode
 {
@@ -15,7 +15,7 @@ namespace Courier.Game.PlayerCode
 
         private const float MaxFuelAmount = 100f;
 
-        private float fuelAmount = 100f;
+        private float fuelAmount = 50f;
 
         /// <summary>
         /// The fuel amount but scaled to a value between 0 and 1.
@@ -29,11 +29,13 @@ namespace Courier.Game.PlayerCode
 
 
         /// <summary>
-        /// Updates the players fuel amount to the maximum possible value.
+        /// Updates the players fuel amount by the given amount.
         /// </summary>
-        public void SetFuelToMax()
+        /// <param name="amountToAdd">The amount the increase the fuel level by.</param>
+        public void IncreaseFuelAmount(float amountToAdd)
         {
-            fuelAmount = MaxFuelAmount;
+            var newFuelAmount = fuelAmount + amountToAdd >= MaxFuelAmount ? MaxFuelAmount : fuelAmount + amountToAdd;
+            fuelAmount = newFuelAmount;
             hub.Publish(new UpdateFuelEvent
             {
                 NewFuelLevel = FuelAmountScaled,

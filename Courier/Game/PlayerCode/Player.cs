@@ -3,7 +3,7 @@ using Courier.Engine.Collisions;
 using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Nodes;
 using Microsoft.Xna.Framework;
-using PubSub;
+using Courier.Engine.PubSubCustom;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -111,19 +111,19 @@ namespace Courier.Game.PlayerCode
             switch (eventArgs.collisionNode.CollisionNodeType)
             {
                 case CollisionNodeType.RefuelPoint:
-                    playerFuel.SetFuelToMax();
+                    playerFuel.IncreaseFuelAmount(25f);
                     break;
                 case CollisionNodeType.SmallBullet:
-                    playerHealth.reduceHealth(1);
+                    playerHealth.ReduceHealth(1);
                     break;
                 case CollisionNodeType.LargeBullet:
-                    playerHealth.reduceHealth(2);
+                    playerHealth.ReduceHealth(2);
                     break;
                 case CollisionNodeType.Missile:
-                    playerHealth.reduceHealth(5);
+                    playerHealth.ReduceHealth(5);
                     break;
                 case CollisionNodeType.Ground:
-                    playerHealth.reduceHealth(5);
+                    playerHealth.ReduceHealth(5);
                     break;
             }
 

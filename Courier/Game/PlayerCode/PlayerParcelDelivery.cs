@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Courier.Game.TownCode;
-using PubSub;
+using Courier.Engine.PubSubCustom;
 using Courier.Game.EventData;
 
 namespace Courier.Game.PlayerCode
