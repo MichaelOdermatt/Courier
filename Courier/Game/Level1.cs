@@ -122,10 +122,12 @@ namespace Courier.Game
             var enemies = CreateEnemies(player);
             var enemyManager = new EnemyManager(worldSpaceRoot, enemies);
             var missileManager = new MissileManager(worldSpaceRoot, player);
-            var refuelPoint1 = new RefuelPoint(worldSpaceRoot);
-            refuelPoint1.LocalPosition = groundPoints[9];
-            var refuelPoint2 = new RefuelPoint(worldSpaceRoot);
-            refuelPoint2.LocalPosition = groundPoints[19];
+            var refuelPickup1 = new RefuelPickup(worldSpaceRoot);
+            refuelPickup1.LocalPosition = new Vector2(groundPoints[9].X, groundPoints[9].Y - 350);
+            var refuelPickup2 = new RefuelPickup(worldSpaceRoot);
+            refuelPickup2.LocalPosition = new Vector2(groundPoints[13].X, groundPoints[13].Y - 150);
+            var refuelPickup3 = new RefuelPickup(worldSpaceRoot);
+            refuelPickup3.LocalPosition = new Vector2(groundPoints[20].X, groundPoints[20].Y - 75);
 
             worldSpaceRoot.Children.Add(player);
             worldSpaceRoot.Children.Add(ground);
@@ -133,8 +135,9 @@ namespace Courier.Game
             worldSpaceRoot.Children.Add(enemyManager);
             worldSpaceRoot.Children.Add(townManager);
             worldSpaceRoot.Children.Add(parcelManager);
-            worldSpaceRoot.Children.Add(refuelPoint1);
-            worldSpaceRoot.Children.Add(refuelPoint2);
+            worldSpaceRoot.Children.Add(refuelPickup1);
+            worldSpaceRoot.Children.Add(refuelPickup2);
+            worldSpaceRoot.Children.Add(refuelPickup3);
             worldSpaceRoot.Children.Add(missileManager);
         }
 

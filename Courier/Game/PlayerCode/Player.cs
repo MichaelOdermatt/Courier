@@ -25,7 +25,7 @@ namespace Courier.Game.PlayerCode
             CollisionNodeType.LargeBullet, 
             CollisionNodeType.Missile, 
             CollisionNodeType.Ground, 
-            CollisionNodeType.RefuelPoint 
+            CollisionNodeType.RefuelPickup 
         };
 
         private readonly Camera2D camera;
@@ -110,8 +110,8 @@ namespace Courier.Game.PlayerCode
         {
             switch (eventArgs.collisionNode.CollisionNodeType)
             {
-                case CollisionNodeType.RefuelPoint:
-                    playerFuel.IncreaseFuelAmount(25f);
+                case CollisionNodeType.RefuelPickup:
+                    playerFuel.IncreaseFuelAmount(30f);
                     break;
                 case CollisionNodeType.SmallBullet:
                     playerHealth.ReduceHealth(1);
