@@ -18,7 +18,7 @@ namespace Courier.Game.BulletCode
         private readonly List<BulletBase> bullets = new List<BulletBase>();
         private readonly List<GameTimer> bulletTimers = new List<GameTimer>();
 
-        private const float BulletActiveTime = 5f;
+        private const float BulletActiveTime = 4f;
 
         public BulletManager(Node parent) : base(parent)
         {

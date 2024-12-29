@@ -51,6 +51,7 @@ namespace Courier.Engine
             Textures.Add("Sky", contentManager.Load<Texture2D>($"{SpritesDirectory}Sky"));
             Textures.Add("Parcel", contentManager.Load<Texture2D>($"{SpritesDirectory}Parcel"));
             Textures.Add("Missile", contentManager.Load<Texture2D>($"{SpritesDirectory}Missile"));
+            Textures.Add("LineTextureRed", contentManager.Load<Texture2D>($"{SpritesDirectory}LineTextureRed"));
         }
 
         /// <summary>

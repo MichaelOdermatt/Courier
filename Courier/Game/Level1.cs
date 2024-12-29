@@ -128,6 +128,8 @@ namespace Courier.Game
             refuelPickup2.LocalPosition = new Vector2(groundPoints[13].X, groundPoints[13].Y - 150);
             var refuelPickup3 = new RefuelPickup(worldSpaceRoot);
             refuelPickup3.LocalPosition = new Vector2(groundPoints[20].X, groundPoints[20].Y - 75);
+            var sniper = new Sniper(worldSpaceRoot, player);
+            sniper.LocalPosition = groundPoints[7];
 
             worldSpaceRoot.Children.Add(player);
             worldSpaceRoot.Children.Add(ground);
@@ -139,6 +141,7 @@ namespace Courier.Game
             worldSpaceRoot.Children.Add(refuelPickup2);
             worldSpaceRoot.Children.Add(refuelPickup3);
             worldSpaceRoot.Children.Add(missileManager);
+            worldSpaceRoot.Children.Add(sniper);
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace Courier.Game.EnemyCode
     public class Gunner : EnemyBase
     {
         private const float BulletSpeed = 275f;
-        private const float MaxPlayerPositionPrediction = 220f;
+        private const float MaxPlayerPositionPrediction = 175f;
 
         /// <summary>
         /// The amount in radians that the Gunner's accuracy can randomly deviate.
@@ -25,7 +25,7 @@ namespace Courier.Game.EnemyCode
         private float accuracyDeviation = 0.05f;
         private readonly Random random;
 
-        public Gunner(Node parent, Player player) : base(parent, player, 0.75f, 500f, "Gunner", 5f)
+        public Gunner(Node parent, Player player) : base(parent, player, 0.30f, 500f, "Gunner", 5f)
         {
             random = new Random();
         }
@@ -36,14 +36,14 @@ namespace Courier.Game.EnemyCode
             switch(state)
             {
                 case EnemyState.OneStar:
-                    newShootTimerDuration = 0.75f;
+                    newShootTimerDuration = 0.30f;
                     break;
                 case EnemyState.ThreeStar:
-                    newShootTimerDuration = 0.5f;
+                    newShootTimerDuration = 0.25f;
                     accuracyDeviation = 0.03f;
                     break;
                 case EnemyState.FiveStar:
-                    newShootTimerDuration = 0.25f;
+                    newShootTimerDuration = 0.2f;
                     accuracyDeviation = 0.01f;
                     break;
                 default:
@@ -73,8 +73,9 @@ namespace Courier.Game.EnemyCode
 
             // From the PointToShootAt Get the direction that the enemy should fire the bullet.
             var shootDirection = Vector2.Normalize(pointToShootAt - GlobalPosition);
-            var shootDirectionDeviation = -accuracyDeviation + ((float)random.NextDouble() * 2.0f) * accuracyDeviation;
+            var shootDirectionDeviation = -accuracyDeviation + (float)random.NextDouble() * 2.0f * accuracyDeviation;
             shootDirection = shootDirection.Rotate(shootDirectionDeviation);
+            // Create the bullet
             hub.Publish(new FireBulletEvent
             {
                 InitialPosition = GlobalPosition,

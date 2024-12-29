@@ -14,8 +14,8 @@ namespace Courier.Game.MissileCode
 {
     public class Missile : Node
     {
-        private const float MissileAcceleration = 15;
-        private const float TerminalMissileSpeed = 500;
+        private const float MissileAcceleration = 20;
+        private const float TerminalMissileSpeed = 600;
 
         private readonly Sprite sprite;
 
