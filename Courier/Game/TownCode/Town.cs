@@ -32,7 +32,7 @@ namespace Courier.Game.TownCode
             spriteOffset = new Vector2(0, -23);
             sprite = new Sprite(this, "Town")
             {
-                Offset = spriteOffset,
+                LocalPosition = spriteOffset,
             };
             Children.Add(sprite);
 
@@ -53,7 +53,7 @@ namespace Courier.Game.TownCode
             Children.Remove(sprite);
             sprite = new Sprite(this, "TownCelebrate")
             {
-                Offset = spriteOffset,
+                LocalPosition = spriteOffset,
             };
             Children.Add(sprite);
 

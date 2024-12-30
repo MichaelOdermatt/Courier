@@ -25,6 +25,16 @@ namespace Courier.Engine.Nodes
         public List<Node> Children { get; private set; } = new List<Node>();
 
         /// <summary>
+        /// Rotation (in radians) of the game object relative to it's parent Node.
+        /// </summary>
+        public float LocalRotation { get; set; } = 0f;
+
+        /// <summary>
+        /// Rotation (in radians) of the game object relative to the root Node.
+        /// </summary>
+        public float GlobalRotation { get => parent != null ? parent.LocalRotation + LocalRotation : LocalRotation; }
+
+        /// <summary>
         /// Position of the game object relative to it's parent Node.
         /// </summary>
         public Vector2 LocalPosition { get; set; } = Vector2.Zero;

@@ -69,7 +69,7 @@ namespace Courier.Game.EnemyCode
 
             // Rotate the sprite to face the Player. The sprite rotation will be updated in the next Draw call.
             var angleToPoint = MathF.Atan2(-pointToShootAt.Y, -pointToShootAt.X);
-            sprite.Rotation = angleToPoint;
+            sprite.LocalRotation = angleToPoint;
 
             // From the PointToShootAt Get the direction that the enemy should fire the bullet.
             var shootDirection = Vector2.Normalize(pointToShootAt - GlobalPosition);

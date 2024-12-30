@@ -59,7 +59,7 @@ namespace Courier.Game.MissileCode
             // Rotate the sprite to face the Player. The sprite rotation will be updated in the next Draw call.
             var normalizedVelocity = Vector2.Normalize(Velocity);
             var angleToPoint = MathF.Atan2(normalizedVelocity.Y, normalizedVelocity.X);
-            sprite.Rotation = angleToPoint;
+            sprite.LocalRotation = angleToPoint;
 
             // Apply the velocity to the position.
             LocalPosition += Velocity * deltaTime;

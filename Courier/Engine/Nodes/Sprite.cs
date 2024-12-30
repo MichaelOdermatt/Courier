@@ -25,10 +25,6 @@ namespace Courier.Engine.Nodes
         /// </summary>
         private readonly float layerDepth = 0.0f;
 
-        public Vector2 Offset { get; set; } = Vector2.Zero;
-
-        public float Rotation { get; set; } = 0.0f;
-
         public Vector2 Scale { get; set; } = Vector2.One;
 
         /// <summary>
@@ -71,14 +67,12 @@ namespace Courier.Engine.Nodes
                 return;
             }
 
-            var spritePos = GlobalPosition + Offset;
-
             // Add the sprite to the renderer so it can be drawn in the next draw call.
             spriteRenderer.AddSprite(new SpriteRenderData
             {
                 TextureKey = textureKey,
-                Position = spritePos,
-                Rotation = Rotation,
+                Position = GlobalPosition,
+                Rotation = GlobalRotation,
                 Origin = Origin,
                 Scale = Scale,
                 LayerDepth = layerDepth,

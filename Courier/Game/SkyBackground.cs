@@ -37,7 +37,7 @@ namespace Courier.Game
         public override void Update(GameTime gameTime) 
         {
             var newYOffset = GetSpriteOffsetY();
-            sprite.Offset = new Vector2(0, newYOffset); 
+            sprite.LocalPosition = new Vector2(0, newYOffset); 
         }
 
         private float GetSpriteOffsetY()

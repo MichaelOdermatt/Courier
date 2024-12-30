@@ -101,7 +101,7 @@ namespace Courier.Game.PlayerCode
             LocalPosition += Velocity * deltaTime;
 
             // Update the sprites rotation to match the angle of attack.
-            sprite.Rotation = playerMovement.AngleOfAttack;
+            sprite.LocalRotation = playerMovement.AngleOfAttack;
 
             UpdateCameraPosition();
         }

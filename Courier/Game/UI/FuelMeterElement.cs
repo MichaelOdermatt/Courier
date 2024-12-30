@@ -29,7 +29,7 @@ namespace Courier.Game.UI
         {
             meterFillSprite = new Sprite(this, "FuelMeterFill");
             meterFillSprite.IsWorldSpaceSprite = false;
-            meterFillSprite.Offset = new Vector2(2, 2);
+            meterFillSprite.LocalPosition = new Vector2(2, 2);
             meterFillSprite.Origin = Vector2.Zero;
             meterFillSprite.Scale = new Vector2(maxFillWidth, 1);
             Children.Add(meterFillSprite);
