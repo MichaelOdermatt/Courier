@@ -10,9 +10,9 @@ namespace Courier.Engine.Collisions
 {
     public class CollisionNodeQuadTreeBounds : IQuadTreeObjectBounds<ICollisionNode>
     {
-        public float GetBottom(ICollisionNode node) => node.GetBottom();
-        public float GetTop(ICollisionNode node) => node.GetTop();
-        public float GetLeft(ICollisionNode node) => node.GetLeft();
-        public float GetRight(ICollisionNode node) => node.GetRight();
+        public float GetBottom(ICollisionNode node) => node.GetCollisionBoundingRect().Bottom;
+        public float GetTop(ICollisionNode node) => node.GetCollisionBoundingRect().Top;
+        public float GetLeft(ICollisionNode node) => node.GetCollisionBoundingRect().Left;
+        public float GetRight(ICollisionNode node) => node.GetCollisionBoundingRect().Right;
     }
 }

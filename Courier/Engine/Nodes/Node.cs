@@ -1,6 +1,6 @@
-﻿using Courier.Engine.Render;
+﻿using Courier.Engine.Nodes.Interfaces;
+using Courier.Engine.Render;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,36 +12,18 @@ namespace Courier.Engine.Nodes
     /// <summary>
     /// Base class for all spatial game objects.
     /// </summary>
-    public class Node
+    public class Node : INode
     {
-        /// <summary>
-        /// The parent Node.
-        /// </summary>
         protected readonly Node parent;
 
-        /// <summary>
-        /// List of child Nodes.
-        /// </summary>
         public List<Node> Children { get; private set; } = new List<Node>();
 
-        /// <summary>
-        /// Rotation (in radians) of the game object relative to it's parent Node.
-        /// </summary>
         public float LocalRotation { get; set; } = 0f;
 
-        /// <summary>
-        /// Rotation (in radians) of the game object relative to the root Node.
-        /// </summary>
         public float GlobalRotation { get => parent != null ? parent.LocalRotation + LocalRotation : LocalRotation; }
 
-        /// <summary>
-        /// Position of the game object relative to it's parent Node.
-        /// </summary>
         public Vector2 LocalPosition { get; set; } = Vector2.Zero;
 
-        /// <summary>
-        /// Position of the game object relative to the root Node.
-        /// </summary>
         public Vector2 GlobalPosition { get => parent != null ? parent.LocalPosition + LocalPosition : LocalPosition; }
 
         public Node(Node parent)
@@ -67,9 +49,6 @@ namespace Courier.Engine.Nodes
             Children.ForEach(n => n.Update(gameTime));
         }
 
-        /// <summary>
-        /// Returns a list of Nodes that includes itself and all its Children.
-        /// </summary>
         public List<Node> GetSelfAndAllChildren()
         {
             var nodes = new List<Node>();

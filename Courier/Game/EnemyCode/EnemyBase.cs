@@ -62,7 +62,7 @@ namespace Courier.Game.EnemyCode
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
 
-            var collisionShape = new CollisionSphere(this, collisionRadius);
+            var collisionShape = new CollisionSphere(collisionRadius);
             collisionNode = new CollisionNode(this, collisionShape, CollisionType, CollisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);

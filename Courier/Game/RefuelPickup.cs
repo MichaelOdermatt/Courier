@@ -24,7 +24,7 @@ namespace Courier.Game
             sprite = new Sprite(this, "OilDrum");
             Children.Add(sprite);
 
-            var collisionShape = new CollisionRectangle(this, 15, 20);
+            var collisionShape = new CollisionRectangle(15, 20);
             collisionNode = new CollisionNode(this, collisionShape, collisionType, collisionTypeMask);
             collisionNode.OnCollision += OnRefuelPickupCollision;
             Children.Add(collisionNode);

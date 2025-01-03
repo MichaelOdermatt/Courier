@@ -1,6 +1,8 @@
 ﻿using Auios.QuadTree;
 using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Collisions.Interfaces;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,25 +56,25 @@ namespace Courier.Engine.Nodes
             }
         }
 
-        public float GetBottom() => GlobalPosition.Y + CollisionShape.GetBottom();
-
-        public float GetTop() => GlobalPosition.Y + CollisionShape.GetTop();
-
-        public float GetLeft() => GlobalPosition.X + CollisionShape.GetLeft();
-
-        public float GetRight() => GlobalPosition.X + CollisionShape.GetRight();
-
-        /// <summary>
-        /// Returns the CollisionNode as a QuadTreeRect. The QuadTreeRect will represent the CollisionNode's width, height, and position in world space.
-        /// </summary>
         public QuadTreeRect GetQuadTreeRect() 
         {
-            var height = GetBottom() - GetTop();
-            var width = GetRight() - GetLeft();
+            var boundingRect = GetCollisionBoundingRect();
+            var height = boundingRect.Bottom - boundingRect.Top;
+            var width = boundingRect.Right - boundingRect.Left;
             var x = GlobalPosition.X;
             var y = GlobalPosition.Y;
             // X and Y represent the top left of the rect.
             return new QuadTreeRect(x, y, width, height);
+        }
+
+        public CollisionBoundingRect GetCollisionBoundingRect()
+        {
+            var translationTransform = Matrix.CreateTranslation(GlobalPosition.X, GlobalPosition.Y, 0);
+            var rotationTransform = Matrix.CreateRotationZ(GlobalRotation);
+            var matrixTransform = translationTransform * rotationTransform;
+
+            // Apply the rotation and position to the shape as a transform matrix then return the resulting bounding rectangle.
+            return CollisionShape.GetBoundingRect(matrixTransform);
         }
     }
 }

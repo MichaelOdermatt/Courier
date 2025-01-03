@@ -36,7 +36,7 @@ namespace Courier.Game.TownCode
             };
             Children.Add(sprite);
 
-            var collisionShape = new CollisionRectangle(this, CollisionWidth, CollisionHeight);
+            var collisionShape = new CollisionRectangle(CollisionWidth, CollisionHeight);
             collisionNode = new CollisionNode(this, collisionShape, collisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);

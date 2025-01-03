@@ -2,6 +2,8 @@ using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Nodes;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Courier.Engine.Collisions.CollisionShapes
 {
@@ -11,37 +13,29 @@ namespace Courier.Engine.Collisions.CollisionShapes
 
         public float Height { get; private set; }
 
-        /// <summary>
-        /// The Node which the CollisionSphere is attached to.
-        /// </summary>
-        private readonly Node instantiatingNode;
-
-        public Vector2 GlobalPosition { get => instantiatingNode.GlobalPosition; }
-
-        public CollisionRectangle(Node node, float width, float height)
+        public CollisionRectangle(float width, float height)
         {
-            instantiatingNode = node;
             Width = width;
             Height = height;
         }
 
-        public bool Intersects(ICollisionShape collisionShape)
+        public CollisionBoundingRect GetBoundingRect(Matrix transformMatrix)
         {
-            if (collisionShape is CollisionSphere collisionSphere)
+            // Transform all the corner points of the rectangle and add them to a list.
+            var points = new List<Vector2>() {
+                Vector2.Transform(new Vector2(-Height * 0.5f, Width * 0.5f), transformMatrix),
+                Vector2.Transform(new Vector2(Height * 0.5f, Width * 0.5f), transformMatrix),
+                Vector2.Transform(new Vector2(-Height * 0.5f, -Width * 0.5f), transformMatrix),
+                Vector2.Transform(new Vector2(Height * 0.5f, -Width * 0.5f), transformMatrix),
+            };
+
+            return new CollisionBoundingRect 
             {
-                return CheckIntersections.SphereIntersectsWithRectangle(collisionSphere, this);
-            }
-
-            throw new NotImplementedException();
+                Left = points.Min(p => p.X),
+                Right = points.Max(p => p.X),
+                Top = points.Min(p => p.Y),
+                Bottom = points.Max(p => p.Y),
+            };
         }
-
-        public float GetBottom() => Height * 0.5f;
-
-        public float GetTop() => -Height * 0.5f;
-
-        public float GetLeft() => -Width * 0.5f;
-
-        public float GetRight() => Width * 0.5f;
-
     }
 }

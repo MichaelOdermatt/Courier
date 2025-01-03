@@ -1,5 +1,6 @@
 ﻿using Auios.QuadTree;
 using Courier.Engine.Collisions;
+using Courier.Engine.Collisions.CollisionShapes;
 using Courier.Engine.Collisions.Interfaces;
 using Courier.Engine.Nodes;
 using Courier.Engine.Render;
@@ -99,7 +100,7 @@ namespace Courier.Engine
 
                     // If either of the Nodes mask the other, and they are colliding, notify them.
                     if ((firstCollisionNodeMasksSecondNode || secondCollisionNodeMasksFirstNode) &&
-                        node.CollisionShape.Intersects(collidingNode.CollisionShape)
+                        CheckIntersections.CheckIntersectionsOnNodes(node, collidingNode)
                     )
                     {
                         if (firstCollisionNodeMasksSecondNode)

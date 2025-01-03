@@ -63,7 +63,7 @@ namespace Courier.Game.PlayerCode
             sprite = new Sprite(this, "Player");
             Children.Add(sprite);
 
-            var collisionShape = new CollisionSphere(this, 6f);
+            var collisionShape = new CollisionSphere(6f);
             collisionNode = new CollisionNode(this, collisionShape, CollisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);

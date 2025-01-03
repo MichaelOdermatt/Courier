@@ -1,4 +1,6 @@
 ﻿using Auios.QuadTree;
+using Courier.Engine.Collisions.CollisionShapes;
+using Courier.Engine.Nodes.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace Courier.Engine.Collisions.Interfaces
     /// <summary>
     /// Nodes that implement this interface are ones that have collision checks and can collide with other Nodes.
     /// </summary>
-    public interface ICollisionNode
+    public interface ICollisionNode : INode
     {
         ICollisionShape CollisionShape { get; }
 
@@ -43,22 +45,13 @@ namespace Courier.Engine.Collisions.Interfaces
         public void Collide(ICollisionNode e);
 
         /// <summary>
-        /// Returns the Y position of the bottom of the collisionNode.
+        /// Returns a QuadTreeRect which represents the ICollisionNode's width, height, and position in world space.
         /// </summary>
-        public float GetBottom();
-        /// <summary>
-        /// Returns the Y position of the top of the collisionNode.
-        /// </summary>
-        public float GetTop();
-        /// <summary>
-        /// Returns the X position of the leftmost point of the collisionNode.
-        /// </summary>
-        public float GetLeft();
-        /// <summary>
-        /// Returns the X position of the rightmost point of the collisionNode.
-        /// </summary>
-        public float GetRight();
-
         public QuadTreeRect GetQuadTreeRect();
+
+        /// <summary>
+        /// Returns a CollisionBoundingRect of the smallest rectangle that fits the ICollisionNode, with position and rotation transforms applied.
+        /// </summary>
+        public CollisionBoundingRect GetCollisionBoundingRect();
     }
 }

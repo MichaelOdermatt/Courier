@@ -38,7 +38,7 @@ namespace Courier.Game.MissileCode
             sprite = new Sprite(this, "Missile");
             Children.Add(sprite);
 
-            var collisionShape = new CollisionSphere(this, 7f);
+            var collisionShape = new CollisionSphere(7f);
             this.collisionNode = new CollisionNode(this, collisionShape, collisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollide;
             Children.Add(collisionNode);

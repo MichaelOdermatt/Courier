@@ -14,6 +14,10 @@ namespace Courier.Engine.Collisions.CollisionShapes
     /// </summary>
     public class CollisionSegmentedBoundry : ICollisionShape
     {
+        /// <summary>
+        /// Amount of additional collision space on the opposing side of the boundry.
+        /// </summary>
+        private const float boundryBufferZone = 250f;
         private readonly float highestPointYValue;
         private readonly float lowestPointYValue;
         private readonly float rightmostPointXValue;
@@ -52,34 +56,27 @@ namespace Courier.Engine.Collisions.CollisionShapes
             }
         }
 
-        /// <inheritdoc/>
-        public bool Intersects(ICollisionShape collisionShape)
+        public CollisionBoundingRect GetBoundingRect(Matrix transformMatrix)
         {
-            if (collisionShape is CollisionSphere collisionSphere)
-            {
-                return CheckIntersections.SphereIntersectsWithSegmentedBoundry(collisionSphere, this);
+            // The transform matrix does not not get applied in this case because we don't want segmented boundries to be moved or rotated.
+            float bottomValue;
+            switch (Direction) {
+                case CollisionBoundryDirection.Down:
+                    // Return the highest point on the segmented boundry (farthest from the top of the screen) and additional buffer so
+                    // that collisions can be detected for an extra number pixels under the highest point.
+                    bottomValue = highestPointYValue + boundryBufferZone;
+                    break;
+                default:
+                    throw new NotImplementedException();
             }
-            else
+
+            return new CollisionBoundingRect 
             {
-                throw new NotImplementedException();
-            }
+                Left = leftmostPointXValue,
+                Right = rightmostPointXValue,
+                Top = lowestPointYValue,
+                Bottom = bottomValue,
+            };
         }
-
-        public float GetBottom()
-        {
-            if (Direction == CollisionBoundryDirection.Down)
-            {
-                // Return the lowest point on the segmented boundry an additional buffer so
-                // that collisions can be detected for an extra number pixels under the lowest point.
-                return highestPointYValue + 250;
-            }
-            throw new NotImplementedException();
-        }
-
-        public float GetTop() => lowestPointYValue;
-
-        public float GetLeft() => leftmostPointXValue;
-
-        public float GetRight() => rightmostPointXValue;
     }
 }

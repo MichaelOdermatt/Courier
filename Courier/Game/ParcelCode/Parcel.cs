@@ -33,7 +33,7 @@ namespace Courier.Game.ParcelCode
             sprite = new Sprite(this, "Parcel");
             Children.Add(sprite);
 
-            var collisionShape = new CollisionSphere(this, CollisionRadius);
+            var collisionShape = new CollisionSphere(CollisionRadius);
             collisionNode = new CollisionNode(this, collisionShape, collisionType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);

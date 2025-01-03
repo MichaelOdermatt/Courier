@@ -11,48 +11,22 @@ namespace Courier.Engine.Collisions.CollisionShapes
 {
     public class CollisionSphere : ICollisionShape
     {
-        public float radius;
-        /// <summary>
-        /// The Node which the CollisionSphere is attached to.
-        /// </summary>
-        private readonly Node instantiatingNode;
-        public Vector2 GlobalPosition { get => instantiatingNode.GlobalPosition; }
+        public float Radius { get; private set; }
 
-        public CollisionSphere(Node instantiatingNode, float radius)
+        public CollisionSphere(float radius)
         {
-            this.radius = radius;
-            this.instantiatingNode = instantiatingNode;
+            Radius = radius;
         }
 
-        /// <inheritdoc/>
-        public bool Intersects(ICollisionShape collisionShape)
+        public CollisionBoundingRect GetBoundingRect(Matrix transformMatrix)
         {
-            if (collisionShape is CollisionSegmentedBoundry collisionSB && collisionSB.Direction == CollisionBoundryDirection.Down)
-            {
-                return CheckIntersections.SphereIntersectsWithSegmentedBoundry(this, collisionSB);
-            }
-            else if (collisionShape is CollisionSphere collisionSphere)
-            {
-                return CheckIntersections.SphereIntersectsWithSphere(this, collisionSphere);
-            }
-            else if (collisionShape is CollisionLineBoundry collisionLB && collisionLB.Direction == CollisionBoundryDirection.Right)
-            {
-                return CheckIntersections.SphereIntersectsWithLineBoundry(this, collisionLB);
-            }
-            else if (collisionShape is CollisionRectangle collisionRectangle)
-            {
-                return CheckIntersections.SphereIntersectsWithRectangle(this, collisionRectangle);
-            }
-
-            throw new NotImplementedException();
+            var transformedPoint = Vector2.Transform(Vector2.Zero, transformMatrix);
+            return new CollisionBoundingRect {
+                Left = transformedPoint.X - Radius,
+                Right = transformedPoint.X + Radius,
+                Top = transformedPoint.Y - Radius,
+                Bottom = transformedPoint.X + Radius,
+            };
         }
-
-        public float GetBottom() => radius;
-
-        public float GetTop() => -radius;
-
-        public float GetLeft() => -radius;
-
-        public float GetRight() => radius;
     }
 }

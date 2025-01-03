@@ -39,7 +39,7 @@ namespace Courier.Game.BulletCode
             sprite = new Sprite(this, textureKey);
             Children.Add(sprite);
 
-            var collisionShape = new CollisionSphere(this, bulletRadius);
+            var collisionShape = new CollisionSphere(bulletRadius);
             collisionNode = new CollisionNode(this, collisionShape, collisionNodeType, collisionTypeMask);
             collisionNode.OnCollision += OnCollision;
             Children.Add(collisionNode);
